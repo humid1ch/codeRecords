@@ -14,23 +14,23 @@ typedef struct Heap
 	size_t capacity;
 }Heap;
 
-// ¶Ñ ³õÊ¼»¯
+// å † åˆå§‹åŒ–
 void HeapInit(Heap* php);
-// ¶Ñ Ïú»Ù
+// å † é”€æ¯
 void HeapDestroy(Heap* php);
-// ¶Ñ ²åÈëÊı¾İ
+// å † æ’å…¥æ•°æ®
 void HeapPush(Heap* php, HPDataType x);
-// ¶Ñ É¾³ıÊı¾İ
+// å † åˆ é™¤æ•°æ®
 void HeapPop(Heap* php);
-// ¶Ñ Êı¾İ´òÓ¡
+// å † æ•°æ®æ‰“å°
 void HeapPrint(Heap* php);
-// ÅĞ¿Õ
+// åˆ¤ç©º
 bool HeapEmpty(Heap* php);
-// ¶ÑµÄ¸ùµÄÊı¾İ
+// å †çš„æ ¹çš„æ•°æ®
 HPDataType HeapTop(Heap* php);
-// ¶Ñ´óĞ¡
+// å †å¤§å°
 size_t HeapSize(Heap* php);
-// ÅÅĞò ½µĞò
+// æ’åº é™åº
 void HeapSort(int *a, size_t size);
-// Top-K ÎÊÌâ Ë¼Â·
+// Top-K é—®é¢˜ æ€è·¯
 void PrintTopK(int* a, int n, int k);

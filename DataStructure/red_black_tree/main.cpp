@@ -1,4 +1,4 @@
-#include "RBTree_Blog.h"
+#include "RBTree.h"
 
 void TestRBTree1()
 {
@@ -18,7 +18,7 @@ void TestRBTree1()
 	}
 	
 	t.treeHeight();
-	cout << "´ËÊ÷ÊÇ·ñÎªºìºÚÊ÷£º " << t.isRBTree() << endl;
+	cout << "æ­¤æ ‘æ˜¯å¦ä¸ºçº¢é»‘æ ‘ï¼š " << t.isRBTree() << endl;
 }
 
 

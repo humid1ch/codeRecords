@@ -10,17 +10,17 @@
 
 typedef int BTDataType;
 
-// Á´Ê½¶þ²æÊ÷
-// Á´Ê½¶þ²æÊ÷ ÐèÒªÀí½âÒ»¸öÖØÒªµÄË¼Ïë£º
-// Ã¿Ò»¿ÃÊ÷£¬¶¼¿ÉÒÔ·ÖÎª ¸ù¡¢×óº¢×Ó¡¢ÓÒº¢×Ó
-// ¼´ ´æÔÚÒ»¿Ã¶þ²æÊ÷£º		 1
+// é“¾å¼äºŒå‰æ ‘
+// é“¾å¼äºŒå‰æ ‘ éœ€è¦ç†è§£ä¸€ä¸ªé‡è¦çš„æ€æƒ³ï¼š
+// æ¯ä¸€æ£µæ ‘ï¼Œéƒ½å¯ä»¥åˆ†ä¸º æ ¹ã€å·¦å­©å­ã€å³å­©å­
+// å³ å­˜åœ¨ä¸€æ£µäºŒå‰æ ‘ï¼š		 1
 //					  2     3
 //			        4   5 6   5
-// Ôò¿ÉÒÔ¿´×÷   1 Îª¸ù£¬ 2 Îª×óº¢×Ó£¬ 3 ÎªÓÒº¢×Ó
-// Í¬Ñù¿ÉÒÔ¿´×÷ 2 Îª¸ù£¬ 4 Îª×óº¢×Ó£¬ 5 ÎªÓÒº¢×Ó
+// åˆ™å¯ä»¥çœ‹ä½œ   1 ä¸ºæ ¹ï¼Œ 2 ä¸ºå·¦å­©å­ï¼Œ 3 ä¸ºå³å­©å­
+// åŒæ ·å¯ä»¥çœ‹ä½œ 2 ä¸ºæ ¹ï¼Œ 4 ä¸ºå·¦å­©å­ï¼Œ 5 ä¸ºå³å­©å­
 
-// Èç¹ûÃ»ÓÐ×óº¢×Ó »òÕß Ã»ÓÐÓÒº¢×Ó ÄÇÃ´×óº¢×Ó = ÓÒº¢×Ó = NULL
-// ¼´         4 Îª¸ù£¬ 4µÄ×óº¢×ÓÎª NULL£¬ 4µÄÓÒº¢×ÓÎª NULL
+// å¦‚æžœæ²¡æœ‰å·¦å­©å­ æˆ–è€… æ²¡æœ‰å³å­©å­ é‚£ä¹ˆå·¦å­©å­ = å³å­©å­ = NULL
+// å³         4 ä¸ºæ ¹ï¼Œ 4çš„å·¦å­©å­ä¸º NULLï¼Œ 4çš„å³å­©å­ä¸º NULL
 typedef struct BinaryTreeNode
 {
 	struct BinaryTreeNode* left;
@@ -28,26 +28,26 @@ typedef struct BinaryTreeNode
 	BTDataType data;
 }BTNode;
 
-// ´´½¨ÐÂ½Úµã
+// åˆ›å»ºæ–°èŠ‚ç‚¹
 BTNode* buyBTNode(BTDataType x);
-// ´´½¨ÐÂµÄ¶þ²æÊ÷µÄº¯Êý£¨¹Ì¶¨µÄ£©
+// åˆ›å»ºæ–°çš„äºŒå‰æ ‘çš„å‡½æ•°ï¼ˆå›ºå®šçš„ï¼‰
 BTNode* creatBinaryTree();
 
-// ÏÈÐò±éÀú
+// å…ˆåºéåŽ†
 void prevOrder(BTNode* pbt);
-// ÖÐÐò±éÀú
+// ä¸­åºéåŽ†
 void inOrder(BTNode* pbt);
-// ºóÐò±éÀú
+// åŽåºéåŽ†
 void postOrder(BTNode* root);
-// ¶þ²æÊ÷½ÚµãµÄ¸öÊý
+// äºŒå‰æ ‘èŠ‚ç‚¹çš„ä¸ªæ•°
 int BTNodeSize(BTNode* root);
-// ¶þ²æÊ÷Ò¶×Ó½ÚµãÊýÁ¿
+// äºŒå‰æ ‘å¶å­èŠ‚ç‚¹æ•°é‡
 int LeafSize(BTNode* root);
-// µÚK²ã ½ÚµãÊýÁ¿
+// ç¬¬Kå±‚ èŠ‚ç‚¹æ•°é‡
 int LevelSize(BTNode* root, int k);
-// ¶þ²æÊ÷Éî¶È
+// äºŒå‰æ ‘æ·±åº¦
 int BinaryTreeDepth(BTNode* root);
-// ²ãÐò±éÀú
+// å±‚åºéåŽ†
 void BinaryTreeLevelOrder(BTNode* root);
-// ÅÐ¶Ï¶þ²æÊ÷ÊÇ·ñÊÇÍêÈ«¶þ²æÊ÷
+// åˆ¤æ–­äºŒå‰æ ‘æ˜¯å¦æ˜¯å®Œå…¨äºŒå‰æ ‘
 int BinaryTreeComplete(BTNode* root);

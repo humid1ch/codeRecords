@@ -36,30 +36,30 @@ BTNode* creatBinaryTree()
 }
 
 void prevOrder(BTNode* root)
-{// µÝ¹é ÏÈÐò±éÀú
-	if (root == NULL)	// µ±¸ùÎ´¿Õ£¬¼´¶þ²æÊ÷²»´æÔÚ
+{// é€’å½’ å…ˆåºéåŽ†
+	if (root == NULL)	// å½“æ ¹æœªç©ºï¼Œå³äºŒå‰æ ‘ä¸å­˜åœ¨
 	{
 		printf("NULL ");
 		return;
 	}
 	
-	// ÏÈÐò±éÀú·ÃÎÊË³Ðò£º¸ù¡¢×óº¢×Ó¡¢ÓÒº¢×Ó
+	// å…ˆåºéåŽ†è®¿é—®é¡ºåºï¼šæ ¹ã€å·¦å­©å­ã€å³å­©å­
 	printf("%d ", root->data);
 	prevOrder(root->left);
 	prevOrder(root->right);
 }
 
 void inOrder(BTNode* root)
-{// µÝ¹é ÖÐÐò±éÀú
+{// é€’å½’ ä¸­åºéåŽ†
 	if (root == NULL)
 	{
 		printf("NULL ");
 		return;
 	}
 
-	// ÖÐÐò±éÀú·ÃÎÊË³Ðò£º×óº¢×Ó¡¢¸ù¡¢ÓÒº¢×Ó
-	// ¼´Èç¹û´æÔÚ×óº¢×Ó£¬¾ÍÒ»Ö±È¥µ½×óº¢×Ó½Úµã
-	// Ö±µ½×óº¢×ÓÎª¿Õ£¬·ÃÎÊ¿Õ£¬È»ºó·ÃÎÊ ¸ù
+	// ä¸­åºéåŽ†è®¿é—®é¡ºåºï¼šå·¦å­©å­ã€æ ¹ã€å³å­©å­
+	// å³å¦‚æžœå­˜åœ¨å·¦å­©å­ï¼Œå°±ä¸€ç›´åŽ»åˆ°å·¦å­©å­èŠ‚ç‚¹
+	// ç›´åˆ°å·¦å­©å­ä¸ºç©ºï¼Œè®¿é—®ç©ºï¼Œç„¶åŽè®¿é—® æ ¹
 	inOrder(root->left);
 	printf("%d ", root->data);
 	inOrder(root->right);
@@ -79,7 +79,7 @@ void postOrder(BTNode* root)
 }
 
 
-// ¶þ²æÊ÷½ÚµãÊýÁ¿ £¨È«¾Ö±äÁ¿¼ÆÊýµÄ·½·¨£©
+// äºŒå‰æ ‘èŠ‚ç‚¹æ•°é‡ ï¼ˆå…¨å±€å˜é‡è®¡æ•°çš„æ–¹æ³•ï¼‰
 //NodeCount = 0;
 //void BTNodeSize(BTNode* root)
 //{
@@ -92,23 +92,23 @@ void postOrder(BTNode* root)
 //}
 
 
-// ¶þ²æÊ÷½ÚµãÊýÁ¿£¨·ÖÖÎË¼Ïë£©
+// äºŒå‰æ ‘èŠ‚ç‚¹æ•°é‡ï¼ˆåˆ†æ²»æ€æƒ³ï¼‰
 int BTNodeSize(BTNode* root)
 {
-	// µ±Ç°½ÚµãÎª¿Õ¾Í·µ»Ø 0£¬±íÊ¾²»¼Ó 1
-	// µ±Ç°½Úµã²»Îª¿Õ£¬¾Í + 1£¬²¢ÇÒ½øÈëÏÂÒ»¸öº¢×Ó
+	// å½“å‰èŠ‚ç‚¹ä¸ºç©ºå°±è¿”å›ž 0ï¼Œè¡¨ç¤ºä¸åŠ  1
+	// å½“å‰èŠ‚ç‚¹ä¸ä¸ºç©ºï¼Œå°± + 1ï¼Œå¹¶ä¸”è¿›å…¥ä¸‹ä¸€ä¸ªå­©å­
 	return root == NULL ? 0 : BTNodeSize(root->left) + BTNodeSize(root->right) + 1;
 }
 
-// Ò¶×Ó½ÚµãÊýÁ¿£¨·ÖÖÎË¼Ïë£©
+// å¶å­èŠ‚ç‚¹æ•°é‡ï¼ˆåˆ†æ²»æ€æƒ³ï¼‰
 int LeafSize(BTNode* root)
 {
 	if (root == NULL)
 		return 0;
 
-	// ×óÓÒº¢×Ó¶¼Îª¿Õ ·µ»Ø1
-	// ÒòÎªµÝ¹é²ã²ãµÝ½ø
-	// ËùÒÔ ×îºó·µ»ØµÄÊÇ ´Ó¸ùµÄ×óº¢×ÓÏòÏÂµÄËùÓÐÒ¶×Ó½ÚµãµÄÊýÁ¿ + ´Ó¸ùµÄÓÒº¢×ÓÏòÏÂËùÓÐÒ¶×Ó½áµãµÄÊýÁ¿
+	// å·¦å³å­©å­éƒ½ä¸ºç©º è¿”å›ž1
+	// å› ä¸ºé€’å½’å±‚å±‚é€’è¿›
+	// æ‰€ä»¥ æœ€åŽè¿”å›žçš„æ˜¯ ä»Žæ ¹çš„å·¦å­©å­å‘ä¸‹çš„æ‰€æœ‰å¶å­èŠ‚ç‚¹çš„æ•°é‡ + ä»Žæ ¹çš„å³å­©å­å‘ä¸‹æ‰€æœ‰å¶å­ç»“ç‚¹çš„æ•°é‡
 	return (root->left == NULL && root->right == NULL) ? 1 : LeafSize(root->left) + LeafSize(root->right);
 }
 
@@ -132,13 +132,13 @@ int BinaryTreeDepth(BTNode* root)
 	return leftDepth > rightDepth ? leftDepth + 1 : rightDepth + 1;
 }
 
-// ²ãÐò±éÀú
+// å±‚åºéåŽ†
 void levelOrder(BTNode* root)
 {
 
 }
 
-// ÅÐ¶Ï¶þ²æÊ÷ÊÇ·ñÊÇÍêÈ«¶þ²æÊ÷
+// åˆ¤æ–­äºŒå‰æ ‘æ˜¯å¦æ˜¯å®Œå…¨äºŒå‰æ ‘
 bool BTComplete(BTNode* root)
 {
 

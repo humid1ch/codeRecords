@@ -9,14 +9,14 @@ using std::vector;
 
 namespace July {
 
-	// Ã¶¾Ù±äÁ¿ ±íÊ¾×´Ì¬
+	// æšä¸¾å˜é‡ è¡¨ç¤ºçŠ¶æ€
 	enum State {
 		EMPTY,
 		EXIST,
 		DELETE
 	};
 
-	// ¹şÏ£±íÊı¾İÀàĞÍ
+	// å“ˆå¸Œè¡¨æ•°æ®ç±»å‹
 	template<class K, class V>
 	struct HashData {
 		pair<K, V> _data;
@@ -29,36 +29,36 @@ namespace July {
 		typedef HashData<K, V> Data;
 
 		bool insert(const pair<K, V>& kv) {
-			if (_tables.size() == 0 || _n * 10 / _tables.size() >= 7) {				// µ± ¹şÏ£±í×ÜÈİÁ¿Îª0, »ò ¹şÏ£±íÄÚ´æ´¢µÄÊı¾İ¸öÊıÒÑ¾­´ïµ½ÁË×ÜÈİÁ¿µÄ70% ½øĞĞÀ©Èİ
-				size_t newSize = _tables.size() == 0 ? 10 : _tables.size() * 2;			// ĞÂÈİÁ¿Îª10 »ò Ô­À´µÄ 2±¶
+			if (_tables.size() == 0 || _n * 10 / _tables.size() >= 7) {				// å½“ å“ˆå¸Œè¡¨æ€»å®¹é‡ä¸º0, æˆ– å“ˆå¸Œè¡¨å†…å­˜å‚¨çš„æ•°æ®ä¸ªæ•°å·²ç»è¾¾åˆ°äº†æ€»å®¹é‡çš„70% è¿›è¡Œæ‰©å®¹
+				size_t newSize = _tables.size() == 0 ? 10 : _tables.size() * 2;			// æ–°å®¹é‡ä¸º10 æˆ– åŸæ¥çš„ 2å€
 
-				// ¹şÏ£±íÀ©Èİ²¢²»ÊÇ ½ö½öÔÚÔ­À´µÄ»ù´¡ÉÏ¸Ä±äÈİÁ¿ÄÇÃ´¼òµ¥, ¶øÊÇĞèÒªÒÔĞÂµÄÈİÁ¿×÷Îª capacity, ¶Ô¹şÏ£±íÄÚµÄÊı¾İ½øĞĞÖØĞÂÓ³Éä
+				// å“ˆå¸Œè¡¨æ‰©å®¹å¹¶ä¸æ˜¯ ä»…ä»…åœ¨åŸæ¥çš„åŸºç¡€ä¸Šæ”¹å˜å®¹é‡é‚£ä¹ˆç®€å•, è€Œæ˜¯éœ€è¦ä»¥æ–°çš„å®¹é‡ä½œä¸º capacity, å¯¹å“ˆå¸Œè¡¨å†…çš„æ•°æ®è¿›è¡Œé‡æ–°æ˜ å°„
 				HashTable<K, V> newHashTable;
-				newHashTable._tables.resize(newSize);				// µ÷ÓÃvectorµÄresize½Ó¿Ú½«ĞÂ¹şÏ£±íµÄÈİÁ¿¸ÄÎªnewSize
+				newHashTable._tables.resize(newSize);				// è°ƒç”¨vectorçš„resizeæ¥å£å°†æ–°å“ˆå¸Œè¡¨çš„å®¹é‡æ”¹ä¸ºnewSize
 
-				// ±éÀúÔ­À´µÄ¹şÏ£±í, ½«Ô­À´µÄ¹şÏ£±íÄÚµÄÊı¾İÓ³Éäµ½ ĞÂµÄ¹şÏ£±íÖĞ
+				// éå†åŸæ¥çš„å“ˆå¸Œè¡¨, å°†åŸæ¥çš„å“ˆå¸Œè¡¨å†…çš„æ•°æ®æ˜ å°„åˆ° æ–°çš„å“ˆå¸Œè¡¨ä¸­
 				for (auto& e : _tables) {
-					if (e._state == EXIST) {						// ½« Ô­¹şÏ£±íÖĞ´æÔÚµÄÊı¾İ Ó³Éäµ½ĞÂ¹şÏ£±íÖĞ
+					if (e._state == EXIST) {						// å°† åŸå“ˆå¸Œè¡¨ä¸­å­˜åœ¨çš„æ•°æ® æ˜ å°„åˆ°æ–°å“ˆå¸Œè¡¨ä¸­
 						newHashTable.insert(e._data);
 					}
 				}
 
-				// ±éÀúÖØĞÂÓ³ÉäÍê³ÉÖ®ºó, ½« Á½¸ö¹şÏ£±íµÄ_tables ½øĞĞ½»»»
-				// ¾Í¿ÉÒÔ½«µ±Ç°µÄ¹şÏ£±íÀ©ÈİÎªĞÂµÄ¹şÏ£±í
+				// éå†é‡æ–°æ˜ å°„å®Œæˆä¹‹å, å°† ä¸¤ä¸ªå“ˆå¸Œè¡¨çš„_tables è¿›è¡Œäº¤æ¢
+				// å°±å¯ä»¥å°†å½“å‰çš„å“ˆå¸Œè¡¨æ‰©å®¹ä¸ºæ–°çš„å“ˆå¸Œè¡¨
 				_tables.swap(newHashTable._tables);
 			}
 
-			size_t startI = kv.first % _tables.size();				// ¿ªÊ¼Ì½²âµÄÎ»ÖÃ
+			size_t startI = kv.first % _tables.size();				// å¼€å§‹æ¢æµ‹çš„ä½ç½®
 
 			size_t hashI = startI;
 			size_t i = 1;
-			while (_tables[hashI]._state == EXIST) {				// ·¢Éú¹şÏ£³åÍ»¾Í¼ÌĞøÏòºóÌ½²â
+			while (_tables[hashI]._state == EXIST) {				// å‘ç”Ÿå“ˆå¸Œå†²çªå°±ç»§ç»­å‘åæ¢æµ‹
 				hashI = startI + i;
 				i++;
-				hashI %= _tables.size();							// ¸üĞÂĞèÒªÌ½²âµÄÎ»ÖÃ
+				hashI %= _tables.size();							// æ›´æ–°éœ€è¦æ¢æµ‹çš„ä½ç½®
 			}
 
-			// Ì½²âµ½¿ÕÎ»ÖÃÖ®ºó
+			// æ¢æµ‹åˆ°ç©ºä½ç½®ä¹‹å
 			_tables[hashI]._data = kv;
 			_tables[hashI]._state = EXIST;
 			_n++;
@@ -68,26 +68,26 @@ namespace July {
 
 		Data* find(const K& key) {
 			if (_tables.size() == 0) {
-				return nullptr;						// ¹şÏ£±íÎª¿Õ ²éÕÒÊ§°Ü
+				return nullptr;						// å“ˆå¸Œè¡¨ä¸ºç©º æŸ¥æ‰¾å¤±è´¥
 			}
 
 			size_t startI = key % _tables.size();
 
 			size_t hashI = startI;
 			size_t i = 1;
-			while (_tables[hashI]._state != EMPTY) {				// µ± µ±Ç°Ì½²âÎ»ÖÃ²»Îª¿ÕÊ±, ½øÈëÑ­»· ¼ÌĞø²éÕÒ
+			while (_tables[hashI]._state != EMPTY) {				// å½“ å½“å‰æ¢æµ‹ä½ç½®ä¸ä¸ºç©ºæ—¶, è¿›å…¥å¾ªç¯ ç»§ç»­æŸ¥æ‰¾
 				if (_tables[hashI]._state != DELETE && _tables[hashI]._data.first == key) {
-					// µ± µ±Ç°Ì½²âÎ»ÖÃÊı¾İÃ»ÓĞ±»É¾³ı ÇÒ Óë²éÕÒÊı¾İÏàµÈÊ± ¾Í·µ»Øµ±Ç°Î»ÖÃµØÖ·
+					// å½“ å½“å‰æ¢æµ‹ä½ç½®æ•°æ®æ²¡æœ‰è¢«åˆ é™¤ ä¸” ä¸æŸ¥æ‰¾æ•°æ®ç›¸ç­‰æ—¶ å°±è¿”å›å½“å‰ä½ç½®åœ°å€
 					return &_tables[hashI];
 				}
 
-				// µ±Ç°Î»ÖÃµÄÊı¾İ ²»ÊÇ ²éÕÒµÄÊı¾İ ¾Í¸üĞÂÌ½²âÎ»ÖÃ ¼ÌĞø²éÕÒ
+				// å½“å‰ä½ç½®çš„æ•°æ® ä¸æ˜¯ æŸ¥æ‰¾çš„æ•°æ® å°±æ›´æ–°æ¢æµ‹ä½ç½® ç»§ç»­æŸ¥æ‰¾
 				hashI = startI + i;
 				i++;
 				hashI %= _tables.size();
 			}
 
-			return nullptr;					// ×ß³öÑ­»· ¾Í±íÊ¾Ã»ÓĞÕÒµ½ 
+			return nullptr;					// èµ°å‡ºå¾ªç¯ å°±è¡¨ç¤ºæ²¡æœ‰æ‰¾åˆ° 
 		}
 		
 		bool erase(const K& key) {
@@ -112,14 +112,14 @@ namespace July {
 
 namespace Bucket {
 	template<class Key>
-	struct defaultHashFcn {							// Ä¬ÈÏµÄ·Âº¯Êı, ´¦Àí¿ÉÒÔÖ±½Ó×ª»»³É size_tµÄÀàĞÍ
+	struct defaultHashFcn {							// é»˜è®¤çš„ä»¿å‡½æ•°, å¤„ç†å¯ä»¥ç›´æ¥è½¬æ¢æˆ size_tçš„ç±»å‹
 		size_t operator()(const Key& k) {
 			return (size_t)k;
 		}
 	};
 	
 	template<>
-	struct defaultHashFcn<string> {					// Ä¬ÈÏ·Âº¯Êı Õë¶ÔstringÀàĞÍµÄÌØ»¯
+	struct defaultHashFcn<string> {					// é»˜è®¤ä»¿å‡½æ•° é’ˆå¯¹stringç±»å‹çš„ç‰¹åŒ–
 		size_t operator()(const string& str) {
 			size_t hash = 0;
 			for (auto c : str) {
@@ -142,7 +142,7 @@ namespace Bucket {
 		}
 	};*/
 	
-	// Êı¾İ½Úµã ½á¹¹
+	// æ•°æ®èŠ‚ç‚¹ ç»“æ„
 	template<class K, class V>
 	struct HashNode {
 		pair<K, V> _data;
@@ -158,9 +158,9 @@ namespace Bucket {
 	class HashTable {
 		typedef HashNode<K, V> Node;
 	public:
-		// ÓÉÓÚ Êı×éÄÚ´æ´¢µÄÁ´±íÊÇ×Ô¶¨ÒåµÄ, ËùÒÔĞèÒª¶¨ÒåÎö¹¹º¯Êı½«Á´±íÊÍ·Å
+		// ç”±äº æ•°ç»„å†…å­˜å‚¨çš„é“¾è¡¨æ˜¯è‡ªå®šä¹‰çš„, æ‰€ä»¥éœ€è¦å®šä¹‰ææ„å‡½æ•°å°†é“¾è¡¨é‡Šæ”¾
 		~HashTable() {
-			// ±éÀú¹şÏ£Í° ÊÍ·Å½Úµã
+			// éå†å“ˆå¸Œæ¡¶ é‡Šæ”¾èŠ‚ç‚¹
 			for (int i = 0; i < _tables.size(); i++) {
 				Node* cur = _tables[i];
 				while (cur) {
@@ -175,24 +175,24 @@ namespace Bucket {
 
 		bool insert(const pair<K, V>& kv) {
 			if (find(kv.first)) {
-				return false;						// Éè¼Æ ²»¿ÉÖØ¸´´æ´¢Êı¾İ
+				return false;						// è®¾è®¡ ä¸å¯é‡å¤å­˜å‚¨æ•°æ®
 			}
 			HashFcn hf;
-			// ÉèÖÃ µ±¸ºÔØÒò×Ó== 1Ê± À©Èİ
+			// è®¾ç½® å½“è´Ÿè½½å› å­== 1æ—¶ æ‰©å®¹
 			/*if (_tables.size() == _n) {
 				size_t newSize = _tables.size() == 0 ? 10 : _tables.size() * 2;
 
-				// ÕâÖÖ·½·¨ ·Ç³£µÄÓ°ÏìĞ§ÂÊ
-				// ÒòÎªÕâÖÖ·½·¨ µ÷ÓÃÁË insert½Ó¿Ú, ÔÚ¿ªÉ¢ÁĞµÄ´¦ÀíÖĞÊ¹ÓÃinsert½Ó¿Ú »á´´½¨ĞÂµÄ½Úµã, ¿ªÏú¹ı´ó 
-				// ²¢ÇÒ, ÓÉÓÚ´´½¨ÁËĞÂµÄ ¹şÏ£Í°, ËùÒÔÔÚ ÏÂÃæÑ­»·½áÊøµÄÊ±ºò ĞÂµÄÁÙÊ±µÄ¹şÏ£Í°»á±»ÊÍ·Å ÊÍ·ÅĞèÒª±éÀú¹şÏ£Í° ÓÖÊÇÓ°ÏìĞ§ÂÊ
+				// è¿™ç§æ–¹æ³• éå¸¸çš„å½±å“æ•ˆç‡
+				// å› ä¸ºè¿™ç§æ–¹æ³• è°ƒç”¨äº† insertæ¥å£, åœ¨å¼€æ•£åˆ—çš„å¤„ç†ä¸­ä½¿ç”¨insertæ¥å£ ä¼šåˆ›å»ºæ–°çš„èŠ‚ç‚¹, å¼€é”€è¿‡å¤§ 
+				// å¹¶ä¸”, ç”±äºåˆ›å»ºäº†æ–°çš„ å“ˆå¸Œæ¡¶, æ‰€ä»¥åœ¨ ä¸‹é¢å¾ªç¯ç»“æŸçš„æ—¶å€™ æ–°çš„ä¸´æ—¶çš„å“ˆå¸Œæ¡¶ä¼šè¢«é‡Šæ”¾ é‡Šæ”¾éœ€è¦éå†å“ˆå¸Œæ¡¶ åˆæ˜¯å½±å“æ•ˆç‡
 				HashTable<K, V> newHashTable;
 				newHashTable._tables.resize(newSize, nullptr);
 
-				// ±éÀúÔ­¹şÏ£Í° ÔÚĞÂ¹şÏ£Í°ÖĞÖØĞÂÓ³Éä
+				// éå†åŸå“ˆå¸Œæ¡¶ åœ¨æ–°å“ˆå¸Œæ¡¶ä¸­é‡æ–°æ˜ å°„
 				for (int i = 0; i < _tables.size(); i++) {
 					Node* cur = _tables[i];
 					while (cur) {
-						newHashTable.insert(cur->_data);				// ĞÂ¹şÏ£Í°ÖĞ²åÈë µ±Ç°½ÚµãµÄ´æ´¢Êı¾İ
+						newHashTable.insert(cur->_data);				// æ–°å“ˆå¸Œæ¡¶ä¸­æ’å…¥ å½“å‰èŠ‚ç‚¹çš„å­˜å‚¨æ•°æ®
 						cur = cur->_next;
 					}
 				}
@@ -200,9 +200,9 @@ namespace Bucket {
 				_tables.swap(newHashTable._tables);
 			}*/
 
-			// ÉÏÃæµÄÀ©Èİ·½·¨ ·Ç³£µÄÓ°ÏìĞ§ÂÊÇÒ¿ªÏú¹ı´ó
-			// ÏÂÃæµÄÁíÒ»ÖÖ·½·¨, ²»µ÷ÓÃinsert, ²»´´½¨ĞÂµÄ¹şÏ£Í° ²»´´½¨ĞÂµÄ½Úµã Ò²²»ĞèÒªÊÍ·ÅĞÂµÄ¿Õ¼ä
-			// ¶øÊÇ Ö±½Ó½« ¾ÉÊı×éÖĞµÄ½Úµã ÖØĞÂ¼ÆËãÓ³Éäµ½ĞÂµÄÊı×éÖĞ, ÔÙ½« ¹şÏ£Í°µÄÊı×é¸üĞÂÎªĞÂÊı×é¾Í¿ÉÒÔÁË
+			// ä¸Šé¢çš„æ‰©å®¹æ–¹æ³• éå¸¸çš„å½±å“æ•ˆç‡ä¸”å¼€é”€è¿‡å¤§
+			// ä¸‹é¢çš„å¦ä¸€ç§æ–¹æ³•, ä¸è°ƒç”¨insert, ä¸åˆ›å»ºæ–°çš„å“ˆå¸Œæ¡¶ ä¸åˆ›å»ºæ–°çš„èŠ‚ç‚¹ ä¹Ÿä¸éœ€è¦é‡Šæ”¾æ–°çš„ç©ºé—´
+			// è€Œæ˜¯ ç›´æ¥å°† æ—§æ•°ç»„ä¸­çš„èŠ‚ç‚¹ é‡æ–°è®¡ç®—æ˜ å°„åˆ°æ–°çš„æ•°ç»„ä¸­, å†å°† å“ˆå¸Œæ¡¶çš„æ•°ç»„æ›´æ–°ä¸ºæ–°æ•°ç»„å°±å¯ä»¥äº†
 			if (_tables.size() == _n) {
 				size_t newSize = _tables.size() == 0 ? 10 : _tables.size() * 2;
 
@@ -211,29 +211,29 @@ namespace Bucket {
 				for (int i = 0; i < _tables.size(); i++) {
 					Node* cur = _tables[i];
 					while (cur) {
-						Node* next = cur->_next;				// ºóÃæ»á Ê¹cur->_next ±ä³É Êı×éÖĞ´æ´¢µÄÍ·½Úµã, ËùÒÔ ÏÂÒ»¸ö½ÚµãÌáÇ°¼ÇÂ¼
+						Node* next = cur->_next;				// åé¢ä¼š ä½¿cur->_next å˜æˆ æ•°ç»„ä¸­å­˜å‚¨çš„å¤´èŠ‚ç‚¹, æ‰€ä»¥ ä¸‹ä¸€ä¸ªèŠ‚ç‚¹æå‰è®°å½•
 
-						size_t hashI = hf(cur->_data.first) % newTable.size();					// ÒÔĞÂÊı×éµÄÈİÁ¿¼ÆËã ¶ÔÓ¦µÄ¹şÏ£µØÖ·
-						cur->_next = newTable[hashI];										// ²åÈëµÄ½Úµã Óë newTable´æ´¢µÄÍ·½ÚµãÏàÁ¬½Ó
+						size_t hashI = hf(cur->_data.first) % newTable.size();					// ä»¥æ–°æ•°ç»„çš„å®¹é‡è®¡ç®— å¯¹åº”çš„å“ˆå¸Œåœ°å€
+						cur->_next = newTable[hashI];										// æ’å…¥çš„èŠ‚ç‚¹ ä¸ newTableå­˜å‚¨çš„å¤´èŠ‚ç‚¹ç›¸è¿æ¥
 						newTable[hashI] = cur;
 
-						cur = next;						// ¸üĞÂ cur
+						cur = next;						// æ›´æ–° cur
 					}
 
-					_tables[i] = nullptr;				// Ô­Êı×éµÄÄÚÈİÒÑ±»×ªÒÆµ½ĞÂÊı×éÖĞ ½«Ô­Êı×éµÄÄÚÈİÖÃ¿Õ
+					_tables[i] = nullptr;				// åŸæ•°ç»„çš„å†…å®¹å·²è¢«è½¬ç§»åˆ°æ–°æ•°ç»„ä¸­ å°†åŸæ•°ç»„çš„å†…å®¹ç½®ç©º
 				}
 
 				_tables.swap(newTable);
 			}
 			
-			// À©ÈİÍê±Ï, ÏÂÃæ²åÈëÊı¾İ
+			// æ‰©å®¹å®Œæ¯•, ä¸‹é¢æ’å…¥æ•°æ®
 			//size_t hashI = kv.first % _tables.size();
 			size_t hashI = hf(kv.first) % _tables.size();
-			// ÕÒµ½¸ÃÏòÊı×éÖĞµÚ¼¸¸öÎ»ÖÃ²åÈëÊı¾İ
-			// È»ºó½øĞĞÍ·²å
-			Node* newNode = new Node(kv);						// ÒÔkvÊı¾İ´´½¨ĞÂµÄ½Úµã
-			newNode->_next = _tables[hashI];					// ½«Êı×éÖĞ´æ´¢µÄÁ´±íµÄÍ·½ÚµãÁ¬½ÓÔÚĞÂ½ÚµãÖ®ºó
-			_tables[hashI] = newNode;							// ĞÂ½Úµã´æ´¢µ½Êı×éÖĞ
+			// æ‰¾åˆ°è¯¥å‘æ•°ç»„ä¸­ç¬¬å‡ ä¸ªä½ç½®æ’å…¥æ•°æ®
+			// ç„¶åè¿›è¡Œå¤´æ’
+			Node* newNode = new Node(kv);						// ä»¥kvæ•°æ®åˆ›å»ºæ–°çš„èŠ‚ç‚¹
+			newNode->_next = _tables[hashI];					// å°†æ•°ç»„ä¸­å­˜å‚¨çš„é“¾è¡¨çš„å¤´èŠ‚ç‚¹è¿æ¥åœ¨æ–°èŠ‚ç‚¹ä¹‹å
+			_tables[hashI] = newNode;							// æ–°èŠ‚ç‚¹å­˜å‚¨åˆ°æ•°ç»„ä¸­
 
 			_n++;
 
@@ -251,7 +251,7 @@ namespace Bucket {
 			Node* cur = _tables[hashI];
 			while (cur) {
 				if (cur->_data.first == key) {
-					return cur;									// ÕÒµ½·µ»Ø½Úµã
+					return cur;									// æ‰¾åˆ°è¿”å›èŠ‚ç‚¹
 				}
 
 				cur = cur->_next;
@@ -262,7 +262,7 @@ namespace Bucket {
 
 		bool erase(const K& key) {
 			/*
-			// Ò»°ãË¼Â·
+			// ä¸€èˆ¬æ€è·¯
 			HashFcn hf;
 			size_t hashI = hf(key) % _tables.size();
 			Node* cur = _tables[hashI];
@@ -270,7 +270,7 @@ namespace Bucket {
 			while (cur) {
 				if (cur->_data.first == key) {
 					if (cur == _tables[hashI]) {
-						//	ĞèÒªÉ¾³ıµÄ½ÚµãÊÇ Êı×éÖĞ´æ´¢Á´±íµÄÍ·½Úµã
+						//	éœ€è¦åˆ é™¤çš„èŠ‚ç‚¹æ˜¯ æ•°ç»„ä¸­å­˜å‚¨é“¾è¡¨çš„å¤´èŠ‚ç‚¹
 						_tables[hashI] = cur->_next;
 					}
 					else {
@@ -283,11 +283,11 @@ namespace Bucket {
 				prev = cur;
 				cur = cur->_next;
 			}*/
-			// ÌØÊâË¼Â·, ½ûÖ¹»ñÈ¡ prev ÒÔ¼° Ê¹ÓÃnextµÄÊı¾İ×÷ÎªÅĞ¶ÏÌõ¼ş
-			// ²ÉÓÃÊı¾İÌæ»»:
-			//		ÒªÉ¾³ı cur½ÚµãµÄÊı¾İ, ¾Í½«curµÄÊı¾İ ÓÃ cur->nextµÄÊı¾İ ¸²¸Çµô, ÔÙ½« curÓë cur->next->next ½¨Á¢Á¬½ÓÖ®ºó ÊÍ·Åcur->next½Úµã
-			// ÕâÖ»ÊÇÒ»ÖÖË¼Â·, ²¢²»ÊÇËµÕâÖÖ·½·¨¸üºÃ, ÊÂÊµÉÏÕâÖÖ·½·¨²¢Ã»ÓĞÉÏÃæÄÄÒ»ÖÖ·½·¨ºÃ, ÒòÎª ÕâÖÖ·½·¨ Ò»¶¨»á²úÉúÊı¾İµÄ¿½±´
-			// µ±Êı¾İÄÚÈİ¹ı´ó ¹ı¶àÊ±, ¿ªÏú¹ı´ó
+			// ç‰¹æ®Šæ€è·¯, ç¦æ­¢è·å– prev ä»¥åŠ ä½¿ç”¨nextçš„æ•°æ®ä½œä¸ºåˆ¤æ–­æ¡ä»¶
+			// é‡‡ç”¨æ•°æ®æ›¿æ¢:
+			//		è¦åˆ é™¤ curèŠ‚ç‚¹çš„æ•°æ®, å°±å°†curçš„æ•°æ® ç”¨ cur->nextçš„æ•°æ® è¦†ç›–æ‰, å†å°† curä¸ cur->next->next å»ºç«‹è¿æ¥ä¹‹å é‡Šæ”¾cur->nextèŠ‚ç‚¹
+			// è¿™åªæ˜¯ä¸€ç§æ€è·¯, å¹¶ä¸æ˜¯è¯´è¿™ç§æ–¹æ³•æ›´å¥½, äº‹å®ä¸Šè¿™ç§æ–¹æ³•å¹¶æ²¡æœ‰ä¸Šé¢å“ªä¸€ç§æ–¹æ³•å¥½, å› ä¸º è¿™ç§æ–¹æ³• ä¸€å®šä¼šäº§ç”Ÿæ•°æ®çš„æ‹·è´
+			// å½“æ•°æ®å†…å®¹è¿‡å¤§ è¿‡å¤šæ—¶, å¼€é”€è¿‡å¤§
 			//size_t hashI = key % _tables.size();
 			HashFcn hf;
 			size_t hashI = hf(key) % _tables.size();
@@ -295,9 +295,9 @@ namespace Bucket {
 			while (cur) {
 				if (cur->_data.first == key) {
 					if (cur->_next == nullptr) {
-						// Èç¹ûµ±Ç°½ÚµãÊÇµ¥Á´±íÖĞµÄ×îºóÒ»¸ö½ÚµãÊ±
-						// ÊÇÃ»ÓĞÏÂÒ»¸ö½áµãµÄ, ËùÒÔ²»ÄÜÓëÏÂÒ»¸ö½Úµã½øĞĞÊı¾İµÄÌæ´ú
-						// µ«ÊÇ¿ÉÒÔÓë Í·½Úµã½øĞĞÊı¾İµÄÌæ´ú, È»ºóÍ·É¾
+						// å¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯å•é“¾è¡¨ä¸­çš„æœ€åä¸€ä¸ªèŠ‚ç‚¹æ—¶
+						// æ˜¯æ²¡æœ‰ä¸‹ä¸€ä¸ªç»“ç‚¹çš„, æ‰€ä»¥ä¸èƒ½ä¸ä¸‹ä¸€ä¸ªèŠ‚ç‚¹è¿›è¡Œæ•°æ®çš„æ›¿ä»£
+						// ä½†æ˜¯å¯ä»¥ä¸ å¤´èŠ‚ç‚¹è¿›è¡Œæ•°æ®çš„æ›¿ä»£, ç„¶åå¤´åˆ 
 						Node* head = _tables[hashI];
 						cur->_data = head->_data;
 						_tables[hashI] = head->_next;
@@ -321,6 +321,6 @@ namespace Bucket {
 
 	private:
 		vector<Node*> _tables;
-		size_t _n = 0;					// ¼ÇÂ¼Êı×é´æ´¢Êı¾İµÄÊıÁ¿
+		size_t _n = 0;					// è®°å½•æ•°ç»„å­˜å‚¨æ•°æ®çš„æ•°é‡
 	};
 }	
