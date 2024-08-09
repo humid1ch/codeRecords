@@ -334,6 +334,57 @@ void nonRecursiveQuickSort(std::vector<int>& nums) {
     }
 }
 
+void _mergeSort(std::vector<int>& nums, int begin, int end, std::vector<int>& tmpNums) {
+    if (begin >= end)   // begin 和 end 维护的数组范围<=1
+        return;
+
+    int mid = (begin + end) / 2;
+    
+    // 划分左右子问题
+    _mergeSort(nums, begin, mid, tmpNums);
+    _mergeSort(nums, mid + 1, end, tmpNums);
+    /*
+     * 假如begin 和 end初始值为 0 和 13
+     * 那么 子问题就会这样分:
+     */
+    // 左右子子问题都划分到最小时, 开始进行归并
+    // 如何归并呢?
+    // 要把 begin~mid 和 mid+1~end 归起来
+    // 走到这里, 说明这两段有序, 所以都从两段的最左端开始遍历, 谁大先放在tmpNums中
+    int beginLeft = begin, endLeft = mid;
+    int beginRight = mid + 1, endRight = end;
+    while (beginLeft <= endLeft && beginRight <= endRight) {
+        if (nums[beginLeft] <= nums[beginRight]) {
+            tmpNums.push_back(nums[beginLeft++]);
+        }
+        else {
+            tmpNums.push_back(nums[beginRight++]);
+        }
+    }
+    
+    // 循环退出, 说明至少有一段已经全部放入tmpNums中了
+    // 下面就把 可能剩余的另一段 也放入tmpNumss中
+    while (beginLeft <= endLeft) {
+        tmpNums.push_back(nums[beginLeft++]);
+    }
+
+    while (beginRight <= endRight) {
+        tmpNums.push_back(nums[beginRight++]);
+    }
+
+    int tmpBegin = begin;
+    while (tmpBegin <= end) {
+        nums[tmpBegin++] = tmpNums[tmpBegin - begin];
+    }
+
+    tmpNums.resize(0);
+}
+
+void mergeSort(std::vector<int>& nums) {
+    std::vector<int> tmpNums;
+    _mergeSort(nums, 0, nums.size() - 1, tmpNums);
+}
+
 std::vector<int> nums = {456, 12, 76, 7, 62, 3, 65,
 					6345, 3756, 34523, 6456, 23534, 64576, 3653,
 					324, 768, 2, 43657};
@@ -383,6 +434,12 @@ void nonRecursiveQuickSortTest() {
 //    printVector(nums);
 }
 
+void mergeSortTest() {
+    printVector(nums);
+    mergeSort(nums);
+    printVector(nums);
+}
+
 int main() {
     clock_t start = 0, finish = 0;
 //    initNums(nums, 10000000);
@@ -393,7 +450,8 @@ int main() {
 //    selectSortTest();
 //    shellSortTest();
 //    quickSortTest();
-    nonRecursiveQuickSortTest();
+//    nonRecursiveQuickSortTest();
+    mergeSortTest();   
 
     finish = clock();
     cout << (double)(finish - start) / CLOCKS_PER_SEC << "s" << endl;

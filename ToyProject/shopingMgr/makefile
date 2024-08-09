@@ -61,6 +61,7 @@ $(LIB_SO): $(C_SROUCE)
 	# 生成的动态库文件移动到项目的./lib/dynamic/. 下
 	mv $(LIB_SO) $(LIB_SO_D)
 	# 为动态库文件 建立软连接
+	sudo unlink /lib/$(LIB_SO)
 	sudo ln -s $(CUR_DIR)/$(LIB_SO_D)$(LIB_SO)  /lib/$(LIB_SO)
 	# 刷新动态库缓存
 	sudo ldconfig

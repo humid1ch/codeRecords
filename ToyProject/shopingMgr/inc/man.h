@@ -17,7 +17,7 @@ void modifyManInfo(Man* man);
 
 Man* queryManByName(const char* name);
 
-Man* queryManByPhone(int phone);
+Man* queryManByPhone(long long phone);
 
 Man* queryManByID(int id);
 

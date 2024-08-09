@@ -80,7 +80,7 @@ Man* queryManByName(const char* name) {
 	return NULL;
 }
 
-Man* queryManByPhone(int phone) {
+Man* queryManByPhone(long long phone) {
 	for (int i = 0; i < manNum; i++) {
 		if (mans[i]._phone == phone) {
 			return mans + i;
