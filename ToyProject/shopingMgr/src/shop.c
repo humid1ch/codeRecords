@@ -116,6 +116,8 @@ void shoppingCheckout() {
 	while (isContinue) {
 		int goodID = 0;
 		int goodNum = 0;
+        int existGood = 0;
+        int goodIndex = inputCnt;
 		printf("请输入商品编号:> ");
 		scanf("%d", &goodID);
 		clearInputBuffer();
@@ -123,9 +125,22 @@ void shoppingCheckout() {
 		scanf("%d", &goodNum);
 		clearInputBuffer();
 
-		buys[inputCnt]._id = goodID;
-		buys[inputCnt]._num = goodNum;
-		inputCnt++;
+        for (int i = 0; i < inputCnt; i++) {
+            if (goodID == buys[i]._id) {
+                existGood = 1;              // 已经输入过相同的商品
+                goodIndex = i;
+            }
+        }
+
+        // 之前没有输入过此商品
+        if (!existGood) {
+	    	buys[inputCnt]._id = goodID;
+    		buys[inputCnt]._num = goodNum;
+		    inputCnt++;
+        }
+        else {
+    		buys[goodIndex]._num += goodNum;
+        }
 
 		// 减库存
 		shops[goodID - 1]._rest -= goodNum;
