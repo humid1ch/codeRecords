@@ -606,11 +606,6 @@ void MergeSortNonR(int* a, int n) {
 			if (begin2 < n && end2 >= n)
 				end2 = n - 1;
 
-			// 条件断点
-			if (begin1 == 8 && end1 == 9 && begin2 == 9 && end2 == 9) {
-				int x = 0;
-			}
-
 			printf("归并[%d,%d][%d,%d]\n", begin1, end1, begin2, end2);
 
 			int index = i;
