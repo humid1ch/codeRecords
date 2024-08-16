@@ -32,7 +32,6 @@ void manInfoMgr() {
 		scanf("%d", &select);
 		clearInputBuffer();
 
-		char account[20] = {0};
 		switch (select) {
 		case 0:
 			return; // 返回

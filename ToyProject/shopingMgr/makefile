@@ -1,4 +1,4 @@
-
+CC = clang -Wall
 # 查找src下的所有的后缀为.c的文件
 C_SROUCE = $(wildcard src/*.c)  #主程序main.c不要放到src中了
 
