@@ -1,1 +1,0 @@
-/home/humid1ch/.zshrc
