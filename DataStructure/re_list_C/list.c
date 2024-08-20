@@ -1,8 +1,8 @@
 #include "list.h"
 
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 
 list* createList() {
     list* head = (list*)malloc(sizeof(listnode));
@@ -63,8 +63,22 @@ listnode* listFind(list* list, int num) {
     assert(list);
 
     listnode* cur = list->_next;
-    while (cur != NULL) {
+    while (cur != list && cur) {
         if (cur->_data == num) {
+            return cur;
+        }
+        cur = cur->_next;
+    }
+
+    return NULL;
+}
+
+listnode* listFindPos(list* list, int num) {
+    assert(list);
+
+    listnode* cur = list->_next;
+    while (cur != list && cur) {
+        if (cur->_data > num) {
             return cur;
         }
         cur = cur->_next;
@@ -168,8 +182,8 @@ void listPopFront(list* list) {
     }
 
     list->_next = cur->_next;
-    if (cur->_next != NULL) 
-       cur->_next->_prev = list;
+    if (cur->_next != NULL)
+        cur->_next->_prev = list;
 
     free(cur);
 }
@@ -192,10 +206,68 @@ void printList(const list* list) {
     assert(list);
 
     const listnode* cur = list->_next;
-    printf("head<->");
+    printf("head <-> ");
     while (cur != NULL) {
-        printf("%d<->", cur->_data);
+        printf("%d <--> ", cur->_data);
         cur = cur->_next;
     }
-    printf("NULL\n");
+    printf("head\n");
+}
+
+
+void orderInsert(list* list, int num) {
+    assert(list);
+
+    listnode* cur = listFind(list, num);
+    if (cur) {
+        // 相同值的节点存在不再插入
+        return;
+    }
+
+    // listFindPos() 找第一个比num大的节点
+    // 找不到返回空, 找到返回节点
+    listnode* pos = listFindPos(list, num);
+    if (!pos) {
+        listPushBack(list, num);
+    }
+    else {
+        listInsertBefore(list, pos->_data, num);
+    }
+}
+
+int midNode(const list* list) {
+    int ret = 0;
+
+    const listnode* fast = list->_next;
+    const listnode* slow = list->_next;
+
+    // 1 2 3 4 5 NULL
+    // s
+    // f
+    //   s f
+    //     s   f
+    //
+    // 1 2 3 4 5 6 NULL
+    // s
+    // f
+    //   s f
+    //     s   f
+    //       s    f
+    while (fast && fast->_next) {
+        fast = fast->_next->_next;
+        slow = slow->_next;
+    }
+
+    // 出循环 如果链表长度为单, slow就是中间节点
+    // 如果为双, slow就是第二个中间节点
+    const listnode* first = slow->_prev;
+
+    if (!fast) {
+        ret = (first->_data + slow->_data) / 2;
+    }
+    else {
+        ret = slow->_data;
+    }
+
+    return ret;
 }

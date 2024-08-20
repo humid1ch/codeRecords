@@ -16,6 +16,8 @@ void listPushFront(list* list, int num);
 
 listnode* listFind(list* list, int num);
 
+listnode* listFindPos(list* list, int num);
+
 void printList(const list* list);
 
 void listInsertAfter(list* list, int curNum, int num);
@@ -29,3 +31,7 @@ void listPopBack(list* list);
 void listPopFront(list* list); 
 
 int listSize(const list* list);
+
+void orderInsert(list* list, int num);
+
+int midNode(const list* list);
