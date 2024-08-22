@@ -1,9 +1,6 @@
-#define _CRT_SECURE_NO_WARNINGS 1
-
 #include <iostream>
-#include <string>
+#include <cstring>
 #include "stack.hpp"
-using namespace std;
 
 class User
 {
@@ -17,11 +14,11 @@ public:
 	}
 	void Print()
 	{
-		cout << _name << "  " << _sex << "  " << _tele << "  " << _age << endl;
+        cout << _name << "  " << _sex << "  " << _tele << "  " << _age << endl;
 	}
 	void Printthis()
 	{
-		cout << "this:: " << this << endl;
+        cout << "this:: " << this << endl;
 	}
 
 private:
