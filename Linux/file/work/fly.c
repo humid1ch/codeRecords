@@ -14,9 +14,15 @@ struct fly {
     int price;
 };
 
-struct fly flys[] = {{1001, "武汉", "南京", "2024/1/16", 2000},
-                     {1002, "秀湖", "南京", "2024/1/15", 4000},
-                     {1003, "芜湖", "天津", "2024/1/17", 6000}};
+struct fly flys[] = {
+    {1001, "武汉", "南京", "2024/1/16", 2000},
+    {1002, "秀湖", "南京", "2024/1/15", 4000},
+    {1003, "芜湖", "天津", "2024/1/17", 6000},
+    {1004, "西安", "天津", "2024/1/19", 5000},
+    {1005, "洛阳", "天津", "2024/1/18", 3000},
+    {1006, "郑州", "天津", "2024/1/21", 1000},
+    {1007, "许昌", "天津", "2024/1/20", 7000},
+};
 
 void usage() {
     printf("usage: \n");
@@ -30,9 +36,10 @@ int isWholeFly(const char* flys) {
 void saveFlyInfo(int fd, const struct fly* flys, int size) {
     for (int i = 0; i < size; i++) {
         char flyInfo[50] = {};
-        sprintf(flyInfo, "%d-%s-%s-%s -%d\r\n", flys[i].num, flys[i].addrStart,
+        sprintf(flyInfo, "%d  %s  %s  %s  %d\r\n", flys[i].num, flys[i].addrStart,
                 flys[i].addrEnd, flys[i].date, flys[i].price);
-        printf("%s", flyInfo);
+        // debug
+        // printf("%s", flyInfo);
 
         write(fd, flyInfo, strlen(flyInfo));
         fsync(fd);
@@ -50,12 +57,11 @@ void readFlyInfo(int fdS, struct fly* flys, int size) {
         printf("%s\n", flyInfo);
         while (flyInfo && strlen(flyInfo) > 0) {
             if (isWholeFly(flyInfo)) {
-                flyInfo[strlen(flyInfo) - 1] = 0;
-                sscanf(flyInfo, "%d-%s-%s-%s -%d", &flys[i].num, flys[i].addrStart,
+                sscanf(flyInfo, "%d  %s  %s  %s  %d\r", &flys[i].num, flys[i].addrStart,
                        flys[i].addrEnd, flys[i].date, &flys[i].price);
+                // debug
+                // printf("%s\n", flyInfo);
                 i++;
-                printf("%s\n", flyInfo);
-                printf("%d\n", flys[i].price);
             }
             else {
                 break;
