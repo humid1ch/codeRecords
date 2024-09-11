@@ -30,18 +30,13 @@ void herosPK(const Hero* hero1, const Hero* hero2) {
     int hp2 = hero2->hp;
 
     if (damage1 == 0 && damage1 == damage2) {
-        printf("%s 打不动 %s, %s 也打不动 %s, 平局\n", hero1->name, hero2->name,
-               hero2->name, hero1->name);
+        printf("%s 打不动 %s, %s 也打不动 %s, 平局\n", hero1->name, hero2->name, hero2->name, hero1->name);
         return;
     }
 
     while (hp1 && hp2) {
-        printf("%s 对 %s 造成了 %d 点伤害，%s 的生命值剩余 %d\n", hero1->name,
-               hero2->name, damage1, hero2->name,
-               hp2 - damage1 > 0 ? hp2 -= damage1 : (hp2 = 0));
-        printf("%s 对 %s 造成了 %d 点伤害，%s 的生命值剩余 %d\n", hero2->name,
-               hero1->name, damage2, hero1->name,
-               hp1 - damage2 > 0 ? hp1 -= damage2 : (hp1 = 0));
+        printf("%s 对 %s 造成了 %d 点伤害，%s 的生命值剩余 %d\n", hero1->name, hero2->name, damage1, hero2->name, hp2 - damage1 > 0 ? hp2 -= damage1 : (hp2 = 0));
+        printf("%s 对 %s 造成了 %d 点伤害，%s 的生命值剩余 %d\n", hero2->name, hero1->name, damage2, hero1->name, hp1 - damage2 > 0 ? hp1 -= damage2 : (hp1 = 0));
         sleep(1);
         printf("\n");
     }
