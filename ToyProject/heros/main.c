@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <unistd.h>
 
 // 技能结构体
 typedef struct Skill {
@@ -14,14 +13,12 @@ typedef struct Skill {
 
 // 英雄结构体
 typedef struct Hero {
-    char name[20];        // 英雄名
-    int hp;               // 血量
-    int attack;           // 攻击力
-    int defense;          // 防御力
-    int critical;         // 暴击, 发生暴击伤害增加 50%
-    Skill endSkill;       // 大招
-    Skill normalSkill;    // 平A
-    Skill treatmentSkill; // 治疗
+    char name[20];   // 英雄名
+    int hp;          // 血量
+    int attack;      // 攻击力
+    int defense;     // 防御力
+    int critical;    // 暴击, 发生暴击伤害增加 50%
+    Skill skills[3]; // 技能表: [0]: 大招, [1]: 平A, [2]: 治疗
 } Hero;
 
 // 参数: Hero变量地址, 名字, 血量, 攻击, 防御, 暴击, 技能列表
@@ -33,17 +30,14 @@ void initHero(Hero* hero, const char* name, int hp, int attack, int defense, int
     hero->critical = critical;
 
     // 技能赋予
-    memcpy(&hero->endSkill, skills, sizeof(Skill));
-    memcpy(&hero->normalSkill, skills + 1, sizeof(Skill));
-    memcpy(&hero->treatmentSkill, skills + 2, sizeof(Skill));
+    memcpy(hero->skills, skills, sizeof(Skill) * 3);
 }
 
 float critical(const Hero* hero) {
     int num = rand() % 100 + 1; // 生成 1~100 的随机数
 
-    if (num <= hero->critical) {
+    if (num <= hero->critical)
         return 1.5; // 暴击
-    }
 
     return 1.0; // 不暴击
 }
@@ -52,15 +46,12 @@ void skillChoose(Skill* skill, const Hero* hero) {
     int num = rand() % 5 + 1; // 生成 1 ~ 5随机数
 
     // 大招 和 治疗的概率都是 20%
-    if (num == 4) {
-        memcpy(skill, &hero->endSkill, sizeof(Skill));
-    }
-    else if (num == 5) {
-        memcpy(skill, &hero->treatmentSkill, sizeof(Skill));
-    }
-    else {
-        memcpy(skill, &hero->normalSkill, sizeof(Skill));
-    }
+    if (num == 4)
+        memcpy(skill, &hero->skills[0], sizeof(Skill));
+    else if (num == 5)
+        memcpy(skill, &hero->skills[2], sizeof(Skill));
+    else
+        memcpy(skill, &hero->skills[1], sizeof(Skill));
 }
 
 // 不允许改变英雄默认属性
@@ -75,8 +66,8 @@ void herosPK(const Hero* hero1, const Hero* hero2) {
 
     printf("\n战斗开始! %s VS %s\n\n", hero1->name, hero2->name);
 
-    int hp1 = hero1->hp;
-    int hp2 = hero2->hp;
+    int hp1 = hero1->hp; // 英雄1, 剩余血量
+    int hp2 = hero2->hp; // 英雄2, 剩余血量
 
     float cri1 = 1.0; // 英雄1, 计算暴击伤害, 若暴击, 为1.5
     float cri2 = 1.0; // 英雄2, 计算暴击伤害
@@ -90,7 +81,7 @@ void herosPK(const Hero* hero1, const Hero* hero2) {
     Skill skill1; // 英雄1, 技能释放
     Skill skill2; // 英雄2, 技能释放
 
-    int cnt = 0;
+    int cnt = 0; // 回合计数
     while (hp1 && hp2) {
         printf("第 %d 回合\n", ++cnt);
         // 暴击判断
@@ -114,8 +105,8 @@ void herosPK(const Hero* hero1, const Hero* hero2) {
 
         // 剩余血量计算
         // hero1 先手, 如果吃血包, 就先回血, 如果攻击, 对面就先吃伤害
-        hp1 += recovery1;
-        hp2 -= damage1;
+        hp1 += recovery1; // 回血
+        hp2 -= damage1;   // 对面吃伤害
         // 吃血包也不能超出血量上限
         hp1 > hero1->hp ? (hp1 = hero1->hp) : hp1;
         // 剩余血量 不能是负数啊
@@ -145,7 +136,6 @@ void herosPK(const Hero* hero1, const Hero* hero2) {
             printf("对 %s 造成 %d 伤害, 自身恢复 %d 血量\n", hero1->name, damage2, recovery2);
             printf("%s 剩余血量: %d, %s 剩余血量: %d\n\n", hero1->name, hp1, hero2->name, hp2);
         }
-
     }
 
     if (hp1) {
