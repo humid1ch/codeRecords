@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
+// 清空输入缓冲区
 void cleanInputBuf() {
     char ch;
     while ((ch = getchar()) != '\n')
@@ -95,15 +97,23 @@ Node* destroyList(List* head) {
     return cur;
 }
 
+// 计算胜率
+void calculateWinRate(Hero* hero) {
+    assert(hero);
+
+    int sum = hero->wins + hero->losses;
+    hero->winRate = (float)hero->wins / (float)sum;
+}
+
 // 参数: Hero变量地址, 名字, 血量, 攻击, 防御
 void initHero(Hero* hero, const char* name, int hp, int attack, int defense) {
     strcpy(hero->name, name);
     hero->hp = hp;
     hero->attack = attack;
     hero->defense = defense;
-    hero->wins = 0;
-    hero->losses = 0;
-    hero->winRate = 0.0;
+    hero->wins = rand() % 100;
+    hero->losses = rand() % 100;
+    calculateWinRate(hero);
 }
 
 void listAddHero(List* head, Hero* hero) {
@@ -208,13 +218,6 @@ void displayHeros(const List* head) {
     }
 }
 
-void calculateWinRate(Hero* hero) {
-    assert(hero);
-
-    int sum = hero->wins + hero->losses;
-    hero->winRate = (float)hero->wins / (float)sum;
-}
-
 int menu(List* head) {
     printf("守望先锋 英雄管理系统\n");
     printf("1. 添加英雄\n");
@@ -248,6 +251,8 @@ int menu(List* head) {
 }
 
 int main() {
+    srand(time(NULL));
+
     List* list = createList();
     while (menu(list))
         ;
