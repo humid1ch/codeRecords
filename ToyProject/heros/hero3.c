@@ -160,11 +160,6 @@ void addHero(List* head) {
     int hp = 0;
     int attack = 0;
     int defense = 0;
-    // 请输入英雄名称：赵云
-    // 请输入生命值：100
-    // 请输入攻击力：30
-    // 请输入防御力：10
-    // 英雄 赵云 添加成功！
 
     printf("请输入英雄名称: ");
     scanf("%s", name);
