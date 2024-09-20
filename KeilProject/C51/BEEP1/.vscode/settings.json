@@ -1,0 +1,11 @@
+{
+    "C_Cpp.errorSquiggles": "enabled",
+    "files.associations": {
+        "reg52.h": "c",
+        "REG52.H": "cpp",
+        "intrins.h": "c",
+        "delay.h": "c",
+        "INTRINS.H": "cpp",
+        "delay50us.h": "c"
+    }
+}
