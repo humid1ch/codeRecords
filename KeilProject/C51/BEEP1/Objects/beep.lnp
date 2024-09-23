@@ -1,5 +1,6 @@
 ".\Objects\main.obj",
-".\Objects\delay50Us.obj" 
+".\Objects\delay50Us.obj",
+".\Objects\delay10Us.obj" 
 TO ".\Objects\beep" 
 PRINT(".\Listings\beep.m51") RAMSIZE(256) 
 DISABLEWARNING (16) 

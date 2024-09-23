@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              09/20/2024 20:27:28 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              09/23/2024 11:52:42 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -10,49 +10,164 @@ line level    source
 
    1          #include <reg52.h>
    2          #include "delay50Us.h"
-   3          
-   4          #define FEQUENCY_S 2000 // 每秒两千次
-   5          
-   6          sbit BEEP = P2 ^ 5;
-   7          
-   8          // 传参超过 200 建议用 delayMs()
-   9          void delay50UsN(unsigned char data n) {
-  10   1              while (--n)
-  11   1                      delay50Us();
-  12   1      }
-  13          
-  14          // 设置蜂鸣器 500us为一次脉冲, 占空比50%, 即 高250us, 低250us
-  15          // 约 2000次脉冲/s
-  16          void beepSet500() {
-  17   1              BEEP = 0;
-  18   1              delay50UsN(5);
-  19   1              BEEP = 1;
-  20   1              delay50UsN(5);
-  21   1      }
-  22          
-  23          void main() {
-  24   1              unsigned char second = 1;                               // 需要脉冲多少秒?
-  25   1              unsigned int cnt = FEQUENCY_S * second; // 脉冲一定秒数 需要脉冲的次数
-  26   1      
-  27   1              while (--cnt)
-  28   1                      beepSet500();
-  29   1      
-  30   1              // BEEP引脚为P2^5, 与LED灯共用
-  31   1      
-  32   1              // BEEP脉冲结束之后, 如果程序结束, 程序会再次执行, BEEP脉冲会继续, BEEP会一直�
+   3          #include "delay10Us.h"
+   4          
+   5          #define FEQUENCY_S 2000 // 每秒两千次
+   6          
+   7          ///////////////////中音部
+   8          #define c 1200
+   9          #define cp 1130
+  10          #define d 1060
+  11          #define dp 1000
+  12          #define e 950
+  13          #define f 900
+  14          #define fp 840
+  15          #define g 800
+  16          #define gp 750
+  17          #define a 710
+  18          #define ap 670
+  19          #define b 630
+  20          ///////////////////高音部
+  21          #define C 600
+  22          #define Cp 560
+  23          #define D 530
+  24          #define Dp 500
+  25          #define E 470
+  26          #define F 450
+  27          #define Fp 420
+  28          #define G 400
+  29          #define Gp 380
+  30          #define A 360
+  31          #define Ap 340
+  32          #define B 320
+  33          ///////////////////低音部
+  34          #define cc 2390
+  35          #define ccp 2260
+  36          #define dd 2130
+  37          #define ddp 2010
+  38          #define ee 1890
+  39          #define ff 1790
+  40          #define ffp 1690
+  41          #define gg 1590
+  42          #define ggp 1510
+  43          #define aa 1420
+  44          #define aap 1340
+  45          #define bb 1270
+  46          
+  47          #define xx 0
+  48          
+  49          typedef struct MusicNote {
+  50                  unsigned int freq;        // 音符频率
+  51                  unsigned char second; // 音符持续时间
+  52          } MNote;
+  53          
+  54          sbit BEEP = P2 ^ 5;
+C51 COMPILER V9.60.7.0   MAIN                                                              09/23/2024 11:52:42 PAGE 2   
+
+  55          
+  56          MNote music[] = {{C, 1}, {b, 1}, {C, 1}, {E, 1}, {b, 1}, {a, 1}, {g, 1}, {a, 1}, {C, 1}, {g, 1}, {f, 1}, {
+             -e, 1}, {f, 1}, {C, 1}, {b, 1}, {g, 1}, {a, 1}, {b, 1}, {C, 1}, {E, 1}, {D, 1}, {C, 1}, {b, 1}, {C, 1}, {E, 1}/*, {b, 1},
+             - {g, 1}, {a, 1}, {b, 1}, {C, 1}, {D, 1}, {E, 1}, {E, 1}, {F, 1}, {E, 1}, {D, 1}, {C, 1}, {b, 1}, {E, 1}, {gp, 1}, {b, 1}
+             -, {a, 1}, {a, 1}, {b, 1}, {C, 1}, {D, 1}, {E, 1}, {D, 1}, {G, 1}, {F, 1}, {E, 1}, {D, 1}, {C, 1}, {b, 1}, {C, 1}, {a, 1}
+             -, {a, 1}, {a, 1}, {g, 1}, {f, 1}, {g, 1}, {a, 1}, {C, 1}, {b, 1}, {b, 1}, {C, 1}, {D, 1}, {b, 1}, {b, 1}, {xx, 1}, {a, 1
+             -}, {a, 1}, {a, 1}, {b, 1}, {C, 1}, {D, 1}, {E, 1}, {D, 1}, {G, 1}, {F, 1}, {E, 1}, {D, 1}, {C, 1}, {b, 1}, {C, 1}, {a, 1
+             -}, {a, 1}, {a, 1}, {g, 1}, {f, 1}, {g, 1}, {a, 1}, {C, 1}, {b, 1}, {b, 1}, {C, 1}, {D, 1}, {F, 1}, {E, 1}, {E, 1}, {D, 1
+             -}, {C, 1}, {b, 1}, {gp, 1}, {C, 1}, {b, 1}, {C, 1}, {E, 1}, {b, 1}, {a, 1}, {g, 1}, {a, 1}, {C, 1}, {g, 1}, {f, 1}, {e, 
+             -1}, {f, 1}, {C, 1}, {b, 1}, {g, 1}, {a, 1}, {b, 1}, {C, 1}, {E, 1}, {D, 1}, {C, 1}, {b, 1}, {C, 1}, {E, 1}, {b, 1}, {g, 
+             -1}, {a, 1}, {b, 1}, {C, 1}, {D, 1}, {E, 1}, {E, 1}, {F, 1}, {E, 1}, {D, 1}, {C, 1}, {b, 1}, {E, 1}, {gp, 1}, {b, 1}, {a,
+             - 1}*/};
+  57          
+  58          //unsigned int frequencys[] = {100, 125, 160, 200, 250, 320, 400, 500, 625, 800, 1000, 1250, 1600, 2000, 2
+             -500, 3125, 4000, 5000};
+  59          
+  60          // 传参超过 200 建议用 delayMs()
+  61          void delay50UsN(unsigned char data n) {
+  62   1              while (--n)
+  63   1                      delay50Us();
+  64   1      }
+  65          
+  66          void delay10UsN(unsigned char data n) {
+  67   1              while (--n)
+  68   1                      delay10Us();
+  69   1      }
+  70          
+  71          // 参数:
+  72          //  频率 hz, 传入整数, 范围 100 ~ 5000 (保证被1000000整除)
+  73          //      占空比, 传入 整数部分, 比如 50%, 传入 50
+  74          //      维持事件 s, 传入整数, 范围 1 ~ 255
+  75          void beep(unsigned int freq, unsigned char duty, unsigned char second) {
+  76   1              unsigned int cycle = 1000000 / freq;               // freq频率下的 周期
+  77   1              float dutyF = (float)duty / 100.0;                         // 占空比 小数
+  78   1              unsigned int upDuty = cycle * dutyF;               // 高电平延迟 比
+  79   1              unsigned int downDuty = cycle * (1.0 - dutyF); // 低电平延迟 比
+  80   1              unsigned int cnt = freq * second / 2;              // second秒下的循环次数
+  81   1      
+  82   1              while (--cnt) {
+  83   2                      BEEP = 0;
+  84   2                      delay10UsN(downDuty / 10);
+  85   2                      BEEP = 1;
+  86   2                      delay10UsN(upDuty / 10);
+  87   2              }
+  88   1      }
+  89          
+  90          void beepMusic(const MNote* mNote, unsigned char duty) {
+  91   1              unsigned int cycle = 1000000 / mNote->freq;                      // freq频率下的 周期
+  92   1              float dutyF = (float)duty / 100.0;                                       // 占空比 小数
+  93   1              unsigned int upDuty = cycle * dutyF;                             // 高电平延迟 比
+  94   1              unsigned int downDuty = cycle * (1.0 - dutyF);           // 低电平延迟 比
+  95   1              unsigned int cnt = mNote->freq * mNote->second / 10; // second秒下的循环次数
+  96   1      
+  97   1              while (--cnt) {
+  98   2                      BEEP = 0;
+  99   2                      delay50UsN(downDuty / 50);
+ 100   2                      BEEP = 1;
+ 101   2                      delay50UsN(upDuty / 50);
+ 102   2              }
+ 103   1      }
+ 104          
+ 105          // 设置蜂鸣器 500us为一次脉冲, 占空比50%, 即 高250us, 低250us
+C51 COMPILER V9.60.7.0   MAIN                                                              09/23/2024 11:52:42 PAGE 3   
+
+ 106          // 约 2000次脉冲/s
+ 107          void beepSet500() {
+ 108   1              BEEP = 0;
+ 109   1              delay50UsN(5);
+ 110   1              BEEP = 1;
+ 111   1              delay50UsN(5);
+ 112   1      }
+ 113          
+ 114          void main() {
+ 115   1              // unsigned char second = 1;                            // 需要脉冲多少秒?
+ 116   1              // unsigned int cnt = FEQUENCY_S * second; // 脉冲一定秒数 需要脉冲的次数
+ 117   1      
+ 118   1              // while (--cnt)
+ 119   1              //      beepSet500();
+ 120   1      
+ 121   1              // char i = sizeof(frequencys) / sizeof(frequencys[0]) - 1;
+ 122   1              // for (i; i >= 0; i--) {
+ 123   1              //      beep(frequencys[i], 0.2, 1);
+ 124   1              // }
+ 125   1      
+ 126   1              char i = sizeof(music) / sizeof(music[0]);
+ 127   1              char j;
+ 128   1              for (j = 0; j < i; j++) {
+ 129   2                      beepMusic(music + j, 50);
+ 130   2              }
+ 131   1      
+ 132   1              // BEEP脉冲结束之后, 如果程序结束, 程序会再次执行, BEEP脉冲会继续, BEEP会一直�
              -��
-  33   1              // 所以 禁止程序结束
-  34   1              while (1)
-  35   1                      ;
-  36   1      }
+ 133   1              // 所以 禁止程序结束
+ 134   1              while (1)
+ 135   1                      ;
+ 136   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     63    ----
+   CODE SIZE        =    487    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----       3
+   DATA SIZE        =     75      36
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

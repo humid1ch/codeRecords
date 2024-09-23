@@ -386,6 +386,11 @@
               <FileType>1</FileType>
               <FilePath>.\delay50Us.c</FilePath>
             </File>
+            <File>
+              <FileName>delay10Us.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\delay10Us.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

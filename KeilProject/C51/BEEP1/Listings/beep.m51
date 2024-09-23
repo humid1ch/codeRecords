@@ -1,19 +1,33 @@
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    09/20/2024  20:27:28  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    09/23/2024  11:52:42  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
-C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\delay50Us.obj TO .\Objects\beep PRINT (.\Listings\beep.m51) RA
->> MSIZE (256) DISABLEWARNING (16)
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\delay50Us.obj, .\Objects\delay10Us.obj TO .\Objects\beep PRINT
+>>  (.\Listings\beep.m51) RAMSIZE (256) DISABLEWARNING (16)
 
 
-MEMORY MODEL: SMALL
+MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
 
 
 INPUT MODULES INCLUDED:
   .\Objects\main.obj (MAIN)
   .\Objects\delay50Us.obj (DELAY50US)
+  .\Objects\delay10Us.obj (DELAY10US)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPADD)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPMUL)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPDIV)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FCAST)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?CASTF)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDOPTR)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C?IMUL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?UIDIV)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ILDPTR)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?SLDIV)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?LNEG)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ULDIV)
 
 
 LINK MAP OF MODULE:  .\Objects\beep (MAIN)
@@ -24,17 +38,29 @@ LINK MAP OF MODULE:  .\Objects\beep (MAIN)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     0003H     UNIT         _DATA_GROUP_
-            IDATA   000BH     0001H     UNIT         ?STACK
+            DATA    0008H     004BH     UNIT         ?DT?MAIN
+            DATA    0053H     0013H     UNIT         _DATA_GROUP_
+            DATA    0066H     0010H     UNIT         ?DT?_BEEP?MAIN
+            DATA    0076H     0001H     UNIT         ?DT?_DELAY10USN?MAIN
+            IDATA   0077H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
-            CODE    0003H     0023H     UNIT         ?PR?MAIN?MAIN
-            CODE    0026H     0012H     UNIT         ?C?LIB_CODE
-            CODE    0038H     000EH     UNIT         ?PR?_DELAY50USN?MAIN
-            CODE    0046H     000EH     UNIT         ?PR?BEEPSET500?MAIN
-            CODE    0054H     000CH     UNIT         ?C_C51STARTUP
-            CODE    0060H     0006H     UNIT         ?PR?DELAY50US?DELAY50US
+            CODE    0003H     04F8H     UNIT         ?C?LIB_CODE
+            CODE    04FBH     00CCH     UNIT         ?PR?_BEEPMUSIC?MAIN
+            CODE    05C7H     00B9H     UNIT         ?PR?_BEEP?MAIN
+            CODE    0680H     008CH     UNIT         ?C_C51STARTUP
+            CODE    070CH     004FH     UNIT         ?C_INITSEG
+            CODE    075BH     0044H     UNIT         ?C?LDIV
+            CODE    079FH     002AH     UNIT         ?PR?MAIN?MAIN
+            CODE    07C9H     0015H     UNIT         ?PR?_DELAY50USN?MAIN
+            CODE    07DEH     0015H     UNIT         ?PR?_DELAY10USN?MAIN
+            CODE    07F3H     000EH     UNIT         ?PR?BEEPSET500?MAIN
+            CODE    0801H     0006H     UNIT         ?PR?DELAY50US?DELAY50US
+            CODE    0807H     0001H     UNIT         ?PR?DELAY10US?DELAY10US
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  11:52:42  PAGE 2
+
 
 
 
@@ -46,22 +72,20 @@ SEGMENT                           DATA_GROUP
 -----------------------------------------------
 ?C_C51STARTUP                   -----    -----
   +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
 
-?PR?MAIN?MAIN                   0008H    0002H
-  +--> ?PR?BEEPSET500?MAIN
+?PR?MAIN?MAIN                   0053H    0002H
+  +--> ?PR?_BEEPMUSIC?MAIN
 
-?PR?BEEPSET500?MAIN             -----    -----
+?PR?_BEEPMUSIC?MAIN             0055H    0010H
   +--> ?PR?_DELAY50USN?MAIN
 
-?PR?_DELAY50USN?MAIN            000AH    0001H
+?PR?_DELAY50USN?MAIN            0065H    0001H
   +--> ?PR?DELAY50US?DELAY50US
 
 
 
 SYMBOL TABLE OF MODULE:  .\Objects\beep (MAIN)
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/20/2024  20:27:28  PAGE 2
-
-
 
   VALUE           TYPE          NAME
   ----------------------------------
@@ -71,65 +95,192 @@ SYMBOL TABLE OF MODULE:  .\Objects\beep (MAIN)
   D:0090H         PUBLIC        P1
   D:00A0H         PUBLIC        P2
   D:00B0H         PUBLIC        P3
+  C:07E5H         PUBLIC        _delay10UsN
   D:00A8H         PUBLIC        IE
-  C:0038H         PUBLIC        _delay50UsN
+  C:07D0H         PUBLIC        _delay50UsN
   D:00B8H         PUBLIC        IP
   B:00A0H.5       PUBLIC        BEEP
-  C:0003H         PUBLIC        main
+  C:05C7H         PUBLIC        _beep
+  C:04FBH         PUBLIC        _beepMusic
+  D:0008H         PUBLIC        music
+  C:079FH         PUBLIC        main
   D:0098H         PUBLIC        SCON
   D:0088H         PUBLIC        TCON
-  C:0046H         PUBLIC        beepSet500
+  C:07F3H         PUBLIC        beepSet500
   D:00C8H         PUBLIC        T2CON
   D:00D0H         PUBLIC        PSW
+  -------         PROC          L?0023
+  -------         ENDPROC       L?0023
   -------         PROC          _DELAY50USN
-  D:000AH         SYMBOL        n
-  C:0038H         LINE#         9
-  C:003AH         LINE#         10
-  C:0040H         LINE#         11
-  C:0045H         LINE#         12
+  D:0065H         SYMBOL        n
+  C:07D0H         LINE#         61
+  C:07D2H         LINE#         62
+  C:07D8H         LINE#         63
+  C:07DDH         LINE#         64
   -------         ENDPROC       _DELAY50USN
+  -------         PROC          L?0022
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  11:52:42  PAGE 3
+
+
+  -------         ENDPROC       L?0022
+  -------         PROC          _DELAY10USN
+  D:0076H         SYMBOL        n
+  C:07E5H         LINE#         66
+  C:07E7H         LINE#         67
+  C:07EDH         LINE#         68
+  C:07F2H         LINE#         69
+  -------         ENDPROC       _DELAY10USN
+  -------         PROC          _BEEP
+  D:0066H         SYMBOL        freq
+  D:0068H         SYMBOL        duty
+  D:0069H         SYMBOL        second
+  -------         DO            
+  D:006AH         SYMBOL        cycle
+  D:006CH         SYMBOL        dutyF
+  D:0070H         SYMBOL        upDuty
+  D:0072H         SYMBOL        downDuty
+  D:0074H         SYMBOL        cnt
+  -------         ENDDO         
+  C:05C7H         LINE#         75
+  C:05CFH         LINE#         76
+  C:05E4H         LINE#         77
+  C:05FCH         LINE#         78
+  C:0616H         LINE#         79
+  C:064AH         LINE#         80
+  C:065EH         LINE#         82
+  C:066BH         LINE#         83
+  C:066DH         LINE#         84
+  C:0674H         LINE#         85
+  C:0676H         LINE#         86
+  C:067DH         LINE#         87
+  C:067FH         LINE#         88
+  -------         ENDPROC       _BEEP
+  -------         PROC          _BEEPMUSIC
+  D:0055H         SYMBOL        mNote
+  D:0058H         SYMBOL        duty
+  -------         DO            
+  D:0059H         SYMBOL        cycle
+  D:005BH         SYMBOL        dutyF
+  D:005FH         SYMBOL        upDuty
+  D:0061H         SYMBOL        downDuty
+  D:0063H         SYMBOL        cnt
+  -------         ENDDO         
+  C:04FBH         LINE#         90
+  C:0503H         LINE#         91
+  C:051CH         LINE#         92
+  C:0534H         LINE#         93
+  C:054EH         LINE#         94
+  C:0582H         LINE#         95
+  C:05A5H         LINE#         97
+  C:05B2H         LINE#         98
+  C:05B4H         LINE#         99
+  C:05BBH         LINE#         100
+  C:05BDH         LINE#         101
+  C:05C4H         LINE#         102
+  C:05C6H         LINE#         103
+  -------         ENDPROC       _BEEPMUSIC
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  11:52:42  PAGE 4
+
+
   -------         PROC          BEEPSET500
-  C:0046H         LINE#         16
-  C:0046H         LINE#         17
-  C:0048H         LINE#         18
-  C:004DH         LINE#         19
-  C:004FH         LINE#         20
+  C:07F3H         LINE#         107
+  C:07F3H         LINE#         108
+  C:07F5H         LINE#         109
+  C:07FAH         LINE#         110
+  C:07FCH         LINE#         111
   -------         ENDPROC       BEEPSET500
   -------         PROC          MAIN
   -------         DO            
-  D:0007H         SYMBOL        second
-  D:0008H         SYMBOL        cnt
+  D:0053H         SYMBOL        i
+  D:0054H         SYMBOL        j
   -------         ENDDO         
-  C:0003H         LINE#         23
-  C:0003H         LINE#         24
-  C:0005H         LINE#         25
-  C:0012H         LINE#         27
-  C:001FH         LINE#         28
-  C:0024H         LINE#         34
+  C:079FH         LINE#         114
+  C:079FH         LINE#         126
+  C:07A2H         LINE#         128
+  C:07B2H         LINE#         129
+  C:07C3H         LINE#         130
+  C:07C7H         LINE#         134
   -------         ENDPROC       MAIN
   -------         ENDMOD        MAIN
 
   -------         MODULE        DELAY50US
   C:0000H         SYMBOL        _ICE_DUMMY_
-  C:0060H         PUBLIC        delay50Us
+  C:0801H         PUBLIC        delay50Us
   -------         PROC          DELAY50US
   -------         DO            
   D:0007H         SYMBOL        i
   -------         ENDDO         
-  C:0060H         LINE#         4
-  C:0060H         LINE#         7
-  C:0061H         LINE#         8
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/20/2024  20:27:28  PAGE 3
-
-
-  C:0063H         LINE#         9
-  C:0065H         LINE#         11
+  C:0801H         LINE#         4
+  C:0801H         LINE#         7
+  C:0802H         LINE#         8
+  C:0804H         LINE#         9
+  C:0806H         LINE#         11
   -------         ENDPROC       DELAY50US
   -------         ENDMOD        DELAY50US
 
+  -------         MODULE        DELAY10US
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0807H         PUBLIC        delay10Us
+  -------         PROC          DELAY10US
+  C:0807H         LINE#         4
+  C:0807H         LINE#         5
+  C:0807H         LINE#         7
+  -------         ENDPROC       DELAY10US
+  -------         ENDMOD        DELAY10US
+
+  -------         MODULE        ?C?FPADD
+  C:000AH         PUBLIC        ?C?FPADD
+  C:0006H         PUBLIC        ?C?FPSUB
+  -------         ENDMOD        ?C?FPADD
+
+  -------         MODULE        ?C?FPMUL
+  C:00FBH         PUBLIC        ?C?FPMUL
+  -------         ENDMOD        ?C?FPMUL
+
+  -------         MODULE        ?C?FPDIV
+  C:0204H         PUBLIC        ?C?FPDIV
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  11:52:42  PAGE 5
+
+
+  -------         ENDMOD        ?C?FPDIV
+
+  -------         MODULE        ?C?FCAST
+  C:02ABH         PUBLIC        ?C?FCASTC
+  C:02A6H         PUBLIC        ?C?FCASTI
+  C:02A1H         PUBLIC        ?C?FCASTL
+  -------         ENDMOD        ?C?FCAST
+
+  -------         MODULE        ?C?CASTF
+  C:02DFH         PUBLIC        ?C?CASTF
+  -------         ENDMOD        ?C?CASTF
+
+  -------         MODULE        ?C?CLDOPTR
+  C:0360H         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
   -------         MODULE        ?C?IMUL
-  C:0026H         PUBLIC        ?C?IMUL
+  C:038DH         PUBLIC        ?C?IMUL
   -------         ENDMOD        ?C?IMUL
 
-Program Size: data=12.0 xdata=0 code=102
+  -------         MODULE        ?C?UIDIV
+  C:039FH         PUBLIC        ?C?UIDIV
+  -------         ENDMOD        ?C?UIDIV
+
+  -------         MODULE        ?C?ILDPTR
+  C:03F4H         PUBLIC        ?C?ILDPTR
+  -------         ENDMOD        ?C?ILDPTR
+
+  -------         MODULE        ?C?SLDIV
+  C:075BH         PUBLIC        ?C?SLDIV
+  -------         ENDMOD        ?C?SLDIV
+
+  -------         MODULE        ?C?LNEG
+  C:041FH         PUBLIC        ?C?LNEG
+  -------         ENDMOD        ?C?LNEG
+
+  -------         MODULE        ?C?ULDIV
+  C:0469H         PUBLIC        ?C?ULDIV
+  -------         ENDMOD        ?C?ULDIV
+
+Program Size: data=120.0 xdata=0 code=2056
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

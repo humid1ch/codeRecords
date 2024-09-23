@@ -1,0 +1,38 @@
+C51 COMPILER V9.60.7.0   DELAYMS                                                           09/23/2024 16:40:32 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DELAYMS
+OBJECT MODULE PLACED IN .\Objects\delayMs.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE delayMs.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\d
+                    -elayMs.lst) OBJECT(.\Objects\delayMs.obj)
+
+line level    source
+
+   1          #include "delayMs.h"
+   2          #include <intrins.h>
+   3          
+   4          void delayMs() {
+   5   1              unsigned char data i, j;
+   6   1      
+   7   1              _nop_();
+   8   1              i = 2;
+   9   1              j = 199;
+  10   1              do {
+  11   2                      while (--j)
+  12   2                              ;
+  13   2              } while (--i);
+  14   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     10    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

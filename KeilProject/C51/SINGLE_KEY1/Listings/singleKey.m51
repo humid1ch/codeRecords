@@ -1,0 +1,157 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    09/23/2024  18:14:41  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\delay10Us.obj TO .\Objects\singleKey PRINT (.\Listings\singleK
+>> ey.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\delay10Us.obj (DELAY10US)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\singleKey (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0001H     UNIT         _DATA_GROUP_
+            IDATA   0009H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0039H     UNIT         ?PR?MAIN?MAIN
+            CODE    003CH     0033H     UNIT         ?PR?KEYSCAN?MAIN
+            CODE    006FH     000CH     UNIT         ?C_C51STARTUP
+            CODE    007BH     0001H     UNIT         ?PR?DELAY10US?DELAY10US
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\singleKey (MAIN)
+
+
+SEGMENT                           DATA_GROUP 
+  +--> CALLED SEGMENT           START    LENGTH
+-----------------------------------------------
+?C_C51STARTUP                   -----    -----
+  +--> ?PR?MAIN?MAIN
+
+?PR?MAIN?MAIN                   0008H    0001H
+  +--> ?PR?KEYSCAN?MAIN
+
+?PR?KEYSCAN?MAIN                -----    -----
+  +--> ?PR?DELAY10US?DELAY10US
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\singleKey (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  18:14:41  PAGE 2
+
+
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  B:00A0H.0       PUBLIC        LED1
+  B:00A0H.1       PUBLIC        LED2
+  B:00A0H.2       PUBLIC        LED3
+  B:00A0H.3       PUBLIC        LED4
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0003H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  B:00B0H.1       PUBLIC        S_KEY1
+  B:00B0H.0       PUBLIC        S_KEY2
+  B:00B0H.2       PUBLIC        S_KEY3
+  B:00B0H.3       PUBLIC        S_KEY4
+  C:003CH         PUBLIC        keyScan
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          KEYSCAN
+  C:003CH         LINE#         16
+  C:003CH         LINE#         17
+  C:003FH         LINE#         18
+  C:0042H         LINE#         19
+  C:0045H         LINE#         20
+  C:0048H         LINE#         21
+  C:0048H         LINE#         22
+  C:0048H         LINE#         24
+  C:004BH         LINE#         25
+  C:004EH         LINE#         26
+  C:0051H         LINE#         27
+  C:0054H         LINE#         28
+  C:0054H         LINE#         29
+  C:0054H         LINE#         31
+  C:0057H         LINE#         32
+  C:005AH         LINE#         33
+  C:005DH         LINE#         34
+  C:0060H         LINE#         35
+  C:0060H         LINE#         36
+  C:0060H         LINE#         38
+  C:0063H         LINE#         39
+  C:0066H         LINE#         40
+  C:0069H         LINE#         41
+  C:006CH         LINE#         42
+  C:006CH         LINE#         43
+  C:006CH         LINE#         46
+  C:006EH         LINE#         47
+  -------         ENDPROC       KEYSCAN
+  -------         PROC          MAIN
+  -------         DO            
+  D:0008H         SYMBOL        ret
+  -------         ENDDO         
+  C:0003H         LINE#         49
+  C:0003H         LINE#         50
+  C:000BH         LINE#         51
+  C:000BH         LINE#         52
+  C:0010H         LINE#         53
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  18:14:41  PAGE 3
+
+
+  C:0022H         LINE#         54
+  C:0022H         LINE#         55
+  C:0024H         LINE#         56
+  C:0026H         LINE#         57
+  C:0026H         LINE#         58
+  C:0028H         LINE#         59
+  C:002AH         LINE#         60
+  C:002AH         LINE#         61
+  C:002CH         LINE#         62
+  C:002EH         LINE#         63
+  C:002EH         LINE#         64
+  C:0030H         LINE#         65
+  C:0032H         LINE#         66
+  C:0032H         LINE#         67
+  C:0034H         LINE#         68
+  C:0036H         LINE#         69
+  C:0038H         LINE#         70
+  C:003AH         LINE#         71
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        DELAY10US
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:007BH         PUBLIC        delay10Us
+  -------         PROC          DELAY10US
+  C:007BH         LINE#         4
+  C:007BH         LINE#         5
+  C:007BH         LINE#         7
+  -------         ENDPROC       DELAY10US
+  -------         ENDMOD        DELAY10US
+
+Program Size: data=10.0 xdata=0 code=124
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

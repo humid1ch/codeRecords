@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "delay10us.h": "c",
+        "reg52.h": "c"
+    }
+}
