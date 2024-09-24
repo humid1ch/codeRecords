@@ -1,9 +1,8 @@
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    09/23/2024  18:14:41  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    09/24/2024  11:17:41  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
-C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\delay10Us.obj TO .\Objects\singleKey PRINT (.\Listings\singleK
->> ey.m51) RAMSIZE (256)
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj TO .\Objects\singleKey PRINT (.\Listings\singleKey.m51) RAMSIZE (256)
 
 
 MEMORY MODEL: SMALL
@@ -11,8 +10,9 @@ MEMORY MODEL: SMALL
 
 INPUT MODULES INCLUDED:
   .\Objects\main.obj (MAIN)
-  .\Objects\delay10Us.obj (DELAY10US)
   C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?ICALL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
 
 
 LINK MAP OF MODULE:  .\Objects\singleKey (MAIN)
@@ -23,32 +23,68 @@ LINK MAP OF MODULE:  .\Objects\singleKey (MAIN)
 
             * * * * * * *   D A T A   M E M O R Y   * * * * * * *
             REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
-            DATA    0008H     0001H     UNIT         _DATA_GROUP_
-            IDATA   0009H     0001H     UNIT         ?STACK
+            DATA    0008H     0029H     UNIT         ?DT?MAIN
+            DATA    0031H     0001H     UNIT         ?DT?KEYLED?MAIN
+            DATA    0032H     0001H     UNIT         _DATA_GROUP_
+            IDATA   0033H     0001H     UNIT         ?STACK
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
             CODE    0000H     0003H     ABSOLUTE     
-            CODE    0003H     0039H     UNIT         ?PR?MAIN?MAIN
-            CODE    003CH     0033H     UNIT         ?PR?KEYSCAN?MAIN
-            CODE    006FH     000CH     UNIT         ?C_C51STARTUP
-            CODE    007BH     0001H     UNIT         ?PR?DELAY10US?DELAY10US
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     0054H     UNIT         ?PR?KEYSMG?MAIN
+            CODE    00E3H     0037H     UNIT         ?PR?KEYLED?MAIN
+            CODE    011AH     0030H     UNIT         ?PR?KEYSCAN?MAIN
+            CODE    014AH     002EH     UNIT         ?C_INITSEG
+            CODE    0178H     0013H     UNIT         ?PR?_DELAYNMS?MAIN
+            CODE    018BH     000AH     UNIT         ?PR?DELAYMS?MAIN
+            CODE    0195H     0007H     UNIT         ?PR?SMG1?MAIN
+            CODE    019CH     0007H     UNIT         ?PR?SMG2?MAIN
+            CODE    01A3H     0007H     UNIT         ?PR?SMG3?MAIN
+            CODE    01AAH     0007H     UNIT         ?PR?SMG4?MAIN
+            CODE    01B1H     0007H     UNIT         ?PR?SMG5?MAIN
+            CODE    01B8H     0007H     UNIT         ?PR?SMG6?MAIN
+            CODE    01BFH     0007H     UNIT         ?PR?SMG7?MAIN
+            CODE    01C6H     0007H     UNIT         ?PR?SMG8?MAIN
+            CODE    01CDH     0006H     UNIT         ?C?LIB_CODE
+            CODE    01D3H     0003H     UNIT         ?PR?MAIN?MAIN
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\singleKey (MAIN)
 
 
-SEGMENT                           DATA_GROUP 
-  +--> CALLED SEGMENT           START    LENGTH
------------------------------------------------
-?C_C51STARTUP                   -----    -----
+SEGMENT                          DATA_GROUP 
+  +--> CALLED SEGMENT          START    LENGTH
+----------------------------------------------
+?C_C51STARTUP                  -----    -----
   +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/24/2024  11:17:41  PAGE 2
 
-?PR?MAIN?MAIN                   0008H    0001H
+
+
+?PR?MAIN?MAIN                  -----    -----
+  +--> ?PR?KEYSMG?MAIN
+
+?PR?KEYSMG?MAIN                0032H    0001H
   +--> ?PR?KEYSCAN?MAIN
+  +--> ?PR?DELAYMS?MAIN
 
-?PR?KEYSCAN?MAIN                -----    -----
-  +--> ?PR?DELAY10US?DELAY10US
+?PR?KEYSCAN?MAIN               -----    -----
+  +--> ?PR?_DELAYNMS?MAIN
+
+?PR?_DELAYNMS?MAIN             -----    -----
+  +--> ?PR?DELAYMS?MAIN
+
+?C_INITSEG                     -----    -----
+  +--> ?PR?SMG1?MAIN
+  +--> ?PR?SMG2?MAIN
+  +--> ?PR?SMG3?MAIN
+  +--> ?PR?SMG4?MAIN
+  +--> ?PR?SMG5?MAIN
+  +--> ?PR?SMG6?MAIN
+  +--> ?PR?SMG7?MAIN
+  +--> ?PR?SMG8?MAIN
 
 
 
@@ -59,9 +95,10 @@ SYMBOL TABLE OF MODULE:  .\Objects\singleKey (MAIN)
 
   -------         MODULE        MAIN
   C:0000H         SYMBOL        _ICE_DUMMY_
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  18:14:41  PAGE 2
-
-
+  C:01B8H         PUBLIC        smg6
+  C:01BFH         PUBLIC        smg7
+  D:0080H         PUBLIC        P0
+  C:01C6H         PUBLIC        smg8
   D:0090H         PUBLIC        P1
   D:00A0H         PUBLIC        P2
   D:00B0H         PUBLIC        P3
@@ -71,87 +108,213 @@ SYMBOL TABLE OF MODULE:  .\Objects\singleKey (MAIN)
   B:00A0H.3       PUBLIC        LED4
   D:00A8H         PUBLIC        IE
   D:00B8H         PUBLIC        IP
-  C:0003H         PUBLIC        main
+  C:00E3H         PUBLIC        keyLED
+  C:0178H         PUBLIC        _delayNMs
+  C:01D3H         PUBLIC        main
+  B:00A0H.2       PUBLIC        SMG_22
+  B:00A0H.3       PUBLIC        SMG_23
+  B:00A0H.4       PUBLIC        SMG_24
+  C:008FH         PUBLIC        keySMG
   D:0098H         PUBLIC        SCON
   D:0088H         PUBLIC        TCON
+  D:0008H         PUBLIC        smgFuncs
   B:00B0H.1       PUBLIC        S_KEY1
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/24/2024  11:17:41  PAGE 3
+
+
   B:00B0H.0       PUBLIC        S_KEY2
   B:00B0H.2       PUBLIC        S_KEY3
   B:00B0H.3       PUBLIC        S_KEY4
-  C:003CH         PUBLIC        keyScan
+  C:011AH         PUBLIC        keyScan
+  C:018BH         PUBLIC        delayMs
   D:00C8H         PUBLIC        T2CON
+  C:0195H         PUBLIC        smg1
+  D:0020H         PUBLIC        smgNum
+  C:019CH         PUBLIC        smg2
   D:00D0H         PUBLIC        PSW
-  -------         PROC          KEYSCAN
-  C:003CH         LINE#         16
-  C:003CH         LINE#         17
-  C:003FH         LINE#         18
-  C:0042H         LINE#         19
-  C:0045H         LINE#         20
-  C:0048H         LINE#         21
-  C:0048H         LINE#         22
-  C:0048H         LINE#         24
-  C:004BH         LINE#         25
-  C:004EH         LINE#         26
-  C:0051H         LINE#         27
-  C:0054H         LINE#         28
-  C:0054H         LINE#         29
-  C:0054H         LINE#         31
-  C:0057H         LINE#         32
-  C:005AH         LINE#         33
-  C:005DH         LINE#         34
-  C:0060H         LINE#         35
-  C:0060H         LINE#         36
-  C:0060H         LINE#         38
-  C:0063H         LINE#         39
-  C:0066H         LINE#         40
-  C:0069H         LINE#         41
-  C:006CH         LINE#         42
-  C:006CH         LINE#         43
-  C:006CH         LINE#         46
-  C:006EH         LINE#         47
-  -------         ENDPROC       KEYSCAN
-  -------         PROC          MAIN
+  C:01A3H         PUBLIC        smg3
+  C:01AAH         PUBLIC        smg4
+  C:01B1H         PUBLIC        smg5
+  -------         PROC          SMG1
+  C:0195H         LINE#         33
+  C:0195H         LINE#         34
+  C:0197H         LINE#         35
+  C:0199H         LINE#         36
+  C:019BH         LINE#         37
+  -------         ENDPROC       SMG1
+  -------         PROC          SMG2
+  C:019CH         LINE#         38
+  C:019CH         LINE#         39
+  C:019EH         LINE#         40
+  C:01A0H         LINE#         41
+  C:01A2H         LINE#         42
+  -------         ENDPROC       SMG2
+  -------         PROC          SMG3
+  C:01A3H         LINE#         43
+  C:01A3H         LINE#         44
+  C:01A5H         LINE#         45
+  C:01A7H         LINE#         46
+  C:01A9H         LINE#         47
+  -------         ENDPROC       SMG3
+  -------         PROC          SMG4
+  C:01AAH         LINE#         48
+  C:01AAH         LINE#         49
+  C:01ACH         LINE#         50
+  C:01AEH         LINE#         51
+  C:01B0H         LINE#         52
+  -------         ENDPROC       SMG4
+  -------         PROC          SMG5
+  C:01B1H         LINE#         53
+  C:01B1H         LINE#         54
+  C:01B3H         LINE#         55
+  C:01B5H         LINE#         56
+  C:01B7H         LINE#         57
+  -------         ENDPROC       SMG5
+  -------         PROC          SMG6
+  C:01B8H         LINE#         58
+  C:01B8H         LINE#         59
+  C:01BAH         LINE#         60
+  C:01BCH         LINE#         61
+  C:01BEH         LINE#         62
+  -------         ENDPROC       SMG6
+  -------         PROC          SMG7
+  C:01BFH         LINE#         63
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/24/2024  11:17:41  PAGE 4
+
+
+  C:01BFH         LINE#         64
+  C:01C1H         LINE#         65
+  C:01C3H         LINE#         66
+  C:01C5H         LINE#         67
+  -------         ENDPROC       SMG7
+  -------         PROC          SMG8
+  C:01C6H         LINE#         68
+  C:01C6H         LINE#         69
+  C:01C8H         LINE#         70
+  C:01CAH         LINE#         71
+  C:01CCH         LINE#         72
+  -------         ENDPROC       SMG8
+  -------         PROC          DELAYMS
   -------         DO            
-  D:0008H         SYMBOL        ret
+  D:0007H         SYMBOL        i
+  D:0006H         SYMBOL        j
   -------         ENDDO         
-  C:0003H         LINE#         49
-  C:0003H         LINE#         50
-  C:000BH         LINE#         51
-  C:000BH         LINE#         52
-  C:0010H         LINE#         53
-BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/23/2024  18:14:41  PAGE 3
+  C:018BH         LINE#         82
+  C:018BH         LINE#         85
+  C:018CH         LINE#         86
+  C:018EH         LINE#         87
+  C:0190H         LINE#         88
+  C:0190H         LINE#         89
+  C:0192H         LINE#         91
+  C:0194H         LINE#         92
+  -------         ENDPROC       DELAYMS
+  -------         PROC          _DELAYNMS
+  D:0004H         SYMBOL        n
+  C:0178H         LINE#         94
+  C:017CH         LINE#         95
+  C:0185H         LINE#         96
+  C:018AH         LINE#         97
+  -------         ENDPROC       _DELAYNMS
+  -------         PROC          KEYSCAN
+  -------         DO            
+  D:0003H         SYMBOL        keyState
+  -------         ENDDO         
+  C:011AH         LINE#         99
+  C:011AH         LINE#         103
+  C:011CH         LINE#         105
+  C:0128H         LINE#         106
+  C:012FH         LINE#         107
+  C:0132H         LINE#         108
+  C:0135H         LINE#         109
+  C:0135H         LINE#         111
+  C:0138H         LINE#         112
+  C:013BH         LINE#         113
+  C:013BH         LINE#         115
+  C:013EH         LINE#         116
+  C:0141H         LINE#         117
+  C:0141H         LINE#         119
+  C:0144H         LINE#         120
+  C:0147H         LINE#         121
+  C:0147H         LINE#         122
+  C:0147H         LINE#         125
+  C:0149H         LINE#         126
+  -------         ENDPROC       KEYSCAN
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/24/2024  11:17:41  PAGE 5
 
 
-  C:0022H         LINE#         54
-  C:0022H         LINE#         55
-  C:0024H         LINE#         56
-  C:0026H         LINE#         57
-  C:0026H         LINE#         58
-  C:0028H         LINE#         59
-  C:002AH         LINE#         60
-  C:002AH         LINE#         61
-  C:002CH         LINE#         62
-  C:002EH         LINE#         63
-  C:002EH         LINE#         64
-  C:0030H         LINE#         65
-  C:0032H         LINE#         66
-  C:0032H         LINE#         67
-  C:0034H         LINE#         68
-  C:0036H         LINE#         69
-  C:0038H         LINE#         70
-  C:003AH         LINE#         71
+  -------         PROC          KEYLED
+  -------         DO            
+  D:0031H         SYMBOL        ret
+  -------         ENDDO         
+  C:00E3H         LINE#         128
+  C:00E3H         LINE#         129
+  C:00EBH         LINE#         130
+  C:00EBH         LINE#         131
+  C:00F0H         LINE#         132
+  C:00F5H         LINE#         133
+  C:00F7H         LINE#         134
+  C:00F7H         LINE#         135
+  C:00FCH         LINE#         136
+  C:00FEH         LINE#         137
+  C:00FEH         LINE#         138
+  C:0103H         LINE#         139
+  C:0105H         LINE#         140
+  C:0105H         LINE#         141
+  C:010AH         LINE#         142
+  C:010CH         LINE#         143
+  C:010CH         LINE#         145
+  C:0110H         LINE#         146
+  C:0118H         LINE#         147
+  C:0118H         LINE#         148
+  -------         ENDPROC       KEYLED
+  -------         PROC          KEYSMG
+  -------         DO            
+  D:0032H         SYMBOL        ret
+  -------         ENDDO         
+  C:008FH         LINE#         151
+  C:008FH         LINE#         152
+  C:0092H         LINE#         153
+  C:0092H         LINE#         154
+  C:0097H         LINE#         155
+  C:009CH         LINE#         156
+  C:00A3H         LINE#         157
+  C:00A6H         LINE#         158
+  C:00A9H         LINE#         159
+  C:00A9H         LINE#         160
+  C:00AEH         LINE#         161
+  C:00B5H         LINE#         162
+  C:00B8H         LINE#         163
+  C:00BBH         LINE#         164
+  C:00BBH         LINE#         165
+  C:00C0H         LINE#         166
+  C:00C7H         LINE#         167
+  C:00CAH         LINE#         168
+  C:00CDH         LINE#         169
+  C:00CDH         LINE#         170
+  C:00D2H         LINE#         171
+  C:00D9H         LINE#         172
+  C:00DCH         LINE#         173
+  C:00DFH         LINE#         174
+  C:00DFH         LINE#         176
+  C:00E1H         LINE#         179
+  C:00E1H         LINE#         180
+  -------         ENDPROC       KEYSMG
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  09/24/2024  11:17:41  PAGE 6
+
+
+  -------         PROC          MAIN
+  C:01D3H         LINE#         183
+  C:01D3H         LINE#         184
   -------         ENDPROC       MAIN
   -------         ENDMOD        MAIN
 
-  -------         MODULE        DELAY10US
-  C:0000H         SYMBOL        _ICE_DUMMY_
-  C:007BH         PUBLIC        delay10Us
-  -------         PROC          DELAY10US
-  C:007BH         LINE#         4
-  C:007BH         LINE#         5
-  C:007BH         LINE#         7
-  -------         ENDPROC       DELAY10US
-  -------         ENDMOD        DELAY10US
+  -------         MODULE        ?C?ICALL
+  C:01CDH         PUBLIC        ?C?ICALL
+  C:01D1H         PUBLIC        ?C?ICALL2
+  -------         ENDMOD        ?C?ICALL
 
-Program Size: data=10.0 xdata=0 code=124
-LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?KEYLED?MAIN
+
+Program Size: data=52.0 xdata=0 code=470
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

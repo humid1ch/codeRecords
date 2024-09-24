@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "reg52.h": "c",
+        "delayms.h": "c",
+        "intrins.h": "c",
+        "INTRINS.H": "cpp"
+    }
+}

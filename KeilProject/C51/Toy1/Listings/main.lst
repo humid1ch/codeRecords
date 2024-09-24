@@ -1,0 +1,263 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 16:40:37 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "intrins.h"
+   3          
+   4          void delayMs() {
+   5   1              unsigned char i, j;
+   6   1      
+   7   1              _nop_();
+   8   1              i = 2;
+   9   1              j = 199;
+  10   1              do {
+  11   2                      while (--j)
+  12   2                              ;
+  13   2              } while (--i);
+  14   1      }
+  15          
+  16          void delayNMs(unsigned int n) {
+  17   1              while (--n)
+  18   1                      delayMs();
+  19   1      }
+  20          
+  21          void delay10Us() {
+  22   1              while (0)
+  23   1                      ;
+  24   1      }
+  25          void delay10UsN(unsigned char data n) {
+  26   1              while (--n)
+  27   1                      delay10Us();
+  28   1      }
+  29          
+  30          // 蜂鸣器
+  31          #define FEQUENCY_S 2000 // 蜂鸣器工作频率
+  32          sbit BEEP = P2 ^ 5;             // 蜂鸣器引脚
+  33          // 设置蜂鸣器 500us为一次脉冲, 占空比50%, 即 高250us, 低250us
+  34          // 约 2000次脉冲/s
+  35          void beepSet500() {
+  36   1              BEEP = 0;
+  37   1              delay10UsN(25);
+  38   1              BEEP = 1;
+  39   1              delay10UsN(25);
+  40   1      }
+  41          
+  42          // 独立按键
+  43          // 宏定义 用于独立按键 按压的记录
+  44          #define NON_KEY_PRESS 0x00
+  45          #define S_KEY1_PRESSED 0x08
+  46          #define S_KEY2_PRESSED 0x04
+  47          #define S_KEY3_PRESSED 0x02
+  48          #define S_KEY4_PRESSED 0x01
+  49          // 四个按键, 连接引脚默认为高电平, 按下按键 与地导通, 变为低电平
+  50          sbit S_KEY1 = P3 ^ 1;
+  51          sbit S_KEY2 = P3 ^ 0;
+  52          sbit S_KEY3 = P3 ^ 2;
+  53          sbit S_KEY4 = P3 ^ 3;
+  54          
+C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 16:40:37 PAGE 2   
+
+  55          // 直流电机
+  56          sbit MOTOR_IN = P1 ^ 0; // 直流电机负极引脚
+  57          // 给高电平, 通过U14模块转换为低电平 激活直流电机
+  58          #define MOTOR_ON MOTOR_IN = 1
+  59          #define MOTOR_OFF MOTOR_IN = 0
+  60          
+  61          typedef void (*smgSelFunc)();
+  62          // 8位数码管引脚
+  63          #define SMG P0
+  64          // 3->8译码器的三个引脚
+  65          // 板子上 右边数码管的是较小值
+  66          sbit SMG_22 = P2 ^ 2;
+  67          sbit SMG_23 = P2 ^ 3;
+  68          sbit SMG_24 = P2 ^ 4;
+  69          // 1位数码管选择函数
+  70          void smg1() {
+  71   1              SMG_24 = 1;
+  72   1              SMG_23 = 1;
+  73   1              SMG_22 = 1;
+  74   1      }
+  75          void smg2() {
+  76   1              SMG_24 = 1;
+  77   1              SMG_23 = 1;
+  78   1              SMG_22 = 0;
+  79   1      }
+  80          void smg5() {
+  81   1              SMG_24 = 0;
+  82   1              SMG_23 = 1;
+  83   1              SMG_22 = 1;
+  84   1      }
+  85          void smg6() {
+  86   1              SMG_24 = 0;
+  87   1              SMG_23 = 1;
+  88   1              SMG_22 = 0;
+  89   1      }
+  90          
+  91          // 数码管选择函数 数组
+  92          smgSelFunc smgFuncs[] = {smg1, smg2, smg5, smg6};
+  93          
+  94          // 板子使用 共阴数码管, 各引脚给高电平点亮边
+  95          // a b c d e f g dp  低->高
+  96          // dp g f e d c b a
+  97          unsigned char smgNum[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x
+             -5E, 0x79, 0x71, 0x00};
+  98          
+  99          // 独立按键扫描 函数
+ 100          // 本案例中, 不需要处理同时按下多个按键的情况
+ 101          unsigned char keyScanNoDown() {
+ 102   1              unsigned char keys = NON_KEY_PRESS;
+ 103   1              if (S_KEY1 == 0 || S_KEY2 == 0 || S_KEY3 == 0) {
+ 104   2                      delayNMs(10); // 消抖, 用于确认是否被按下
+ 105   2      
+ 106   2                      if (S_KEY1 == 0)
+ 107   2                              keys = S_KEY1_PRESSED;
+ 108   2                      else if (S_KEY2 == 0)
+ 109   2                              keys = S_KEY2_PRESSED;
+ 110   2                      else if (S_KEY3 == 0)
+ 111   2                              keys = S_KEY3_PRESSED;
+ 112   2              }
+ 113   1      
+ 114   1          while((S_KEY1 == 0)||(S_KEY2 == 0) ||(S_KEY3 == 0)); //等待按键弹起
+ 115   1      
+C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 16:40:37 PAGE 3   
+
+ 116   1              return keys;
+ 117   1      }
+ 118          
+ 119          unsigned char keyScanDown() {
+ 120   1              unsigned char keys = NON_KEY_PRESS;
+ 121   1      
+ 122   1              if (S_KEY4 == 0) {
+ 123   2                      delayNMs(10);
+ 124   2                      if (S_KEY4 == 0)
+ 125   2                              keys = S_KEY4_PRESSED;
+ 126   2              }
+ 127   1          while(S_KEY4 == 0); //等待按键弹起
+ 128   1      
+ 129   1              return keys;
+ 130   1      }
+ 131          
+ 132          // 数码管显示
+ 133          void showDown(unsigned char defautltCntDown, unsigned char cntDownChange, unsigned char cntDown) {
+ 134   1              //预设十位
+ 135   1              smgFuncs[0]();
+ 136   1              SMG = smgNum[(defautltCntDown + cntDownChange) / 10];
+ 137   1              delayNMs(5);
+ 138   1              // 预设个位
+ 139   1              smgFuncs[1]();
+ 140   1              SMG = smgNum[(defautltCntDown + cntDownChange) % 10];
+ 141   1              delayNMs(4);
+ 142   1      
+ 143   1              // 计时十位
+ 144   1              smgFuncs[2]();
+ 145   1              SMG = smgNum[(cntDown / 10)];
+ 146   1              delayNMs(5);
+ 147   1              // 计时个位
+ 148   1              smgFuncs[3]();
+ 149   1              SMG = smgNum[(cntDown % 10)];
+ 150   1              delayNMs(4);
+ 151   1      }
+ 152          
+ 153          unsigned char defautltCntDown = 10; // 倒计时 初始值为10, 单位秒
+ 154          unsigned char cntDownChange = 0;        // 倒计时 预设修改
+ 155          unsigned char cntDown;                          // 倒计时预设值
+ 156          
+ 157          void main() {
+ 158   1      
+ 159   1              MOTOR_OFF;
+ 160   1              while (1) {
+ 161   2                      unsigned char keyRes = keyScanNoDown();
+ 162   2                      unsigned char key4Press = 0; // 按键4是否被按下过
+ 163   2                      unsigned char isDowning = 0; // 是否正在倒计时
+ 164   2                      unsigned int beepCnt = 2000;
+ 165   2                      // 计算倒计时预设值
+ 166   2                      cntDown = defautltCntDown + cntDownChange;
+ 167   2      
+ 168   2                      showDown(defautltCntDown, cntDownChange, cntDown);
+ 169   2      
+ 170   2                      if (keyRes == S_KEY1_PRESSED) { // 倒计时 预设值++
+ 171   3                              if (cntDownChange < 30)
+ 172   3                                      cntDownChange++;
+ 173   3                      }
+ 174   2                      if (keyRes == S_KEY2_PRESSED) {
+ 175   3                              if (cntDownChange > 0)
+ 176   3                                      cntDownChange--;
+ 177   3                      }
+C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 16:40:37 PAGE 4   
+
+ 178   2                      if (keyRes == S_KEY3_PRESSED) {
+ 179   3                              isDowning = 1;
+ 180   3      
+ 181   3                              // 直流电机开转
+ 182   3                              MOTOR_ON;
+ 183   3      
+ 184   3                              // 正在倒计时 或 key4被按压过  进行循环
+ 185   3                              while (1) {
+ 186   4                                      unsigned int i = 0;
+ 187   4                                      // 扫描4是否被按下
+ 188   4                                      while (key4Press = keyScanDown()) {
+ 189   5                                              if (isDowning == 1) {
+ 190   6                                                      isDowning = 0;
+ 191   6                                                      MOTOR_OFF;
+ 192   6                                              }
+ 193   5                                              else {
+ 194   6                                                      isDowning = 1;
+ 195   6                                                      MOTOR_ON;
+ 196   6                                              }
+ 197   5                                      }
+ 198   4                                      showDown(defautltCntDown, cntDownChange, cntDown);
+ 199   4      
+ 200   4                                      if (isDowning && cntDown > 0)
+ 201   4                                              cntDown--;
+ 202   4                                      else if (cntDown == 0) {
+ 203   5                                              break;
+ 204   5                                      }
+ 205   4      
+ 206   4                                      for (i = 0; i < 80; i++) {
+ 207   5                                              while (key4Press = keyScanDown()) {
+ 208   6                                                      if (isDowning == 1) {
+ 209   7                                                              isDowning = 0;
+ 210   7                                                              MOTOR_OFF;
+ 211   7                                                      }
+ 212   6                                                      else {
+ 213   7                                                              isDowning = 1;
+ 214   7                                                              MOTOR_ON;
+ 215   7                                                      }
+ 216   6                                              }
+ 217   5                                              showDown(defautltCntDown, cntDownChange, cntDown);
+ 218   5                                      }
+ 219   4                              }
+ 220   3                              smgFuncs[0]();
+ 221   3                              SMG = smgNum[16];
+ 222   3      
+ 223   3                              // 直流电机停转
+ 224   3                              MOTOR_OFF;
+ 225   3                              // 蜂鸣器响1s
+ 226   3                              for (beepCnt; beepCnt > 0; beepCnt--)
+ 227   3                                      beepSet500();
+ 228   3                      }
+ 229   2              }
+ 230   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    497    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     32      10
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 16:40:37 PAGE 5   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

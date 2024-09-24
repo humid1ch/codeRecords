@@ -1,4 +1,3 @@
-".\Objects\main.obj",
-".\Objects\delay10Us.obj" 
+".\Objects\main.obj" 
 TO ".\Objects\singleKey" 
 PRINT(".\Listings\singleKey.m51") RAMSIZE(256) 
