@@ -44,13 +44,27 @@ void beepSet500() {
 #define NON_KEY_PRESS 0x00
 #define S_KEY1_PRESSED 0x08
 #define S_KEY2_PRESSED 0x04
-#define S_KEY3_PRESSED 0x02
-#define S_KEY4_PRESSED 0x01
+
 // 四个按键, 连接引脚默认为高电平, 按下按键 与地导通, 变为低电平
 sbit S_KEY1 = P3 ^ 1;
 sbit S_KEY2 = P3 ^ 0;
-sbit S_KEY3 = P3 ^ 2;
-sbit S_KEY4 = P3 ^ 3;
+
+// 中断 不使用
+// sbit S_KEY3 = P3 ^ 2;
+// sbit S_KEY4 = P3 ^ 3;
+#define INT0_ON  \
+	{            \
+		EA = 1;  \
+		EX0 = 1; \
+		IT0 = 1; \
+	}
+
+#define INT1_ON  \
+	{            \
+		EA = 1;  \
+		EX1 = 1; \
+		IT1 = 1; \
+	}
 
 // 直流电机
 sbit MOTOR_IN = P1 ^ 0; // 直流电机负极引脚
@@ -98,36 +112,38 @@ unsigned char smgNum[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 
 
 // 独立按键扫描 函数
 // 本案例中, 不需要处理同时按下多个按键的情况
-unsigned char keyScanNoDown() {
+unsigned char keyScanNoDown() { // KEY3 KEY4使用中断进行实现
 	unsigned char keys = NON_KEY_PRESS;
-	if (S_KEY1 == 0 || S_KEY2 == 0 || S_KEY3 == 0) {
+	if (S_KEY1 == 0 || S_KEY2 == 0 /* || S_KEY3 == 0 */) {
 		delayNMs(10); // 消抖, 用于确认是否被按下
 
 		if (S_KEY1 == 0)
 			keys = S_KEY1_PRESSED;
 		else if (S_KEY2 == 0)
 			keys = S_KEY2_PRESSED;
-		else if (S_KEY3 == 0)
-			keys = S_KEY3_PRESSED;
+		// else if (S_KEY3 == 0)
+		// 	keys = S_KEY3_PRESSED;
 	}
 
-    while((S_KEY1 == 0)||(S_KEY2 == 0) ||(S_KEY3 == 0)); //等待按键弹起
+	while ((S_KEY1 == 0) || (S_KEY2 == 0) /* || (S_KEY3 == 0) */)
+		; //等待按键弹起
 
 	return keys;
 }
 
-unsigned char keyScanDown() {
-	unsigned char keys = NON_KEY_PRESS;
+// 中断, 不适用
+// unsigned char keyScanDown() {
+// 	unsigned char keys = NON_KEY_PRESS;
 
-	if (S_KEY4 == 0) {
-		delayNMs(10);
-		if (S_KEY4 == 0)
-			keys = S_KEY4_PRESSED;
-	}
-    while(S_KEY4 == 0); //等待按键弹起
+// 	if (S_KEY4 == 0) {
+// 		delayNMs(10);
+// 		if (S_KEY4 == 0)
+// 			keys = S_KEY4_PRESSED;
+// 	}
+//     while(S_KEY4 == 0); //等待按键弹起
 
-	return keys;
-}
+// 	return keys;
+// }
 
 // 数码管显示
 void showDown(unsigned char defautltCntDown, unsigned char cntDownChange, unsigned char cntDown) {
@@ -148,18 +164,34 @@ void showDown(unsigned char defautltCntDown, unsigned char cntDownChange, unsign
 	smgFuncs[3]();
 	SMG = smgNum[(cntDown % 10)];
 	delayNMs(4);
+	SMG = smgNum[16];
 }
 
 unsigned char defautltCntDown = 10; // 倒计时 初始值为10, 单位秒
 unsigned char cntDownChange = 0;	// 倒计时 预设修改
 unsigned char cntDown;				// 倒计时预设值
+unsigned char key4Press = 0;		// 按键4是否被按下过
+unsigned char key3Press = 0;		// 按键4是否被按下过
+
+// 外部中断0, 中断号0
+void key3() interrupt 0 {
+	key3Press = 1;
+}
+// 外部中断1, 中断号2
+void key4() interrupt 2 {
+	key4Press = 1;
+}
+
+void timer0() interrupt 1 {
+
+}
 
 void main() {
-
+	INT0_ON; // 外部中断0, 开启		P32
+	INT1_ON; // 外部中断1, 开启		P33
 	MOTOR_OFF;
 	while (1) {
 		unsigned char keyRes = keyScanNoDown();
-		unsigned char key4Press = 0; // 按键4是否被按下过
 		unsigned char isDowning = 0; // 是否正在倒计时
 		unsigned int beepCnt = 2000;
 		// 计算倒计时预设值
@@ -175,7 +207,9 @@ void main() {
 			if (cntDownChange > 0)
 				cntDownChange--;
 		}
-		if (keyRes == S_KEY3_PRESSED) {
+
+		 // 中断, 不适用
+		if (key3Press) {
 			isDowning = 1;
 
 			// 直流电机开转
@@ -185,7 +219,7 @@ void main() {
 			while (1) {
 				unsigned int i = 0;
 				// 扫描4是否被按下
-				while (key4Press = keyScanDown()) {
+				while (key4Press) {
 					if (isDowning == 1) {
 						isDowning = 0;
 						MOTOR_OFF;
@@ -194,6 +228,7 @@ void main() {
 						isDowning = 1;
 						MOTOR_ON;
 					}
+					key4Press = 0;
 				}
 				showDown(defautltCntDown, cntDownChange, cntDown);
 
@@ -204,7 +239,7 @@ void main() {
 				}
 
 				for (i = 0; i < 80; i++) {
-					while (key4Press = keyScanDown()) {
+					while (key4Press) {
 						if (isDowning == 1) {
 							isDowning = 0;
 							MOTOR_OFF;
@@ -213,6 +248,7 @@ void main() {
 							isDowning = 1;
 							MOTOR_ON;
 						}
+						key4Press = 0;
 					}
 					showDown(defautltCntDown, cntDownChange, cntDown);
 				}
@@ -225,6 +261,8 @@ void main() {
 			// 蜂鸣器响1s
 			for (beepCnt; beepCnt > 0; beepCnt--)
 				beepSet500();
+			
+			key3Press = 0;
 		}
 	}
 }

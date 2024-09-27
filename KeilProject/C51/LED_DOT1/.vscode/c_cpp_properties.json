@@ -5,7 +5,7 @@
             "includePath": [
                 "C:\\Keil_v5\\C51\\INC",
                 "C:\\Keil_v5\\C51\\INC\\Microchip",
-                "c:\\Users\\Humid1ch\\KeilProject\\C51\\LED1",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\TIMER1",
                 "${default}",
                 "${workspaceFolder}/**"
             ],

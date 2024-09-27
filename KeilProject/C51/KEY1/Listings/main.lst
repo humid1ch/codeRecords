@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 19:43:10 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              09/26/2024 09:43:22 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -11,224 +11,341 @@ line level    source
    1          #include "reg52.h"
    2          #include "intrins.h"
    3          
-   4          // 8位数码管引脚
-   5          #define SMG P0
+   4          // LED 灯
+   5          #define LED P2
    6          
-   7          sbit SMG_22 = P2 ^ 2;
-   8          sbit SMG_23 = P2 ^ 3;
-   9          sbit SMG_24 = P2 ^ 4;
-  10          
-  11          #define KEY_PORT P1
+   7          // 蜂鸣器
+   8          sbit BEEP = P2 ^ 5;
+   9          
+  10          // 8位数码管引脚
+  11          #define SMG P0
   12          
-  13          #define KEY_UNPRESS 0
-  14          #define KEY1_PRESSED 1
-  15          #define KEY2_PRESSED 2
-  16          #define KEY3_PRESSED 3
-  17          #define KEY4_PRESSED 4
-  18          #define KEY5_PRESSED 5
-  19          #define KEY6_PRESSED 6
-  20          #define KEY7_PRESSED 7
-  21          #define KEY8_PRESSED 8
-  22          #define KEY9_PRESSED 9
-  23          #define KEY10_PRESSED 10
-  24          #define KEY11_PRESSED 11
-  25          #define KEY12_PRESSED 12
-  26          #define KEY13_PRESSED 13
-  27          #define KEY14_PRESSED 14
-  28          #define KEY15_PRESSED 15
-  29          #define KEY16_PRESSED 16
-  30          
-  31          void delayMs() {
-  32   1              unsigned char i, j;
-  33   1      
-  34   1              _nop_();
-  35   1              i = 2;
-  36   1              j = 199;
-  37   1              do {
-  38   2                      while (--j)
-  39   2                              ;
-  40   2              } while (--i);
-  41   1      }
-  42          
-  43          void delayNMs(unsigned int n) {
-  44   1              while (--n)
-  45   1                      delayMs();
-  46   1      }
-  47          
-  48          unsigned char keyColScanSingle() {
-  49   1              unsigned char keyRes = KEY_UNPRESS;
-  50   1      
-  51   1              // 列 扫描, P13为左手第一列, P17为第一行
-  52   1              // 即 P1的八位中, 低四位表示列, 高四位表示行
-  53   1              // 目标列 拉低电平, 然后判断目标列是否有回到高电平
-  54   1      
-C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 19:43:10 PAGE 2   
+  13          sbit SMG_22 = P2 ^ 2;
+  14          sbit SMG_23 = P2 ^ 3;
+  15          sbit SMG_24 = P2 ^ 4;
+  16          
+  17          #define KEY_PORT P1
+  18          
+  19          #define KEY_UNPRESS 0
+  20          #define KEY1_PRESSED 1
+  21          #define KEY2_PRESSED 2
+  22          #define KEY3_PRESSED 3
+  23          #define KEY4_PRESSED 4
+  24          #define KEY5_PRESSED 5
+  25          #define KEY6_PRESSED 6
+  26          #define KEY7_PRESSED 7
+  27          #define KEY8_PRESSED 8
+  28          #define KEY9_PRESSED 9
+  29          #define KEY10_PRESSED 10
+  30          #define KEY11_PRESSED 11
+  31          #define KEY12_PRESSED 12
+  32          #define KEY13_PRESSED 13
+  33          #define KEY14_PRESSED 14
+  34          #define KEY15_PRESSED 15
+  35          #define KEY16_PRESSED 16
+  36          
+  37          void delayMs() {
+  38   1              unsigned char i, j;
+  39   1      
+  40   1              _nop_();
+  41   1              i = 2;
+  42   1              j = 199;
+  43   1              do {
+  44   2                      while (--j)
+  45   2                              ;
+  46   2              } while (--i);
+  47   1      }
+  48          
+  49          void delayNMs(unsigned int n) {
+  50   1              while (--n)
+  51   1                      delayMs();
+  52   1      }
+  53          
+  54          void delay10Us() {
+C51 COMPILER V9.60.7.0   MAIN                                                              09/26/2024 09:43:22 PAGE 2   
 
-  55   1              // P2 = 0xFF;
-  56   1              // delayNMs(1000);
-  57   1              // P2 = 0x00;
-  58   1              // delayNMs(1000);
-  59   1              KEY_PORT = 0xF7;
-  60   1              if (KEY_PORT != 0xF7) {
-  61   2                      delayNMs(10);
-  62   2                      if (KEY_PORT == 0x77) // 1行 1列
-  63   2                              keyRes = KEY1_PRESSED;
-  64   2                      if (KEY_PORT == 0xB7) // 2行 1列
-  65   2                              keyRes = KEY5_PRESSED;
-  66   2                      if (KEY_PORT == 0xD7) // 3行 1列
-  67   2                              keyRes = KEY9_PRESSED;
-  68   2                      if (KEY_PORT == 0xE7) // 4行 1列
-  69   2                              keyRes = KEY13_PRESSED;
-  70   2      
-  71   2                      while (KEY_PORT != 0xF7)
-  72   2                              ;
-  73   2              }
-  74   1      
-  75   1              KEY_PORT = 0xFB;
-  76   1              if (KEY_PORT != 0xFB) {
-  77   2                      delayNMs(10);
-  78   2                      if (KEY_PORT == 0x7B) // 1行 2列
-  79   2                              keyRes = KEY2_PRESSED;
-  80   2                      if (KEY_PORT == 0xBB) // 2行 2列
-  81   2                              keyRes = KEY6_PRESSED;
-  82   2                      if (KEY_PORT == 0xDB) // 3行 2列
-  83   2                              keyRes = KEY10_PRESSED;
-  84   2                      if (KEY_PORT == 0xEB) // 4行 2列
-  85   2                              keyRes = KEY14_PRESSED;
-  86   2      
-  87   2                      while (KEY_PORT != 0xFB)
-  88   2                              ;
-  89   2              }
-  90   1      
-  91   1              KEY_PORT = 0xFD;
-  92   1              if (KEY_PORT != 0xFD) {
-  93   2                      delayNMs(10);
-  94   2                      if (KEY_PORT == 0x7D) // 1行 3列
-  95   2                              keyRes = KEY3_PRESSED;
-  96   2                      if (KEY_PORT == 0xBD) // 2行 3列
-  97   2                              keyRes = KEY7_PRESSED;
-  98   2                      if (KEY_PORT == 0xDD) // 3行 3列
-  99   2                              keyRes = KEY11_PRESSED;
- 100   2                      if (KEY_PORT == 0xED) // 4行 3列
- 101   2                              keyRes = KEY15_PRESSED;
- 102   2      
- 103   2                      while (KEY_PORT != 0xFD)
- 104   2                              ;
- 105   2              }
- 106   1      
- 107   1              KEY_PORT = 0xFE;
- 108   1              if (KEY_PORT != 0xFE) {
- 109   2                      delayNMs(10);
- 110   2                      if (KEY_PORT == 0x7E) // 1行 4列
- 111   2                              keyRes = KEY4_PRESSED;
- 112   2                      if (KEY_PORT == 0xBE) // 2行 4列
- 113   2                              keyRes = KEY8_PRESSED;
- 114   2                      if (KEY_PORT == 0xDE) // 3行 4列
- 115   2                              keyRes = KEY12_PRESSED;
- 116   2                      if (KEY_PORT == 0xEE) // 4行 4列
-C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 19:43:10 PAGE 3   
-
- 117   2                              keyRes = KEY16_PRESSED;
- 118   2      
- 119   2                      while (KEY_PORT != 0xFE)
- 120   2                              ;
- 121   2              }
- 122   1      
- 123   1              return keyRes;
- 124   1      }
- 125          
- 126          unsigned char smgNum[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x
+  55   1              while (0)
+  56   1                      ;
+  57   1      }
+  58          
+  59          void delay10UsN(unsigned int n) {
+  60   1              while (--n)
+  61   1                      delay10Us();
+  62   1      }
+  63          
+  64          unsigned char keyMaps[][4] = {
+  65                  {KEY1_PRESSED, KEY2_PRESSED, KEY3_PRESSED, KEY4_PRESSED}, 
+  66                  {KEY5_PRESSED, KEY6_PRESSED, KEY7_PRESSED, KEY8_PRESSED}, 
+  67                  {KEY9_PRESSED, KEY10_PRESSED, KEY11_PRESSED, KEY12_PRESSED}, 
+  68                  {KEY13_PRESSED, KEY14_PRESSED, KEY15_PRESSED, KEY16_PRESSED}
+  69          };
+  70          
+  71          unsigned char keyScan(); // 4x4矩阵按键 翻转扫描
+  72          
+  73          typedef void (*smgSelFunc)(); // 数码管选择函数 指针
+  74          // 8个 1位数码管选择函数, 位选
+  75          void smg1();
+  76          void smg2();
+  77          void smg3();
+  78          void smg4();
+  79          void smg5();
+  80          void smg6();
+  81          void smg7();
+  82          void smg8();
+  83          // 数码管选择函数 数组
+  84          smgSelFunc smgFuncs[] = {smg1, smg2, smg3, smg4, smg5, smg6, smg7, smg8};
+  85          
+  86          // 数码管显示值 数组, 十六进制 0~F
+  87          unsigned char smgNum[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x
              -5E, 0x79, 0x71, 0x00};
- 127          
- 128          void main() {
- 129   1              unsigned char keyRes = KEY_UNPRESS;
- 130   1              while (1) {
- 131   2                      // 选第一个数码管
- 132   2                      SMG_22 = 1;
- 133   2                      SMG_23 = 1;
- 134   2                      SMG_24 = 1;
- 135   2      
- 136   2                      keyRes = keyColScanSingle();
- 137   2                      switch (keyRes) {
- 138   3                      case KEY1_PRESSED:
- 139   3                              SMG = smgNum[KEY1_PRESSED - 1];
- 140   3                              break;
- 141   3      
- 142   3                      case KEY2_PRESSED:
- 143   3                              SMG = smgNum[KEY2_PRESSED - 1];
- 144   3                              break;
- 145   3      
- 146   3                      case KEY3_PRESSED:
- 147   3                              SMG = smgNum[KEY3_PRESSED - 1];
- 148   3                              break;
- 149   3      
- 150   3                      case KEY4_PRESSED:
- 151   3                              SMG = smgNum[KEY4_PRESSED - 1];
- 152   3                              break;
- 153   3      
- 154   3                      case KEY5_PRESSED:
- 155   3                              SMG = smgNum[KEY5_PRESSED - 1];
- 156   3                              break;
- 157   3      
- 158   3                      case KEY6_PRESSED:
- 159   3                              SMG = smgNum[KEY6_PRESSED - 1];
- 160   3                              break;
- 161   3      
- 162   3                      case KEY7_PRESSED:
- 163   3                              SMG = smgNum[KEY7_PRESSED - 1];
- 164   3                              break;
- 165   3      
- 166   3                      case KEY8_PRESSED:
- 167   3                              SMG = smgNum[KEY8_PRESSED - 1];
- 168   3                              break;
- 169   3      
- 170   3                      case KEY9_PRESSED:
- 171   3                              SMG = smgNum[KEY9_PRESSED - 1];
- 172   3                              break;
- 173   3      
- 174   3                      case KEY10_PRESSED:
- 175   3                              SMG = smgNum[KEY10_PRESSED - 1];
- 176   3                              break;
- 177   3      
-C51 COMPILER V9.60.7.0   MAIN                                                              09/24/2024 19:43:10 PAGE 4   
+  88          
+  89          char defaultPasswd[8] = {1, 2, 3, 4, 5, 6, 7, 8};
+  90          char passwd[8] = {-1}; // 用于记录密码
+  91          char passwdIndex = -1; // 当前密码数组的有效尾元素下标
+  92          
+  93          void smgPasswd();                                 // 数码管显示密码
+  94          unsigned char confirmPWD();               // 密码确认函数
+  95          
+  96          // S9 S10 S11 S5 S6 S7 S1 S2 S3 S14, 对应1 2 3 4 5 6 7 8 9 0, 十个数字
+  97          // S4, 对应删除
+  98          // S8, 对应清零
+  99          // S16, 对应确认
+ 100          void main() {
+ 101   1              unsigned char keyRes = KEY_UNPRESS;
+ 102   1              while (1) {
+ 103   2                      smgPasswd(); // 数码管显示密码
+ 104   2      
+ 105   2                      keyRes = keyScan(); // 按键扫描
+ 106   2                      switch (keyRes) {
+ 107   3                      case KEY1_PRESSED: // S1  7
+ 108   3                              if (passwdIndex < 7)
+ 109   3                                      passwd[++passwdIndex] = 7;
+ 110   3                              break;
+ 111   3                      case KEY2_PRESSED: // S2  8
+ 112   3                              if (passwdIndex < 7)
+ 113   3                                      passwd[++passwdIndex] = 8;
+ 114   3                              break;
+ 115   3                      case KEY3_PRESSED: // S3  9
+C51 COMPILER V9.60.7.0   MAIN                                                              09/26/2024 09:43:22 PAGE 3   
 
- 178   3                      case KEY11_PRESSED:
- 179   3                              SMG = smgNum[KEY11_PRESSED - 1];
- 180   3                              break;
- 181   3      
- 182   3                      case KEY12_PRESSED:
- 183   3                              SMG = smgNum[KEY12_PRESSED - 1];
- 184   3                              break;
- 185   3      
- 186   3                      case KEY13_PRESSED:
- 187   3                              SMG = smgNum[KEY13_PRESSED - 1];
- 188   3                              break;
- 189   3      
- 190   3                      case KEY14_PRESSED:
- 191   3                              SMG = smgNum[KEY14_PRESSED - 1];
- 192   3                              break;
- 193   3      
- 194   3                      case KEY15_PRESSED:
- 195   3                              SMG = smgNum[KEY15_PRESSED - 1];
- 196   3                              break;
- 197   3      
- 198   3                      case KEY16_PRESSED:
- 199   3                              SMG = smgNum[KEY16_PRESSED - 1];
- 200   3                              break;
- 201   3      
- 202   3                      default:
- 203   3                              break;
- 204   3                      }
- 205   2              }
- 206   1      }
+ 116   3                              if (passwdIndex < 7)
+ 117   3                                      passwd[++passwdIndex] = 9;
+ 118   3                              break;
+ 119   3                      case KEY5_PRESSED: // S5  4
+ 120   3                              if (passwdIndex < 7)
+ 121   3                                      passwd[++passwdIndex] = 4;
+ 122   3                              break;
+ 123   3                      case KEY6_PRESSED: // S6  5
+ 124   3                              if (passwdIndex < 7)
+ 125   3                                      passwd[++passwdIndex] = 5;
+ 126   3                              break;
+ 127   3                      case KEY7_PRESSED: // S7  6
+ 128   3                              if (passwdIndex < 7)
+ 129   3                                      passwd[++passwdIndex] = 6;
+ 130   3                              break;
+ 131   3                      case KEY9_PRESSED: // S9  1
+ 132   3                              if (passwdIndex < 7)
+ 133   3                                      passwd[++passwdIndex] = 1;
+ 134   3                              break;
+ 135   3                      case KEY10_PRESSED: // S10  2
+ 136   3                              if (passwdIndex < 7)
+ 137   3                                      passwd[++passwdIndex] = 2;
+ 138   3                              break;
+ 139   3                      case KEY11_PRESSED: // S11  3
+ 140   3                              if (passwdIndex < 7)
+ 141   3                                      passwd[++passwdIndex] = 3;
+ 142   3                              break;
+ 143   3                      case KEY14_PRESSED: // S14  10
+ 144   3                              if (passwdIndex < 7)
+ 145   3                                      passwd[++passwdIndex] = 0;
+ 146   3                              break;
+ 147   3                      case KEY4_PRESSED: // S4 回退
+ 148   3                              if (passwdIndex >= 0)
+ 149   3                                      passwdIndex--;
+ 150   3                              break;
+ 151   3                      case KEY8_PRESSED: // S8 清空
+ 152   3                              passwdIndex = -1;
+ 153   3                              break;
+ 154   3                      case KEY16_PRESSED: // S16 确认
+ 155   3                              if (confirmPWD()) {
+ 156   4                                      // 验证成功
+ 157   4                                      // LED闪三下
+ 158   4                                      unsigned char i = 0;
+ 159   4                                      for (i = 0; i < 3; i++) {
+ 160   5                                              LED = 0x00;
+ 161   5                                              delayNMs(500);
+ 162   5                                              LED = 0xFF;
+ 163   5                                              delayNMs(500);
+ 164   5                                      }
+ 165   4                              }
+ 166   3                              else {
+ 167   4                                      // 验证失败
+ 168   4                                      // 蜂鸣器响半秒
+ 169   4                                      unsigned int i = 0;
+ 170   4                                      for (i = 0; i < 2000; i++) {
+ 171   5                                              BEEP = 0;
+ 172   5                                              delay10UsN(25);
+ 173   5                                              BEEP = 1;
+ 174   5                                              delay10UsN(25);
+ 175   5                                      }
+ 176   4                              }
+ 177   3                              passwdIndex = -1;       // 试图确认之后, 清空输入密码
+C51 COMPILER V9.60.7.0   MAIN                                                              09/26/2024 09:43:22 PAGE 4   
+
+ 178   3                              break;
+ 179   3      
+ 180   3                      default:
+ 181   3                              break;
+ 182   3                      }
+ 183   2              }
+ 184   1      }
+ 185          
+ 186          unsigned char keyScan() {
+ 187   1              unsigned char keyRes = KEY_UNPRESS;
+ 188   1      
+ 189   1              unsigned char row = -1; // 行
+ 190   1              unsigned char col = -1; // 列
+ 191   1              // 列 扫描, P13为左手第一列, P17为第一行
+ 192   1              // 即 P1的八位中, 低四位表示列, 高四位表示行
+ 193   1      
+ 194   1              KEY_PORT = 0x0F;
+ 195   1              if (KEY_PORT != 0x0F) {
+ 196   2                      delayNMs(10);
+ 197   2                      if (KEY_PORT != 0x0F) {
+ 198   3                              switch (KEY_PORT) {
+ 199   4                              case 0x07:
+ 200   4                                      col = 0;
+ 201   4                                      break;
+ 202   4                              case 0x0B:
+ 203   4                                      col = 1;
+ 204   4                                      break;
+ 205   4                              case 0x0D:
+ 206   4                                      col = 2;
+ 207   4                                      break;
+ 208   4                              case 0x0E:
+ 209   4                                      col = 3;
+ 210   4                                      break;
+ 211   4      
+ 212   4                              default:
+ 213   4                                      break;
+ 214   4                              }
+ 215   3      
+ 216   3                              KEY_PORT = 0xF0;
+ 217   3                              switch (KEY_PORT) {
+ 218   4                              case 0x70:
+ 219   4                                      row = 0;
+ 220   4                                      break;
+ 221   4                              case 0xB0:
+ 222   4                                      row = 1;
+ 223   4                                      break;
+ 224   4                              case 0xD0:
+ 225   4                                      row = 2;
+ 226   4                                      break;
+ 227   4                              case 0xE0:
+ 228   4                                      row = 3;
+ 229   4                                      break;
+ 230   4      
+ 231   4                              default:
+ 232   4                                      break;
+ 233   4                              }
+ 234   3      
+ 235   3                              while (KEY_PORT != 0xF0)
+ 236   3                                      ;
+ 237   3                      }
+ 238   2      
+ 239   2                      keyRes = keyMaps[row][col];
+C51 COMPILER V9.60.7.0   MAIN                                                              09/26/2024 09:43:22 PAGE 5   
+
+ 240   2              }
+ 241   1      
+ 242   1              return keyRes;
+ 243   1      }
+ 244          
+ 245          // 使用 passwd 数组, 在数码管显示密码
+ 246          // passwdIndex 之前的不做显示
+ 247          void smgPasswd() {
+ 248   1              char i = 0;
+ 249   1              for (i = 0; i <= passwdIndex; i++) {
+ 250   2                      smgFuncs[i]();                   // 选择第i个数码管, 第0~7个数码管
+ 251   2                      SMG = smgNum[passwd[i]]; // 显示 passwd[i]的数值, 位置 与passwd[i]对应
+ 252   2                      delayNMs(2);
+ 253   2              }
+ 254   1              SMG = smgNum[16];
+ 255   1      }
+ 256          
+ 257          // 确认密码
+ 258          unsigned char confirmPWD() {
+ 259   1              
+ 260   1              unsigned char i = 0;
+ 261   1              if (passwdIndex != 7)
+ 262   1                      return 0;
+ 263   1      
+ 264   1              for (i = 0; i < 8; i++) {
+ 265   2                      if (passwd[i] != defaultPasswd[i])
+ 266   2                              return 0;
+ 267   2              }
+ 268   1      
+ 269   1              return 1;
+ 270   1      }
+ 271          
+ 272          // 8个 1位数码管选择函数
+ 273          void smg1() {
+ 274   1              SMG_24 = 1;
+ 275   1              SMG_23 = 1;
+ 276   1              SMG_22 = 1;
+ 277   1      }
+ 278          
+ 279          void smg2() {
+ 280   1              SMG_24 = 1;
+ 281   1              SMG_23 = 1;
+ 282   1              SMG_22 = 0;
+ 283   1      }
+ 284          
+ 285          void smg3() {
+ 286   1              SMG_24 = 1;
+ 287   1              SMG_23 = 0;
+ 288   1              SMG_22 = 1;
+ 289   1      }
+ 290          
+ 291          void smg4() {
+ 292   1              SMG_24 = 1;
+ 293   1              SMG_23 = 0;
+ 294   1              SMG_22 = 0;
+ 295   1      }
+ 296          
+ 297          void smg5() {
+ 298   1              SMG_24 = 0;
+ 299   1              SMG_23 = 1;
+ 300   1              SMG_22 = 1;
+ 301   1      }
+C51 COMPILER V9.60.7.0   MAIN                                                              09/26/2024 09:43:22 PAGE 6   
+
+ 302          
+ 303          void smg6() {
+ 304   1              SMG_24 = 0;
+ 305   1              SMG_23 = 1;
+ 306   1              SMG_22 = 0;
+ 307   1      }
+ 308          
+ 309          void smg7() {
+ 310   1              SMG_24 = 0;
+ 311   1              SMG_23 = 0;
+ 312   1              SMG_22 = 1;
+ 313   1      }
+ 314          
+ 315          void smg8() {
+ 316   1              SMG_24 = 0;
+ 317   1              SMG_23 = 0;
+ 318   1              SMG_22 = 0;
+ 319   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    383    ----
+   CODE SIZE        =    753    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     17    ----
+   DATA SIZE        =     74       7
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.

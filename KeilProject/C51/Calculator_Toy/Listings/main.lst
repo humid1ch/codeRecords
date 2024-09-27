@@ -1,0 +1,587 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          /*
+   2          正整数计算器:
+   3          具体功能:
+   4          1. 矩阵按键, 实现数据、计算(=)、重新输入(全清)、删除(<-)的输入
+   5              7 8 9 <-
+   6              4 5 6 全清
+   7              1 2 3 
+   8                0   =
+   9              
+  10          2. 独立按键, 实现 + - * / 输入
+  11              +(K1) -(K2) *(K3) /(K4)
+  12          
+  13          3. 先输入运算符左边数据, 最高四位 
+  14             再输入 运算符
+  15             然后输入运算符右边数据, 最高四位
+  16          
+  17          4. 数据仅在输入时显示
+  18              左边四个 1位数码管, 用于显示运算符左值
+  19              右边四个 1为数码管, 用于显示运算符右值
+  20              运算符 不在数码管进行显示, 由LED表示
+  21              +, LED1 亮
+  22              -, LED2 亮
+  23              *, LED6 亮
+  24              /, LED7 亮
+  25              =, LED8 亮
+  26          */
+  27          
+  28          #include <reg52.h>
+  29          #include <intrins.h>
+  30          
+  31          void delayMs() {
+  32   1          unsigned char i, j;
+  33   1      
+  34   1          _nop_();
+  35   1          i = 2;
+  36   1          j = 199;
+  37   1          do {
+  38   2              while (--j)
+  39   2                  ;
+  40   2          } while (--i);
+  41   1      }
+  42          
+  43          void delayNMs(unsigned int n) {
+  44   1          while (--n)
+  45   1              delayMs();
+  46   1      }
+  47          
+  48          typedef unsigned char u8;
+  49          typedef unsigned int u16;
+  50          
+  51          // LED 灯
+  52          #define LED P2
+  53          #define LED1_ON 0xFE
+  54          #define LED2_ON 0xFD
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 2   
+
+  55          #define LED6_ON 0xDF
+  56          #define LED7_ON 0xBF
+  57          #define LED8_0N 0x7F
+  58          
+  59          // 8位数码管引脚
+  60          #define SMG P0
+  61          
+  62          sbit SMG_22 = P2 ^ 2;
+  63          sbit SMG_23 = P2 ^ 3;
+  64          sbit SMG_24 = P2 ^ 4;
+  65          
+  66          // 矩阵按键
+  67          #define KEY_PORT P1
+  68          #define KEY_UNPRESS 0
+  69          #define KEY1_PRESSED 1
+  70          #define KEY2_PRESSED 2
+  71          #define KEY3_PRESSED 3
+  72          #define KEY4_PRESSED 4
+  73          #define KEY5_PRESSED 5
+  74          #define KEY6_PRESSED 6
+  75          #define KEY7_PRESSED 7
+  76          #define KEY8_PRESSED 8
+  77          #define KEY9_PRESSED 9
+  78          #define KEY10_PRESSED 10
+  79          #define KEY11_PRESSED 11
+  80          #define KEY12_PRESSED 12
+  81          #define KEY13_PRESSED 13
+  82          #define KEY14_PRESSED 14
+  83          #define KEY15_PRESSED 15
+  84          #define KEY16_PRESSED 16
+  85          
+  86          u8 keyMaps[][4] = {{KEY1_PRESSED, KEY2_PRESSED, KEY3_PRESSED, KEY4_PRESSED},
+  87                             {KEY5_PRESSED, KEY6_PRESSED, KEY7_PRESSED, KEY8_PRESSED},
+  88                             {KEY9_PRESSED, KEY10_PRESSED, KEY11_PRESSED, KEY12_PRESSED},
+  89                             {KEY13_PRESSED, KEY14_PRESSED, KEY15_PRESSED, KEY16_PRESSED}};
+  90          
+  91          u8 matrixKeyScan(); // 4x4矩阵按键 翻转扫描
+  92          
+  93          // 独立按键
+  94          #define NON_KEY_PUSH 0
+  95          #define S_KEY1_PRESSED 1
+  96          #define S_KEY2_PRESSED 2
+  97          #define S_KEY3_PRESSED 3
+  98          #define S_KEY4_PRESSED 4
+  99          
+ 100          sbit S_KEY1 = P3 ^ 1;
+ 101          sbit S_KEY2 = P3 ^ 0;
+ 102          sbit S_KEY3 = P3 ^ 2;
+ 103          sbit S_KEY4 = P3 ^ 3;
+ 104          
+ 105          u8 singleKeyScan(); // 独立按键扫描
+ 106          
+ 107          typedef void (*smgSelFunc)(); // 数码管选择函数 指针
+ 108          // 8个 1位数码管选择函数, 位选
+ 109          void smg1();
+ 110          void smg2();
+ 111          void smg3();
+ 112          void smg4();
+ 113          void smg5();
+ 114          void smg6();
+ 115          void smg7();
+ 116          void smg8();
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 3   
+
+ 117          // 数码管选择函数 数组
+ 118          smgSelFunc smgFuncs[] = {smg1, smg2, smg3, smg4, smg5, smg6, smg7, smg8};
+ 119          // 数码管显示值 数组, 十六进制 0~F
+ 120          u8 smgNum[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x5E, 0x79, 0
+             -x71, 0x00};
+ 121          
+ 122          // 显示值
+ 123          void valueDisplay();
+ 124          // 显示结果
+ 125          void resultDisplay();
+ 126          
+ 127          // NON
+ 128          #define NON 0
+ 129          // +
+ 130          #define ADD 1
+ 131          // -
+ 132          #define SUB 2
+ 133          // *
+ 134          #define MULTI 3
+ 135          // /
+ 136          #define DIV 4
+ 137          
+ 138          u8 leftValueArr[4] = {0}; // 左值数组
+ 139          char leftIndex = -1;
+ 140          
+ 141          u8 rightValueArr[4] = {0}; // 右值数组
+ 142          char rightIndex = -1;
+ 143          
+ 144          u8 operators = 0;       // 操作符
+ 145          
+ 146          u8 resultArr[10] = {0}; // 结果数组
+ 147          char resultIndex = -1;
+ 148          
+ 149          // 输入计算数
+ 150          void pushValue(u8 num);
+ 151          // 根据左值 右值和运算符进行计算
+ 152          void claculateRes();
+ 153          // 回退
+ 154          void backspace();
+ 155          
+ 156          void main() {
+ 157   1          u8 matrixKeyRes = KEY_UNPRESS; // 记录矩阵按键
+ 158   1          u8 singleKeyRes = KEY_UNPRESS; // 记录独立按键
+ 159   1      
+ 160   1          while (1) {
+ 161   2              if (resultIndex != -1) { // 有计算结果
+ 162   3                  resultDisplay();
+ 163   3              }
+ 164   2              else { // 无计算结果
+ 165   3                  valueDisplay();
+ 166   3              }
+ 167   2      
+ 168   2              matrixKeyRes = matrixKeyScan(); // 矩阵按键扫描
+ 169   2              singleKeyRes = singleKeyScan(); // 独立按键扫描
+ 170   2      
+ 171   2              switch (matrixKeyRes) {
+ 172   3              case KEY1_PRESSED: // S1  7
+ 173   3                  pushValue(7);
+ 174   3                  break;
+ 175   3              case KEY2_PRESSED: // S2  8
+ 176   3                  pushValue(8);
+ 177   3                  break;
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 4   
+
+ 178   3              case KEY3_PRESSED: // S3  9
+ 179   3                  pushValue(9);
+ 180   3                  break;
+ 181   3              case KEY5_PRESSED: // S5  4
+ 182   3                  pushValue(4);
+ 183   3                  break;
+ 184   3              case KEY6_PRESSED: // S6  5
+ 185   3                  pushValue(5);
+ 186   3                  break;
+ 187   3              case KEY7_PRESSED: // S7  6
+ 188   3                  pushValue(6);
+ 189   3                  break;
+ 190   3              case KEY9_PRESSED: // S9  1
+ 191   3                  pushValue(1);
+ 192   3                  break;
+ 193   3              case KEY10_PRESSED: // S10  2
+ 194   3                  pushValue(2);
+ 195   3                  break;
+ 196   3              case KEY11_PRESSED: // S11  3
+ 197   3                  pushValue(3);
+ 198   3                  break;
+ 199   3              case KEY14_PRESSED: // S14  0
+ 200   3                  pushValue(0);
+ 201   3                  break;
+ 202   3              case KEY4_PRESSED: // S4 回退
+ 203   3                  backspace();
+ 204   3                  break;
+ 205   3              case KEY8_PRESSED:    // S8 清空
+ 206   3                  leftIndex = -1;   // 清空左值
+ 207   3                  rightIndex = -1;  // 清空右值
+ 208   3                  resultIndex = -1; // 清空结果
+ 209   3                  operators = 0;    // 清除运算符
+ 210   3                  LED = 0xFF;       // 熄灭LED
+ 211   3                  break;
+ 212   3              case KEY16_PRESSED:  // S16 确认
+ 213   3                  LED = LED8_0N;   // 亮 = 对应的灯
+ 214   3                  claculateRes();  // 计算结果
+ 215   3                  leftIndex = -1;  // 试图确认之后, 清空左值
+ 216   3                  rightIndex = -1; // 试图确认之后, 清空右值
+ 217   3                  operators = 0;   // 清除运算符
+ 218   3                  break;
+ 219   3      
+ 220   3              default:
+ 221   3                  break;
+ 222   3              }
+ 223   2      
+ 224   2              if (rightIndex == -1) {     // 右值存在, 不再改变运算符 (也可以不做限制)
+ 225   3                  switch (singleKeyRes) {
+ 226   4                  case S_KEY1_PRESSED: // K1 +
+ 227   4                      operators = ADD;
+ 228   4                      LED = LED1_ON;
+ 229   4                      break;
+ 230   4                  case S_KEY2_PRESSED: // K2 -
+ 231   4                      operators = SUB;
+ 232   4                      LED = LED2_ON;
+ 233   4                      break;
+ 234   4                  case S_KEY3_PRESSED: // K3 *
+ 235   4                      operators = MULTI;
+ 236   4                      LED = LED6_ON;
+ 237   4                      break;
+ 238   4                  case S_KEY4_PRESSED: // K4 /
+ 239   4                      operators = DIV;
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 5   
+
+ 240   4                      LED = LED7_ON;
+ 241   4                      break;
+ 242   4      
+ 243   4                  default:
+ 244   4                      break;
+ 245   4                  }
+ 246   3              }
+ 247   2          }
+ 248   1      }
+ 249          
+ 250          u8 matrixKeyScan() {
+ 251   1          u8 keyRes = KEY_UNPRESS;
+ 252   1      
+ 253   1          u8 row = -1; // 行
+ 254   1          u8 col = -1; // 列
+ 255   1          // 列 扫描, P13为左手第一列, P17为第一行
+ 256   1          // 即 P1的八位中, 低四位表示列, 高四位表示行
+ 257   1      
+ 258   1          KEY_PORT = 0x0F;
+ 259   1          if (KEY_PORT != 0x0F) {
+ 260   2              delayNMs(10);
+ 261   2              if (KEY_PORT != 0x0F) {
+ 262   3                  switch (KEY_PORT) {
+ 263   4                  case 0x07:
+ 264   4                      col = 0;
+ 265   4                      break;
+ 266   4                  case 0x0B:
+ 267   4                      col = 1;
+ 268   4                      break;
+ 269   4                  case 0x0D:
+ 270   4                      col = 2;
+ 271   4                      break;
+ 272   4                  case 0x0E:
+ 273   4                      col = 3;
+ 274   4                      break;
+ 275   4      
+ 276   4                  default:
+ 277   4                      break;
+ 278   4                  }
+ 279   3      
+ 280   3                  KEY_PORT = 0xF0;
+ 281   3                  switch (KEY_PORT) {
+ 282   4                  case 0x70:
+ 283   4                      row = 0;
+ 284   4                      break;
+ 285   4                  case 0xB0:
+ 286   4                      row = 1;
+ 287   4                      break;
+ 288   4                  case 0xD0:
+ 289   4                      row = 2;
+ 290   4                      break;
+ 291   4                  case 0xE0:
+ 292   4                      row = 3;
+ 293   4                      break;
+ 294   4      
+ 295   4                  default:
+ 296   4                      break;
+ 297   4                  }
+ 298   3      
+ 299   3                  while (KEY_PORT != 0xF0)
+ 300   3                      ;
+ 301   3              }
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 6   
+
+ 302   2      
+ 303   2              keyRes = keyMaps[row][col];
+ 304   2          }
+ 305   1      
+ 306   1          return keyRes;
+ 307   1      }
+ 308          
+ 309          u8 singleKeyScan() {
+ 310   1          u8 keyRes = 0;
+ 311   1      
+ 312   1          if (S_KEY1 == 0 || S_KEY2 == 0 || S_KEY3 == 0 || S_KEY4 == 0) {
+ 313   2              delayNMs(2); // 消抖, 确认是否被按下
+ 314   2              if (S_KEY1 == 0)
+ 315   2                  keyRes = S_KEY1_PRESSED;
+ 316   2      
+ 317   2              if (S_KEY2 == 0)
+ 318   2                  keyRes = S_KEY2_PRESSED;
+ 319   2      
+ 320   2              if (S_KEY3 == 0)
+ 321   2                  keyRes = S_KEY3_PRESSED;
+ 322   2      
+ 323   2              if (S_KEY4 == 0)
+ 324   2                  keyRes = S_KEY4_PRESSED;
+ 325   2          }
+ 326   1      
+ 327   1          while (S_KEY1 == 0 || S_KEY2 == 0 || S_KEY3 == 0 || S_KEY4 == 0)
+ 328   1              ;
+ 329   1      
+ 330   1          // 返回keyRes
+ 331   1          return keyRes;
+ 332   1      }
+ 333          
+ 334          // 显示值
+ 335          void valueDisplay() {
+ 336   1          char i = 0; // valueIndex是char类型的, 防止发生整型提升 所以i使用char
+ 337   1          // 左值显示
+ 338   1          for (i = 0; i <= leftIndex; i++) {
+ 339   2              smgFuncs[i]();                 // 选择数码管
+ 340   2              SMG = smgNum[leftValueArr[i]]; // 显示数值
+ 341   2              delayMs();
+ 342   2              SMG = smgNum[16];
+ 343   2          }
+ 344   1          // 右值显示
+ 345   1          for (i = 0; i <= rightIndex; i++) {
+ 346   2              smgFuncs[i + 4]();              // 选择数码管
+ 347   2              SMG = smgNum[rightValueArr[i]]; // 显示数值
+ 348   2              delayMs();
+ 349   2              SMG = smgNum[16];
+ 350   2          }
+ 351   1      }
+ 352          
+ 353          // 显示结果
+ 354          void resultDisplay() {
+ 355   1          char i = 0; // valueIndex是char类型的, 防止发生整型提升 所以i使用char
+ 356   1          // 结果显示
+ 357   1          for (i = 0; i <= resultIndex; i++) {
+ 358   2              smgFuncs[i]();              // 选择数码管
+ 359   2              SMG = smgNum[resultArr[i]]; // 显示数值
+ 360   2              delayMs();
+ 361   2              SMG = smgNum[16];
+ 362   2          }
+ 363   1      }
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 7   
+
+ 364          
+ 365          // 输入计算数
+ 366          void pushValue(u8 num) {
+ 367   1          if (resultIndex != -1) // 如果上次计算了, 按下新数 就把结果清空
+ 368   1              resultIndex = -1;
+ 369   1      
+ 370   1          if (operators) { // 如果已经输入了运算符, 就往右值数组添加
+ 371   2              if (rightIndex < 3)
+ 372   2                  rightValueArr[++rightIndex] = num;
+ 373   2          }
+ 374   1          else { // 如果没有输入运算符, 就往左值添加
+ 375   2              if (leftIndex < 3)
+ 376   2                  leftValueArr[++leftIndex] = num;
+ 377   2          }
+ 378   1      }
+ 379          // 计算结果
+ 380          void claculateRes() {
+ 381   1          // 先将数值数组 转换为数值
+ 382   1          long leftValue = 0;
+ 383   1          long rightValue = 0;
+ 384   1          // 这里遇到一个问题
+ 385   1          // 如果使用 int 或 unsigned int 接收leftValue和rightValue
+ 386   1          // 是可以成功接收输入的计算数据的, 因为左值和右值最多只有4位
+ 387   1          // 
+ 388   1          // 但是, 在后面的计算中会发生错误
+ 389   1          //  C语言中, 如果小整型进行计算, 如果计算结果会从小类型溢出, 那么 计算结
+             -果 会 临时自动提升到 能够不溢出的类型, 
+ 390   1          //  然后可以用任意类型进行接收, 接受结果 只会被接收数据的变量类型影响
+ 391   1          // 
+ 392   1          //  但, 在C51中, 好像并不是这样(也或许只是8051这样处理)
+ 393   1          //  C51中, 即使 小整型数据的 计算结果会溢出, 计算结果也并不会提升类型, 只
+             -会被限制在原本的最大类型中
+ 394   1          //      举个例子, int * int 计算结果的类型就只会是int, 范围就只是 -32,768 到 32,7
+             -67
+ 395   1          //       256 * 128的结果是 32768, 如果在C51中以 int类型计算, 结果就会是0, 因为 327
+             -68 的二进制是 1000 0000 0000 0000, 首位是符号位 刚好被截断
+ 396   1          //       而 255 * 128的结果是 32640, 在C51中就能够完整计算出来
+ 397   1          //      同理, unsigned int * unsigned int计算结果的类型就只会是unsigned int, 范围就只
+             -是 0~65535
+ 398   1          //       256 * 256的结果是65536, 在C51中以 unsigned int类型计算, 结果是0, 因为 65536�
+             -�二进制是 1 0000 0000 0000 0000, 刚好比4字节多1位
+ 399   1          //       256 * 255的结果是65280, 在C51中以 unsigned int类型计算, 结果能够完整计算�
+             -�来
+ 400   1      
+ 401   1          // 这个问题让我想到另外一个问题: C51中存在整型提升吗?
+ 402   1          //  C语言 整型提升, 不足4字节的整型变量进行计算时, 会将原数据提升到4字节
+             -然后进行计算
+ 403   1          //  也不好调试
+ 404   1      
+ 405   1          long result = 0;
+ 406   1          long resultTmp = 0;
+ 407   1      
+ 408   1          char i = 0;
+ 409   1          char j = 0;
+ 410   1      
+ 411   1          // 计算之前, 先清除结果 防止上次计算结果未清除
+ 412   1          resultIndex = -1;
+ 413   1      
+ 414   1          // 转左值
+ 415   1          for (i = 0; i <= leftIndex; i++) {
+ 416   2              leftValue *= 10;
+ 417   2              leftValue += leftValueArr[i];
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 8   
+
+ 418   2          }
+ 419   1          // 转右值
+ 420   1          for (i = 0; i <= rightIndex; i++) {
+ 421   2              rightValue *= 10;
+ 422   2              rightValue += rightValueArr[i];
+ 423   2          }
+ 424   1      
+ 425   1          switch (operators) {
+ 426   2          case ADD:
+ 427   2              result = leftValue + rightValue;
+ 428   2              break;
+ 429   2          case SUB:
+ 430   2              result = leftValue - rightValue;
+ 431   2              break;
+ 432   2          case MULTI:
+ 433   2              result = leftValue * rightValue;
+ 434   2              break;
+ 435   2          case DIV:
+ 436   2              if (rightValue != 0)
+ 437   2                  result = leftValue / rightValue;
+ 438   2              else
+ 439   2                  result = 0;
+ 440   2              break;
+ 441   2          case NON:
+ 442   2              result = leftValue; // 没有操作符结果就等于左值
+ 443   2              break;
+ 444   2      
+ 445   2          default:
+ 446   2              break;
+ 447   2          }
+ 448   1      
+ 449   1          // 非正整数 懒得处理了 简单的处理为0
+ 450   1          if (result <= 0) {
+ 451   2              result = 0;
+ 452   2              resultArr[++resultIndex] = 0;
+ 453   2              
+ 454   2              return;
+ 455   2          }
+ 456   1      
+ 457   1          // 将计算结果, 存到resultArr中
+ 458   1          while (result) {
+ 459   2              resultTmp = (result % 10); // 求个位
+ 460   2              result /= 10;              // 去个位
+ 461   2      
+ 462   2              resultArr[++resultIndex] = resultTmp; // 填数组
+ 463   2          }
+ 464   1      
+ 465   1          // 翻转数组
+ 466   1          i = 0;
+ 467   1          j = resultIndex;
+ 468   1          while (i < j) {
+ 469   2              resultArr[i] = resultArr[i] + resultArr[j];
+ 470   2              resultArr[j] = resultArr[i] - resultArr[j];
+ 471   2              resultArr[i] = resultArr[i] - resultArr[j];
+ 472   2              i++;
+ 473   2              j--;
+ 474   2          }
+ 475   1          // 结果数组计算完成
+ 476   1      }
+ 477          // 回退
+ 478          void backspace() {
+ 479   1          if (operators) { // 如果已经输入了运算符, 就回退右值
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 9   
+
+ 480   2              if (rightIndex >= 0)
+ 481   2                  rightIndex--;
+ 482   2          }
+ 483   1          else { // 如果没有输入运算符, 就回退左值
+ 484   2              if (leftIndex >= 0)
+ 485   2                  leftIndex--;
+ 486   2          }
+ 487   1      }
+ 488          
+ 489          // 8个 1位数码管选择函数
+ 490          void smg1() {
+ 491   1          SMG_24 = 1;
+ 492   1          SMG_23 = 1;
+ 493   1          SMG_22 = 1;
+ 494   1      }
+ 495          
+ 496          void smg2() {
+ 497   1          SMG_24 = 1;
+ 498   1          SMG_23 = 1;
+ 499   1          SMG_22 = 0;
+ 500   1      }
+ 501          
+ 502          void smg3() {
+ 503   1          SMG_24 = 1;
+ 504   1          SMG_23 = 0;
+ 505   1          SMG_22 = 1;
+ 506   1      }
+ 507          
+ 508          void smg4() {
+ 509   1          SMG_24 = 1;
+ 510   1          SMG_23 = 0;
+ 511   1          SMG_22 = 0;
+ 512   1      }
+ 513          
+ 514          void smg5() {
+ 515   1          SMG_24 = 0;
+ 516   1          SMG_23 = 1;
+ 517   1          SMG_22 = 1;
+ 518   1      }
+ 519          
+ 520          void smg6() {
+ 521   1          SMG_24 = 0;
+ 522   1          SMG_23 = 1;
+ 523   1          SMG_22 = 0;
+ 524   1      }
+ 525          
+ 526          void smg7() {
+ 527   1          SMG_24 = 0;
+ 528   1          SMG_23 = 0;
+ 529   1          SMG_22 = 1;
+ 530   1      }
+ 531          
+ 532          void smg8() {
+ 533   1          SMG_24 = 0;
+ 534   1          SMG_23 = 0;
+ 535   1          SMG_22 = 0;
+ 536   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1300    ----
+   CONSTANT SIZE    =   ----    ----
+C51 COMPILER V9.60.7.0   MAIN                                                              09/27/2024 19:40:48 PAGE 10  
+
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     79      25
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

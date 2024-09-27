@@ -3,6 +3,9 @@
         "reg52.h": "c",
         "delayms.h": "c",
         "intrins.h": "c",
-        "INTRINS.H": "cpp"
+        "INTRINS.H": "cpp",
+        "delay50us.h": "c",
+        "REG52.H": "cpp",
+        "delay10us.h": "c"
     }
 }

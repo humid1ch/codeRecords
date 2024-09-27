@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\leddot" 
+PRINT(".\Listings\leddot.m51") RAMSIZE(256) 
