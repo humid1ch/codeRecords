@@ -1,0 +1,153 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    10/06/2024  10:38:22  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj TO .\Objects\uart PRINT (.\Listings\uart.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\uart (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0037H     UNIT         ?DT?MAIN
+            IDATA   003FH     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     0041H     UNIT         ?C_INITSEG
+            CODE    00D0H     0038H     UNIT         ?PR?MAIN?MAIN
+            CODE    0108H     001CH     UNIT         ?PR?UART1RECEIVE?MAIN
+            CODE    0124H     001BH     UNIT         ?PR?UART1INIT?MAIN
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\uart (MAIN)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN
+  +--> ?PR?UART1INIT?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\uart (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/06/2024  10:38:22  PAGE 2
+
+
+  B:00A8H.7       PUBLIC        EA
+  C:0124H         PUBLIC        uart1Init
+  D:00A8H         PUBLIC        IE
+  D:0008H         PUBLIC        uartRxStatus
+  B:00A8H.4       PUBLIC        ES
+  D:00B8H         PUBLIC        IP
+  D:000AH         PUBLIC        uartBuffer
+  B:0098H.1       PUBLIC        TI
+  C:00D0H         PUBLIC        main
+  D:0099H         PUBLIC        SBUF
+  D:0087H         PUBLIC        PCON
+  D:0098H         PUBLIC        SCON
+  D:0089H         PUBLIC        TMOD
+  D:0088H         PUBLIC        TCON
+  C:0108H         PUBLIC        uart1Receive
+  B:00A8H.3       PUBLIC        ET1
+  D:008DH         PUBLIC        TH1
+  D:008BH         PUBLIC        TL1
+  D:003DH         PUBLIC        inIndex
+  B:0088H.6       PUBLIC        TR1
+  D:003EH         PUBLIC        out
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          UART1RECEIVE
+  -------         DO            
+  D:0007H         SYMBOL        receiveByte
+  -------         ENDDO         
+  C:0108H         LINE#         40
+  C:0108H         LINE#         41
+  C:0108H         LINE#         42
+  C:010AH         LINE#         44
+  C:010FH         LINE#         45
+  C:0112H         LINE#         46
+  C:011CH         LINE#         48
+  C:011DH         LINE#         49
+  C:011DH         LINE#         50
+  C:0120H         LINE#         51
+  C:0123H         LINE#         52
+  C:0123H         LINE#         53
+  C:0123H         LINE#         54
+  C:0123H         LINE#         55
+  C:0123H         LINE#         56
+  -------         ENDPROC       UART1RECEIVE
+  -------         PROC          UART1INIT
+  C:0124H         LINE#         72
+  C:0124H         LINE#         73
+  C:0127H         LINE#         74
+  C:012AH         LINE#         77
+  C:012DH         LINE#         78
+  C:0130H         LINE#         81
+  C:0133H         LINE#         82
+  C:0136H         LINE#         84
+  C:0138H         LINE#         85
+  C:013AH         LINE#         87
+  C:013CH         LINE#         88
+  C:013EH         LINE#         89
+  -------         ENDPROC       UART1INIT
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/06/2024  10:38:22  PAGE 3
+
+
+  -------         PROC          MAIN
+  -------         DO            
+  D:0007H         SYMBOL        i
+  -------         ENDDO         
+  C:00D0H         LINE#         91
+  C:00D0H         LINE#         92
+  C:00D2H         LINE#         94
+  C:00D5H         LINE#         96
+  C:00D5H         LINE#         97
+  C:00D9H         LINE#         98
+  C:00E7H         LINE#         99
+  C:00EEH         LINE#         100
+  C:00F1H         LINE#         102
+  C:00F3H         LINE#         104
+  C:00F9H         LINE#         106
+  C:00FDH         LINE#         107
+  C:0100H         LINE#         108
+  C:0100H         LINE#         109
+  C:0103H         LINE#         111
+  C:0106H         LINE#         112
+  C:0106H         LINE#         113
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?UART1RECEIVE?MAIN
+
+Program Size: data=64.0 xdata=0 code=319
+LINK/LOCATE RUN COMPLETE.  1 WARNING(S),  0 ERROR(S)

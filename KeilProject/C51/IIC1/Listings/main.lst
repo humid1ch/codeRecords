@@ -1,0 +1,253 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/06/2024 17:34:07 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "intrins.h"
+   3          
+   4          typedef unsigned char u8;
+   5          typedef unsigned int u16;
+   6          
+   7          void delay10Us() {
+   8   1          while (0)
+   9   1              ;
+  10   1      }
+  11          
+  12          void delayN10Us(unsigned int n) {
+  13   1          while (--n)
+  14   1              delay10Us();
+  15   1      }
+  16          
+  17          void delayMs() {
+  18   1              unsigned char data i, j;
+  19   1      
+  20   1              _nop_();
+  21   1              i = 2;
+  22   1              j = 199;
+  23   1              do {
+  24   2                      while (--j)
+  25   2                              ;
+  26   2              } while (--i);
+  27   1      }
+  28          
+  29          void delayNMs(u16 n) {
+  30   1              while (--n)
+  31   1                      delayMs();
+  32   1      }
+  33          
+  34          // IIC 总线通信 (软件)
+  35          // 相关驱动
+  36          sbit SDA = P2 ^ 0; // 数据口
+  37          sbit SCL = P2 ^ 1; // 时钟口
+  38          
+  39          void iicStart();
+  40          void iicStop();
+  41          u8 iicWaitAck();
+  42          void iicAck();
+  43          void iicNAck();
+  44          void iicWriteByte(u8 u8data);
+  45          u8 iicReadByte();
+  46          // 上面的驱动 均根据IIC传输层协议规定实现
+  47          
+  48          // AT24C02读写驱动接口 (EEPROM)
+  49          #define ADDR_W 0xA0
+  50          #define ADDR_R 0xA1
+  51          
+  52          void at24c02Init();
+  53          
+  54          void at24c02WriteByte(u8 u8addr, u8 u8data);
+C51 COMPILER V9.60.7.0   MAIN                                                              10/06/2024 17:34:07 PAGE 2   
+
+  55          
+  56          u8 at24c02ReadByte(u8 u8addr);
+  57          
+  58          void main() {}
+  59          
+  60          // 在时钟高电平时, SDA下降沿表示 数据传输开始
+  61          void iicStart() {
+  62   1          // 先将SCL拉高
+  63   1          SCL = 1;
+  64   1      
+  65   1          // 再将 SDA拉高, 保证下面出现下降沿
+  66   1          SDA = 1;
+  67   1          delay10Us();
+  68   1          SDA = 0;
+  69   1          delay10Us();
+  70   1      }
+  71          
+  72          // 在时钟高电平时, SDA上升沿表示 数据传输结束
+  73          void iicStop() {
+  74   1          // 先将SCL拉高
+  75   1          SCL = 1;
+  76   1      
+  77   1          // 再将 SDA拉低, 保证下面出现上升沿
+  78   1          SDA = 0;
+  79   1          delay10Us();
+  80   1          SDA = 1;
+  81   1          delay10Us();
+  82   1      }
+  83          
+  84          u8 iicWaitAck() {
+  85   1          //释放SDA
+  86   1          SDA = 1;
+  87   1          SCL = 1;
+  88   1          delay10Us();
+  89   1      
+  90   1          //读取 从机的应答
+  91   1          if (SDA) { // 从机应答NACK
+  92   2              // 结束通信
+  93   2              iicStop();
+  94   2              return 0;   
+  95   2          }
+  96   1          // 如果是ACK, 不用单独处理
+  97   1      
+  98   1          SCL = 0;
+  99   1          delay10Us();
+ 100   1      
+ 101   1          return 1;
+ 102   1      }
+ 103          
+ 104          // SDA低电平 是ACK响应
+ 105          void iicAck() {
+ 106   1          SCL = 0;
+ 107   1          delay10Us();
+ 108   1      
+ 109   1          SDA = 0;
+ 110   1          delay10Us();
+ 111   1          SCL = 1;
+ 112   1          delay10Us();
+ 113   1      }
+ 114          
+ 115          // SDA低电平 是NACK响应
+ 116          void iicNAck() {
+C51 COMPILER V9.60.7.0   MAIN                                                              10/06/2024 17:34:07 PAGE 3   
+
+ 117   1          SCL = 0;
+ 118   1          delay10Us();
+ 119   1      
+ 120   1          SDA = 1;
+ 121   1          delay10Us();
+ 122   1          SCL = 1;
+ 123   1          delay10Us();
+ 124   1      }
+ 125          
+ 126          void iicWriteByte(u8 u8data) {
+ 127   1      
+ 128   1          u8 i;
+ 129   1          SCL = 0;
+ 130   1          delay10Us();
+ 131   1      
+ 132   1          for (i = 0; i < 8; i++) {
+ 133   2              SDA = u8data >> 7; //MSB
+ 134   2      
+ 135   2              SCL = 1;
+ 136   2              delay10Us();
+ 137   2              SCL = 0;
+ 138   2              delay10Us();
+ 139   2              u8data <<= 1;
+ 140   2          }
+ 141   1      
+ 142   1          //释放SDA
+ 143   1          SDA = 1;
+ 144   1          SCL = 1;
+ 145   1          delay10Us();
+ 146   1      }
+ 147          
+ 148          u8 iicReadByte() {
+ 149   1          u8 recv = 0;
+ 150   1          u8 i;
+ 151   1      
+ 152   1          for (i = 0; i < 8; i++) {
+ 153   2              SCL = 1;
+ 154   2              delay10Us();
+ 155   2      
+ 156   2              recv = (recv << 1) | SDA ? 1 : 0;
+ 157   2      
+ 158   2              SCL = 0;
+ 159   2              delay10Us();
+ 160   2          }
+ 161   1      
+ 162   1          return recv;
+ 163   1      }
+ 164          
+ 165          // AT24C02读写驱动接口 (EEPROM)
+ 166          void at24c02Init() {}
+ 167          
+ 168          void at24c02WriteByte(u8 u8addr, u8 u8data) {
+ 169   1          // 开始
+ 170   1          iicStart();
+ 171   1          // 发送 从机地址 和 读写方向
+ 172   1          iicWriteByte(ADDR_W);
+ 173   1          // 等待从机响应
+ 174   1          if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
+ 175   1              return;
+ 176   1      
+ 177   1          // 发送 内存地址
+ 178   1          iicWriteByte(u8addr);
+C51 COMPILER V9.60.7.0   MAIN                                                              10/06/2024 17:34:07 PAGE 4   
+
+ 179   1          // 等待从机应答
+ 180   1          if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
+ 181   1              return;
+ 182   1      
+ 183   1          // 发送 数据
+ 184   1          iicWriteByte(u8data);
+ 185   1          // 等待从机应答
+ 186   1          if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
+ 187   1              return;
+ 188   1      }
+ 189          
+ 190          u8 at24c02ReadByte(u8 u8addr) {
+ 191   1          u8 readRes;
+ 192   1      
+ 193   1          iicStart();
+ 194   1      
+ 195   1          iicWriteByte(ADDR_W);
+ 196   1          // 等待从机响应
+ 197   1          if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
+ 198   1              return 0;
+ 199   1          
+ 200   1          // 发送 内存地址
+ 201   1          iicWriteByte(u8addr);
+ 202   1          // 等待从机应答
+ 203   1          if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
+ 204   1              return 0;
+ 205   1      
+ 206   1      
+ 207   1          // 转换通信方向为 读
+ 208   1          iicStart();
+ 209   1      
+ 210   1          iicWriteByte(ADDR_R);
+ 211   1          // 等待从机响应
+ 212   1          if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
+ 213   1              return 0;
+ 214   1      
+ 215   1          // 读取 从机发送的数据
+ 216   1          readRes = iicReadByte();
+ 217   1          // 对从机发送 NACK响应, 让其终止发送的通信
+ 218   1          iicNAck();
+ 219   1          // 终止通信
+ 220   1          iicStop();
+ 221   1      
+ 222   1          return readRes;
+ 223   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    290    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

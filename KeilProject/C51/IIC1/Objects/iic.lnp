@@ -1,0 +1,3 @@
+".\Objects\main.obj" 
+TO ".\Objects\iic" 
+PRINT(".\Listings\iic.m51") RAMSIZE(256) 
