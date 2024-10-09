@@ -1,0 +1,10 @@
+Build target 'Target 1'
+compiling iic.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?IICACK?IIC
+
+Program Size: data=99.1 xdata=0 code=2199
+creating hex file from ".\Objects\iic_eeprom"...
+".\Objects\iic_eeprom" - 0 Error(s), 1 Warning(s).
+Build Time Elapsed:  00:00:00

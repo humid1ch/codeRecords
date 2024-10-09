@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "ds18b20.h": "c",
+        "one_write.h": "c",
+        "util.h": "c",
+        "intrins.h": "c",
+        "INTRINS.H": "cpp",
+        "reg52.h": "c",
+        "smg.h": "c",
+        "REG52.H": "cpp"
+    }
+}

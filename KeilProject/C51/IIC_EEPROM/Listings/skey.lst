@@ -1,0 +1,61 @@
+C51 COMPILER V9.60.7.0   SKEY                                                              10/08/2024 09:25:15 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SKEY
+OBJECT MODULE PLACED IN .\Objects\skey.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\skey.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Apps;.\Utils) DEBUG OBJECT
+                    -EXTEND PRINT(.\Listings\skey.lst) OBJECT(.\Objects\skey.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "skey.h"
+   3          
+   4          // 四个按键, 连接引脚默认为高电平, 按下按键 与地导通, 变为低电平
+   5          sbit S_KEY1 = P3 ^ 1;
+   6          sbit S_KEY2 = P3 ^ 0;
+   7          sbit S_KEY3 = P3 ^ 2;
+   8          sbit S_KEY4 = P3 ^ 3;
+   9          
+  10          u8 keyScan() {
+  11   1          // 用 低四位表示 每个按键是否被按下
+  12   1          // 对应位 被按下, 就将对应位设置为1
+  13   1          // 低四位中 高位->低位 分别对应S_KEY1 -> S_KEY4
+  14   1          u8 keyState = NON_KEY_PRESSED;
+  15   1      
+  16   1          if (S_KEY1 == 0 || S_KEY2 == 0 || S_KEY3 == 0 || S_KEY4 == 0) {
+  17   2              delayNMs(2); // 消抖, 确认是否被按下
+  18   2              if (S_KEY1 == 0)
+  19   2                  keyState = S_KEY1_PRESSED;
+  20   2      
+  21   2              if (S_KEY2 == 0)
+  22   2                  keyState = S_KEY2_PRESSED;
+  23   2      
+  24   2              if (S_KEY3 == 0)
+  25   2                  keyState = S_KEY3_PRESSED;
+  26   2      
+  27   2              if (S_KEY4 == 0)
+  28   2                  keyState = S_KEY4_PRESSED;
+  29   2          }
+  30   1      
+  31   1          // 只要有按键是0, 就表示还有按键没有被抬起, 就不返回
+  32   1          while (S_KEY1 == 0 || S_KEY2 == 0 || S_KEY3 == 0 || S_KEY4 == 0)
+  33   1              ;
+  34   1      
+  35   1          // 返回keyState
+  36   1          return keyState;
+  37   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     61    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

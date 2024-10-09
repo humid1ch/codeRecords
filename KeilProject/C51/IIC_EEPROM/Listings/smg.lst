@@ -1,0 +1,85 @@
+C51 COMPILER V9.60.7.0   SMG                                                               10/08/2024 09:25:15 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SMG
+OBJECT MODULE PLACED IN .\Objects\smg.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\smg.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Apps;.\Utils) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\smg.lst) OBJECT(.\Objects\smg.obj)
+
+line level    source
+
+   1          #include "smg.h"
+   2          #include "reg52.h"
+   3          
+   4          // 3->8译码器的三个引脚
+   5          // 板子上 右边数码管的是较小值
+   6          sbit SMG_22 = P2 ^ 2;
+   7          sbit SMG_23 = P2 ^ 3;
+   8          sbit SMG_24 = P2 ^ 4;
+   9          
+  10          // 8个 1位数码管选择函数
+  11          void smg1() {
+  12   1          SMG_24 = 1;
+  13   1          SMG_23 = 1;
+  14   1          SMG_22 = 1;
+  15   1      }
+  16          void smg2() {
+  17   1          SMG_24 = 1;
+  18   1          SMG_23 = 1;
+  19   1          SMG_22 = 0;
+  20   1      }
+  21          void smg3() {
+  22   1          SMG_24 = 1;
+  23   1          SMG_23 = 0;
+  24   1          SMG_22 = 1;
+  25   1      }
+  26          void smg4() {
+  27   1          SMG_24 = 1;
+  28   1          SMG_23 = 0;
+  29   1          SMG_22 = 0;
+  30   1      }
+  31          void smg5() {
+  32   1          SMG_24 = 0;
+  33   1          SMG_23 = 1;
+  34   1          SMG_22 = 1;
+  35   1      }
+  36          void smg6() {
+  37   1          SMG_24 = 0;
+  38   1          SMG_23 = 1;
+  39   1          SMG_22 = 0;
+  40   1      }
+  41          void smg7() {
+  42   1          SMG_24 = 0;
+  43   1          SMG_23 = 0;
+  44   1          SMG_22 = 1;
+  45   1      }
+  46          void smg8() {
+  47   1          SMG_24 = 0;
+  48   1          SMG_23 = 0;
+  49   1          SMG_22 = 0;
+  50   1      }
+  51          
+  52          // 数码管选择函数 数组
+  53          smgSelFunc smgFuncs[] = {smg1, smg2, smg3, smg4, smg5, smg6, smg7, smg8};
+  54          
+C51 COMPILER V9.60.7.0   SMG                                                               10/08/2024 09:25:15 PAGE 2   
+
+  55          // 板子使用 共阴数码管, 各引脚给高电平点亮边
+  56          // a b c d e f g dp  低->高
+  57          // dp g f e d c b a
+  58          unsigned char smgNum[] = {0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F, 0x77, 0x7C, 0x39, 0x
+             -5E, 0x79, 0x71, 0x00};
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     56    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     41    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

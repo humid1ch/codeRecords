@@ -1,0 +1,9 @@
+".\Objects\at24c02.obj",
+".\Objects\iic.obj",
+".\Objects\skey.obj",
+".\Objects\smg.obj",
+".\Objects\uart.obj",
+".\Objects\util.obj",
+".\Objects\main.obj" 
+TO ".\Objects\iic_eeprom" 
+PRINT(".\Listings\iic_eeprom.m51") RAMSIZE(256) 

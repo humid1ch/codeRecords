@@ -1,0 +1,7 @@
+".\Objects\smg.obj",
+".\Objects\ds18b20.obj",
+".\Objects\one_write.obj",
+".\Objects\util.obj",
+".\Objects\main.obj" 
+TO ".\Objects\ow_ds18b20" 
+PRINT(".\Listings\ow_ds18b20.m51") RAMSIZE(256) 

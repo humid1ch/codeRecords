@@ -1,0 +1,144 @@
+C51 COMPILER V9.60.7.0   IIC                                                               10/08/2024 16:18:17 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE IIC
+OBJECT MODULE PLACED IN .\Objects\iic.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\iic.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Apps;.\Utils) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\iic.lst) OBJECT(.\Objects\iic.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "iic.h"
+   3          
+   4          // IIC 总线通信 (软件)
+   5          // 相关驱动
+   6          sbit SDA = P2 ^ 0; // 数据口
+   7          sbit SCL = P2 ^ 1; // 时钟口
+   8          
+   9          // 在时钟高电平时, SDA下降沿表示 数据传输开始
+  10          void iicStart() {
+  11   1          // 让 SDA和SCL处于空闲状态
+  12   1          // 先将SCL拉高
+  13   1          SCL = 1;
+  14   1      
+  15   1          // 再将 SDA拉高, 保证下面出现下降沿
+  16   1          SDA = 1;
+  17   1          delay10Us();
+  18   1          SDA = 0;
+  19   1          delay10Us();
+  20   1      }
+  21          
+  22          // 在时钟高电平时, SDA上升沿表示 数据传输结束
+  23          void iicStop() {
+  24   1          // 先将SCL拉高
+  25   1          SCL = 1;
+  26   1      
+  27   1          // 再将 SDA拉低, 保证下面出现上升沿
+  28   1          SDA = 0;
+  29   1          delay10Us();
+  30   1          SDA = 1;
+  31   1          delay10Us();
+  32   1      }
+  33          
+  34          u8 iicWaitAck() {
+  35   1          char timeout = 0;
+  36   1      
+  37   1          // SDA = 1; // SDA被拉低, 表示收到ACK应答, 拉高表示收到NACK应答
+  38   1          SCL = 1;
+  39   1          delay10Us();
+  40   1      
+  41   1          // 读取从机应答
+  42   1          while (SDA == 1) {
+  43   2              timeout++;
+  44   2              if (timeout > 200)
+  45   2                  return 1; // 超时, 或收到 NACK
+  46   2          }
+  47   1          // 如果是ACK, 不用单独处理
+  48   1      
+  49   1          SCL = 0;
+  50   1          delay10Us();
+  51   1      
+  52   1          return 0;
+  53   1      }
+  54          
+C51 COMPILER V9.60.7.0   IIC                                                               10/08/2024 16:18:17 PAGE 2   
+
+  55          // SDA低电平 是ACK响应
+  56          void iicAck() {
+  57   1          SCL = 0;
+  58   1          SDA = 1;
+  59   1          delay10Us();
+  60   1      
+  61   1          SDA = 0;
+  62   1          delay10Us();
+  63   1          SCL = 1;
+  64   1          delay10Us();
+  65   1      }
+  66          
+  67          // SDA低电平 是NACK响应
+  68          void iicNAck() {
+  69   1          SCL = 0;
+  70   1          delay10Us();
+  71   1      
+  72   1          SDA = 1;
+  73   1          delay10Us();
+  74   1          SCL = 1;
+  75   1          delay10Us();
+  76   1      }
+  77          
+  78          void iicWriteByte(u8 u8data) {
+  79   1          char i = 0;
+  80   1          SCL = 0;
+  81   1          delay10Us();
+  82   1      
+  83   1          for (i = 0; i < 8; i++) {
+  84   2              SDA = (u8data >> 7) & 0x01; //MSB
+  85   2      
+  86   2              SCL = 1;
+  87   2              delay10Us();
+  88   2              SCL = 0;
+  89   2              delay10Us();
+  90   2              u8data <<= 1;
+  91   2          }
+  92   1      
+  93   1          //释放SDA
+  94   1          SCL = 1;
+  95   1          SDA = 1;
+  96   1          delay10Us();
+  97   1      }
+  98          
+  99          u8 iicReadByte() {
+ 100   1          u8 recv = 0;
+ 101   1          char i = 0;
+ 102   1      
+ 103   1          for (i = 0; i < 8; i++) {
+ 104   2              SCL = 1;
+ 105   2              delay10Us();
+ 106   2      
+ 107   2              recv |= SDA ? 0x01 : 0x00;
+ 108   2              if (i < 7)
+ 109   2                  recv <<= 1;
+ 110   2      
+ 111   2              SCL = 0;
+ 112   2              delay10Us();
+ 113   2          }
+ 114   1      
+ 115   1          return recv;
+ 116   1      }
+C51 COMPILER V9.60.7.0   IIC                                                               10/08/2024 16:18:17 PAGE 3   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    214    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "smg.h": "c",
+        "stdio.h": "c",
+        "iic.h": "c",
+        "at24c02.h": "c",
+        "skey.h": "c",
+        "uart.h": "c",
+        "util.h": "c",
+        "reg52.h": "c",
+        "STDIO.H": "cpp",
+        "REG52.H": "cpp"
+    }
+}

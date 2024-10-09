@@ -15,20 +15,20 @@ void delayN10Us(unsigned int n) {
 }
 
 void delayMs() {
-	unsigned char data i, j;
+    unsigned char data i, j;
 
-	_nop_();
-	i = 2;
-	j = 199;
-	do {
-		while (--j)
-			;
-	} while (--i);
+    _nop_();
+    i = 2;
+    j = 199;
+    do {
+        while (--j)
+            ;
+    } while (--i);
 }
 
 void delayNMs(u16 n) {
-	while (--n)
-		delayMs();
+    while (--n)
+        delayMs();
 }
 
 // IIC 总线通信 (软件)
@@ -91,7 +91,7 @@ u8 iicWaitAck() {
     if (SDA) { // 从机应答NACK
         // 结束通信
         iicStop();
-        return 0;   
+        return 0;
     }
     // 如果是ACK, 不用单独处理
 
@@ -192,23 +192,21 @@ void at24c02WriteByte(u8 u8addr, u8 u8data) {
 u8 at24c02ReadByte(u8 u8addr) {
     u8 readRes;
 
+    // 开始 发送传输方向
     iicStart();
-
     iicWriteByte(ADDR_W);
     // 等待从机响应
     if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
         return 0;
-    
+
     // 发送 内存地址
     iicWriteByte(u8addr);
     // 等待从机应答
     if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
         return 0;
 
-
     // 转换通信方向为 读
     iicStart();
-
     iicWriteByte(ADDR_R);
     // 等待从机响应
     if (!iicWaitAck()) // 返回值为 0, 则表示通信结束
