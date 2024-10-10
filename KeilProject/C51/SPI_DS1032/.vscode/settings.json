@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "ds1302.h": "c",
+        "util.h": "c",
+        "smg.h": "c",
+        "reg52.h": "c",
+        "REG52.H": "cpp"
+    }
+}

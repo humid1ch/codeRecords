@@ -1,0 +1,6 @@
+".\Objects\smg.obj",
+".\Objects\ds1302.obj",
+".\Objects\util.obj",
+".\Objects\main.obj" 
+TO ".\Objects\spi_ds1302" 
+PRINT(".\Listings\spi_ds1302.m51") RAMSIZE(256) 

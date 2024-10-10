@@ -1,0 +1,6 @@
+".\Objects\main.obj",
+".\Objects\smg.obj",
+".\Objects\xpt2046.obj",
+".\Objects\util.obj" 
+TO ".\Objects\spi_adc_xpt2046" 
+PRINT(".\Listings\spi_adc_xpt2046.m51") RAMSIZE(256) 

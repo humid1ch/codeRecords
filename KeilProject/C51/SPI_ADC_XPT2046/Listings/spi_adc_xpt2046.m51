@@ -1,0 +1,347 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    10/10/2024  17:21:14  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\main.obj, .\Objects\smg.obj, .\Objects\xpt2046.obj, .\Objects\util.obj TO .\Object
+>> s\spi_adc_xpt2046 PRINT (.\Listings\spi_adc_xpt2046.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\main.obj (MAIN)
+  .\Objects\smg.obj (SMG)
+  .\Objects\xpt2046.obj (XPT2046)
+  .\Objects\util.obj (UTIL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_INIT)
+
+
+LINK MAP OF MODULE:  .\Objects\spi_adc_xpt2046 (MAIN)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     002AH     UNIT         ?DT?SMG
+            DATA    0032H     0002H     UNIT         ?DT?_XPT2046_GETVALUE?XPT2046
+            IDATA   0034H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     008CH     UNIT         ?C_C51STARTUP
+            CODE    008FH     002FH     UNIT         ?C_INITSEG
+            CODE    00BEH     0027H     UNIT         ?PR?_XPT2046_GETVALUE?XPT2046
+            CODE    00E5H     001FH     UNIT         ?PR?__SPI_WRITEBYTE?XPT2046
+            CODE    0104H     001FH     UNIT         ?PR?_SPI_READDATA?XPT2046
+            CODE    0123H     0013H     UNIT         ?PR?_DELAYNMS?UTIL
+            CODE    0136H     0010H     UNIT         ?PR?_DELAYN10US?UTIL
+            CODE    0146H     000AH     UNIT         ?PR?DELAYMS?UTIL
+            CODE    0150H     0008H     UNIT         ?PR?MAIN?MAIN
+            CODE    0158H     0007H     UNIT         ?PR?SMG1?SMG
+            CODE    015FH     0007H     UNIT         ?PR?SMG2?SMG
+            CODE    0166H     0007H     UNIT         ?PR?SMG3?SMG
+            CODE    016DH     0007H     UNIT         ?PR?SMG4?SMG
+            CODE    0174H     0007H     UNIT         ?PR?SMG5?SMG
+            CODE    017BH     0007H     UNIT         ?PR?SMG6?SMG
+            CODE    0182H     0007H     UNIT         ?PR?SMG7?SMG
+            CODE    0189H     0007H     UNIT         ?PR?SMG8?SMG
+            CODE    0190H     0001H     UNIT         ?PR?SMG_INIT?SMG
+            CODE    0191H     0001H     UNIT         ?PR?XPT2046_INIT?XPT2046
+            CODE    0192H     0001H     UNIT         ?PR?DELAY10US?UTIL
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\spi_adc_xpt2046 (MAIN)
+
+
+SEGMENT
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/10/2024  17:21:14  PAGE 2
+
+
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+  +--> ?C_INITSEG
+
+?PR?MAIN?MAIN
+  +--> ?PR?SMG_INIT?SMG
+  +--> ?PR?XPT2046_INIT?XPT2046
+
+?C_INITSEG
+  +--> ?PR?SMG1?SMG
+  +--> ?PR?SMG2?SMG
+  +--> ?PR?SMG3?SMG
+  +--> ?PR?SMG4?SMG
+  +--> ?PR?SMG5?SMG
+  +--> ?PR?SMG6?SMG
+  +--> ?PR?SMG7?SMG
+  +--> ?PR?SMG8?SMG
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\spi_adc_xpt2046 (MAIN)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0150H         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:0150H         LINE#         5
+  C:0150H         LINE#         6
+  C:0153H         LINE#         7
+  C:0156H         LINE#         9
+  C:0156H         LINE#         10
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        SMG
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:0158H         PUBLIC        SMG1
+  C:015FH         PUBLIC        SMG2
+  C:0166H         PUBLIC        SMG3
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/10/2024  17:21:14  PAGE 3
+
+
+  C:016DH         PUBLIC        SMG4
+  C:0174H         PUBLIC        SMG5
+  C:017BH         PUBLIC        SMG6
+  C:0182H         PUBLIC        SMG7
+  C:0189H         PUBLIC        SMG8
+  B:00A0H.2       PUBLIC        SMG_22
+  B:00A0H.3       PUBLIC        SMG_23
+  B:00A0H.4       PUBLIC        SMG_24
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:0008H         PUBLIC        smgFuncs
+  C:0190H         PUBLIC        SMG_Init
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  D:0020H         PUBLIC        smgNum
+  -------         PROC          SMG_INIT
+  C:0190H         LINE#         10
+  -------         ENDPROC       SMG_INIT
+  -------         PROC          SMG1
+  C:0158H         LINE#         13
+  C:0158H         LINE#         14
+  C:015AH         LINE#         15
+  C:015CH         LINE#         16
+  C:015EH         LINE#         17
+  -------         ENDPROC       SMG1
+  -------         PROC          SMG2
+  C:015FH         LINE#         18
+  C:015FH         LINE#         19
+  C:0161H         LINE#         20
+  C:0163H         LINE#         21
+  C:0165H         LINE#         22
+  -------         ENDPROC       SMG2
+  -------         PROC          SMG3
+  C:0166H         LINE#         23
+  C:0166H         LINE#         24
+  C:0168H         LINE#         25
+  C:016AH         LINE#         26
+  C:016CH         LINE#         27
+  -------         ENDPROC       SMG3
+  -------         PROC          SMG4
+  C:016DH         LINE#         28
+  C:016DH         LINE#         29
+  C:016FH         LINE#         30
+  C:0171H         LINE#         31
+  C:0173H         LINE#         32
+  -------         ENDPROC       SMG4
+  -------         PROC          SMG5
+  C:0174H         LINE#         33
+  C:0174H         LINE#         34
+  C:0176H         LINE#         35
+  C:0178H         LINE#         36
+  C:017AH         LINE#         37
+  -------         ENDPROC       SMG5
+  -------         PROC          SMG6
+  C:017BH         LINE#         38
+  C:017BH         LINE#         39
+  C:017DH         LINE#         40
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/10/2024  17:21:14  PAGE 4
+
+
+  C:017FH         LINE#         41
+  C:0181H         LINE#         42
+  -------         ENDPROC       SMG6
+  -------         PROC          SMG7
+  C:0182H         LINE#         43
+  C:0182H         LINE#         44
+  C:0184H         LINE#         45
+  C:0186H         LINE#         46
+  C:0188H         LINE#         47
+  -------         ENDPROC       SMG7
+  -------         PROC          SMG8
+  C:0189H         LINE#         48
+  C:0189H         LINE#         49
+  C:018BH         LINE#         50
+  C:018DH         LINE#         51
+  C:018FH         LINE#         52
+  -------         ENDPROC       SMG8
+  -------         ENDMOD        SMG
+
+  -------         MODULE        XPT2046
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  B:00B0H.5       PUBLIC        CS
+  D:00B8H         PUBLIC        IP
+  C:0104H         SYMBOL        _SPI_ReadData
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  B:00B0H.7       PUBLIC        DOUT
+  C:0191H         PUBLIC        XPT2046_Init
+  C:00BEH         PUBLIC        _XPT2046_GetValue
+  C:00E5H         SYMBOL        __SPI_WriteByte
+  B:00B0H.6       PUBLIC        CLK
+  B:00B0H.4       PUBLIC        DIN
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          XPT2046_INIT
+  C:0191H         LINE#         15
+  -------         ENDPROC       XPT2046_INIT
+  -------         PROC          _XPT2046_GETVALUE
+  D:0007H         SYMBOL        u8cmd
+  -------         DO            
+  D:0007H         SYMBOL        i
+  D:0032H         SYMBOL        u16val
+  -------         ENDDO         
+  C:00BEH         LINE#         17
+  C:00BEH         LINE#         19
+  C:00C3H         LINE#         21
+  C:00C5H         LINE#         22
+  C:00C7H         LINE#         23
+  C:00C8H         LINE#         25
+  C:00CAH         LINE#         26
+  C:00CBH         LINE#         28
+  C:00CEH         LINE#         31
+  C:00D4H         LINE#         33
+  C:00D6H         LINE#         34
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/10/2024  17:21:14  PAGE 5
+
+
+  C:00D7H         LINE#         35
+  C:00D9H         LINE#         36
+  C:00DAH         LINE#         38
+  C:00E1H         LINE#         40
+  C:00E3H         LINE#         41
+  C:00E4H         LINE#         43
+  C:00E4H         LINE#         44
+  -------         ENDPROC       _XPT2046_GETVALUE
+  -------         PROC          __SPI_WRITEBYTE
+  D:0007H         SYMBOL        u8data
+  -------         DO            
+  D:0006H         SYMBOL        i
+  -------         ENDDO         
+  C:00E5H         LINE#         46
+  C:00E5H         LINE#         49
+  C:00E7H         LINE#         50
+  C:00E8H         LINE#         53
+  C:00EAH         LINE#         54
+  C:00F5H         LINE#         55
+  C:00F9H         LINE#         57
+  C:00FBH         LINE#         58
+  C:00FCH         LINE#         59
+  C:00FEH         LINE#         60
+  C:00FFH         LINE#         61
+  C:0103H         LINE#         62
+  -------         ENDPROC       __SPI_WRITEBYTE
+  -------         PROC          _SPI_READDATA
+  -------         DO            
+  D:0006H         SYMBOL        u16val
+  D:0005H         SYMBOL        i
+  -------         ENDDO         
+  C:0104H         LINE#         64
+  C:0104H         LINE#         65
+  C:0107H         LINE#         68
+  C:0109H         LINE#         69
+  C:010AH         LINE#         72
+  C:010BH         LINE#         73
+  C:0111H         LINE#         74
+  C:0118H         LINE#         76
+  C:011AH         LINE#         77
+  C:011BH         LINE#         78
+  C:011DH         LINE#         79
+  C:011EH         LINE#         80
+  C:0122H         LINE#         82
+  C:0122H         LINE#         83
+  -------         ENDPROC       _SPI_READDATA
+  -------         ENDMOD        XPT2046
+
+  -------         MODULE        UTIL
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0136H         PUBLIC        _delayN10Us
+  C:0123H         PUBLIC        _delayNMs
+  C:0192H         PUBLIC        delay10Us
+  C:0146H         PUBLIC        delayMs
+  -------         PROC          DELAY10US
+  C:0192H         LINE#         4
+  C:0192H         LINE#         5
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/10/2024  17:21:14  PAGE 6
+
+
+  C:0192H         LINE#         7
+  -------         ENDPROC       DELAY10US
+  -------         PROC          _DELAYN10US
+  D:0006H         SYMBOL        n
+  C:0136H         LINE#         9
+  C:0136H         LINE#         10
+  C:0140H         LINE#         11
+  C:0145H         LINE#         12
+  -------         ENDPROC       _DELAYN10US
+  -------         PROC          DELAYMS
+  -------         DO            
+  D:0007H         SYMBOL        i
+  D:0006H         SYMBOL        j
+  -------         ENDDO         
+  C:0146H         LINE#         14
+  C:0146H         LINE#         17
+  C:0147H         LINE#         18
+  C:0149H         LINE#         19
+  C:014BH         LINE#         20
+  C:014BH         LINE#         21
+  C:014DH         LINE#         23
+  C:014FH         LINE#         24
+  -------         ENDPROC       DELAYMS
+  -------         PROC          _DELAYNMS
+  D:0004H         SYMBOL        n
+  C:0123H         LINE#         26
+  C:0127H         LINE#         27
+  C:0130H         LINE#         28
+  C:0135H         LINE#         29
+  -------         ENDPROC       _DELAYNMS
+  -------         ENDMOD        UTIL
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_XPT2046_GETVALUE?XPT2046
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAYN10US?UTIL
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAYNMS?UTIL
+
+Program Size: data=53.0 xdata=0 code=403
+LINK/LOCATE RUN COMPLETE.  3 WARNING(S),  0 ERROR(S)
