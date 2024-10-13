@@ -1,0 +1,49 @@
+C51 COMPILER V9.60.7.0   PWM                                                               10/11/2024 13:58:39 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE PWM
+OBJECT MODULE PLACED IN .\Objects\pwm.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\pwm.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJECTE
+                    -XTEND PRINT(.\Listings\pwm.lst) OBJECT(.\Objects\pwm.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "pwm.h"
+   3          
+   4          sbit PWM_PULES = P2 ^ 1;
+   5          
+   6          void PWM_Init() {}
+   7          
+   8          // u16period, 表示 一个脉冲时长 [100, 1000] us
+   9          // u8duty, 表示 高电平占空比 [0, 100]
+  10          void PWM_SetPULES(u16 u16period, u8 u8duty) {
+  11   1          u16 highWidth = 0;
+  12   1          u16 lowWidth = 0;
+  13   1      
+  14   1          u16period = u16period < 100 ? 100 : u16period;
+  15   1          u16period = u16period > 1000 ? 1000 : u16period;
+  16   1          u8duty = u8duty > 100 ? 100 : u8duty;
+  17   1          
+  18   1          highWidth = u16period * u8duty / 100;
+  19   1          lowWidth = u16period - highWidth;
+  20   1          
+  21   1          PWM_PULES = 1;
+  22   1          delayN10Us(highWidth / 10);
+  23   1          PWM_PULES = 0;
+  24   1          delayN10Us(lowWidth / 10);
+  25   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    123    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

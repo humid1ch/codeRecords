@@ -1,0 +1,45 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/11/2024 16:26:52 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Users\main.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJEC
+                    -TEXTEND PRINT(.\Listings\main.lst) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "util.h"
+   3          #include "lcd1602.h"
+   4          
+   5          u8 firstLineAddr[] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 
+             -0x0E, 0x0F};
+   6          u8 secondLineAddr[] = {0x40, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D,
+             - 0x4E, 0x4F};
+   7          
+   8          void main() {
+   9   1          u8 string[] = "Hello World!";
+  10   1          u8 i = 0;
+  11   1          
+  12   1          LCD1602_Init();
+  13   1      
+  14   1          for (i = 0; i < 12; i++)
+  15   1              LCD1602_Dispaly(firstLineAddr[i], string[i]);
+  16   1      
+  17   1          while (1)
+  18   1              ;
+  19   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     56    ----
+   CONSTANT SIZE    =     13    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     32      14
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

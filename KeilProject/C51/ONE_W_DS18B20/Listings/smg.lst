@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   SMG                                                               10/08/2024 15:21:18 PAGE 1   
+C51 COMPILER V9.60.7.0   SMG                                                               10/12/2024 15:19:28 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SMG
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          
   54          // 数码管选择函数 数组
-C51 COMPILER V9.60.7.0   SMG                                                               10/08/2024 15:21:18 PAGE 2   
+C51 COMPILER V9.60.7.0   SMG                                                               10/12/2024 15:19:28 PAGE 2   
 
   55          smgSelFunc smgFuncs[] = {smg1, smg2, smg3, smg4, smg5, smg6, smg7, smg8};
   56          

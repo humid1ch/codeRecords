@@ -1,0 +1,53 @@
+C51 COMPILER V9.60.7.0   UTIL                                                              10/12/2024 15:40:13 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE UTIL
+OBJECT MODULE PLACED IN .\Objects\util.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Utils\util.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJEC
+                    -TEXTEND PRINT(.\Listings\util.lst) OBJECT(.\Objects\util.obj)
+
+line level    source
+
+   1          #include "util.h"
+   2          #include "intrins.h"
+   3          
+   4          void delay10Us() {
+   5   1              while (0)
+   6   1                      ;
+   7   1      }
+   8          
+   9          void delayN10Us(u16 n) {
+  10   1              while (n--) 
+  11   1                      delay10Us();
+  12   1      }
+  13          
+  14          void delayMs() {
+  15   1              u8 i, j;
+  16   1      
+  17   1              _nop_();
+  18   1              i = 2;
+  19   1              j = 199;
+  20   1              do {
+  21   2                      while (--j)
+  22   2                              ;
+  23   2              } while (--i);
+  24   1      }
+  25          
+  26          void delayNMs(u16 n) {
+  27   1              while (--n) 
+  28   1                      delayMs();
+  29   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     46    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

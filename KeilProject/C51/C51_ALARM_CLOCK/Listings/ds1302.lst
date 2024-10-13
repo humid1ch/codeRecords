@@ -1,0 +1,175 @@
+C51 COMPILER V9.60.7.0   DS1302                                                            10/12/2024 15:40:13 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS1302
+OBJECT MODULE PLACED IN .\Objects\ds1302.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\ds1302.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJE
+                    -CTEXTEND PRINT(.\Listings\ds1302.lst) OBJECT(.\Objects\ds1302.obj)
+
+line level    source
+
+   1          /*
+   2              DS1302时钟, SPI协议通信
+   3              无论读写, 都是LSB模式, 即 发送数据 或 读取数据 均 先从低位开始发送
+   4          */
+   5          #include "ds1302.h"
+   6          #include "reg52.h"
+   7          #include "intrins.h"
+   8          
+   9          // 管脚
+  10          sbit DS1302_RST = P3 ^ 5; // SPI复位或片选
+  11          sbit DS1302_CLK = P3 ^ 6; // SPI时钟
+  12          sbit DS1302_IO = P3 ^ 4;  // SPI数据
+  13          
+  14          // 存储 DS1302 时间. BCD格式, 即4位bit表示10进制
+  15          // 秒 分 时 日 月 周 年
+  16          u8 gDS1302_Time[7] = {0x00, 0x30, 0x15, 0x12, 0x10, 0x04, 0x24};
+  17          
+  18          // 秒分时日月周年的 控制寄存器写的指令
+  19          static const u8 ds1302_rtc_cmd[7] = {SECONDS_CTRL, MINITES_CTRL, HOURS_CTRL, DAYS_CTRL, MONTHES_CTRL, WEEK
+             -S_CTRL, YEARS_CTRL};
+  20          
+  21          static void _ds1302_WriteByte(u8 u8cmd, u8 u8data);
+  22          static u8 _ds1302_ReadByte(u8 u8cmd);
+  23          
+  24          void DS1302_Init() {
+  25   1          u8 i;
+  26   1      
+  27   1          // 关闭DS1302的写保护: 发送0x8E选择写保护寄存器, 向选定寄存器写入0x00 关闭�
+             -�保护
+  28   1          _ds1302_WriteByte(WRITE_PRO_CTRL | REG_W_CTRL, 0x00);
+  29   1      
+  30   1          // 按顺序向 秒分时日月周年 寄存器 写入初始时间
+  31   1          for (i = 0; i < 7; i++) {
+  32   2              _ds1302_WriteByte(ds1302_rtc_cmd[i] | REG_W_CTRL, gDS1302_Time[i]);
+  33   2          }
+  34   1      
+  35   1          // 开启DS1302的写保护: 发送0x8E选择写保护寄存器, 向选定寄存器写入0x80 关闭�
+             -�启保护
+  36   1          _ds1302_WriteByte(WRITE_PRO_CTRL | REG_W_CTRL, 0x80);
+  37   1      }
+  38          
+  39          void DS1302_GetTime() {
+  40   1          u8 i;
+  41   1      
+  42   1          // 按顺序从 秒0 分1 时2 日3 月4 周5 年6 寄存器 读取 基于初始时间的变化后的�
+             -��间
+  43   1          // 设置完初始时间之后, 会自动按 秒 变化 
+  44   1          for (i = 0; i < 7; i++) {
+  45   2              gDS1302_Time[i] = _ds1302_ReadByte(ds1302_rtc_cmd[i] | REG_R_CTRL);
+  46   2          }
+  47   1      }
+  48          
+  49          static void _ds1302_WriteByte(u8 u8cmd, u8 u8data) {
+  50   1          u8 i;
+C51 COMPILER V9.60.7.0   DS1302                                                            10/12/2024 15:40:13 PAGE 2   
+
+  51   1      
+  52   1          //SPI片选或复位
+  53   1          DS1302_RST = 0;
+  54   1          _nop_();
+  55   1      
+  56   1          DS1302_CLK = 0;
+  57   1          _nop_();
+  58   1      
+  59   1          DS1302_RST = 1;
+  60   1          _nop_();
+  61   1      
+  62   1          // 发送指令 选择寄存器
+  63   1          for (i = 0; i < 8; i++) {
+  64   2              DS1302_IO = u8cmd & 0x01; //LSB
+  65   2              u8cmd >>= 1;
+  66   2      
+  67   2              DS1302_CLK = 1;
+  68   2              _nop_();
+  69   2              DS1302_CLK = 0;
+  70   2              _nop_();
+  71   2          }
+  72   1      
+  73   1          // 向IO口写入数据
+  74   1          for (i = 0; i < 8; i++) {
+  75   2              DS1302_IO = u8data & 0x01; //LSB
+  76   2              u8data >>= 1;
+  77   2      
+  78   2              DS1302_CLK = 1;
+  79   2              _nop_();
+  80   2              DS1302_CLK = 0;
+  81   2              _nop_();
+  82   2          }
+  83   1      
+  84   1          DS1302_RST = 0;
+  85   1          _nop_();
+  86   1      }
+  87          
+  88          static u8 _ds1302_ReadByte(u8 u8cmd) {
+  89   1          u8 i;
+  90   1          u8 u8val = 0;
+  91   1          u8 u8temp = 0;
+  92   1      
+  93   1          //SPI片选或复位
+  94   1          DS1302_RST = 0;
+  95   1          _nop_();
+  96   1      
+  97   1          DS1302_CLK = 0;
+  98   1          _nop_();
+  99   1      
+ 100   1          DS1302_RST = 1;
+ 101   1          _nop_();
+ 102   1      
+ 103   1          // 发送指令, 选择寄存器
+ 104   1          for (i = 0; i < 8; i++) {
+ 105   2              DS1302_IO = u8cmd & 0x01; // LSB
+ 106   2              u8cmd >>= 1;
+ 107   2      
+ 108   2              DS1302_CLK = 1;
+ 109   2              _nop_();
+ 110   2      
+ 111   2              if (i < 7) {
+ 112   3                  DS1302_CLK = 0;
+C51 COMPILER V9.60.7.0   DS1302                                                            10/12/2024 15:40:13 PAGE 3   
+
+ 113   3                  _nop_();
+ 114   3              }
+ 115   2          }
+ 116   1      
+ 117   1          for (i = 0; i < 8; i++) {
+ 118   2              DS1302_CLK = 0;
+ 119   2              _nop_();
+ 120   2      
+ 121   2              u8temp = DS1302_IO; // LSB的, 先接收到的是低位
+ 122   2      
+ 123   2              u8val |= (u8temp << i);
+ 124   2      
+ 125   2              DS1302_CLK = 1;
+ 126   2              _nop_();
+ 127   2          }
+ 128   1      
+ 129   1          // DS1302_RST = 0;
+ 130   1          // _nop_();
+ 131   1      
+ 132   1          //我们的开发板P34有问题，外部没有上拉电阻，需要一个P34的上升沿才能读到�
+             -��据
+ 133   1          DS1302_CLK = 1;
+ 134   1          _nop_();
+ 135   1      
+ 136   1          DS1302_IO = 0;
+ 137   1          _nop_();
+ 138   1          DS1302_IO = 1;
+ 139   1          _nop_();
+ 140   1      
+ 141   1          return u8val;
+ 142   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    205    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     14       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

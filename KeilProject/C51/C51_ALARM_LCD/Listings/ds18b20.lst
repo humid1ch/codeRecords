@@ -1,0 +1,51 @@
+C51 COMPILER V9.60.7.0   DS18B20                                                           10/13/2024 17:29:21 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS18B20
+OBJECT MODULE PLACED IN .\Objects\ds18b20.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\ds18b20.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJ
+                    -ECTEXTEND PRINT(.\Listings\ds18b20.lst) OBJECT(.\Objects\ds18b20.obj)
+
+line level    source
+
+   1          #include "ds18b20.h"
+   2          #include "one_write.h"
+   3          
+   4          void DS18B20_Init() {
+   5   1          ONE_WRITE_Init();
+   6   1      }
+   7          
+   8          void DS18B20_ReadTemperature(u16* u16pdata) {
+   9   1          u16 u16data = 0;
+  10   1          ONE_WRITE_Reset();
+  11   1      
+  12   1          ONE_WRITE_WriteByte(0xCC);
+  13   1      
+  14   1          ONE_WRITE_WriteByte(0x44);
+  15   1      
+  16   1          delayMs();
+  17   1      
+  18   1          ONE_WRITE_Reset();
+  19   1      
+  20   1          ONE_WRITE_WriteByte(0xCC);
+  21   1      
+  22   1          ONE_WRITE_WriteByte(0xBE);
+  23   1      
+  24   1          *u16pdata = ONE_WRITE_ReadByte();
+  25   1          u16data = ONE_WRITE_ReadByte();
+  26   1          *u16pdata |= (u16data << 8);
+  27   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     88    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       5
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

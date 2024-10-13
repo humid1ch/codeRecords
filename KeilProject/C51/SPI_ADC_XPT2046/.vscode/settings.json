@@ -1,6 +1,10 @@
 {
     "files.associations": {
         "xpt2046.h": "c",
-        "reg52.h": "c"
+        "reg52.h": "c",
+        "intrins.h": "c",
+        "INTRINS.H": "cpp",
+        "util.h": "c",
+        "REG52.H": "cpp"
     }
 }

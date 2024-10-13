@@ -1,0 +1,10 @@
+".\Objects\beep.obj",
+".\Objects\ds18b20.obj",
+".\Objects\ds1302.obj",
+".\Objects\lcd1062.obj",
+".\Objects\one_write.obj",
+".\Objects\skey.obj",
+".\Objects\main.obj",
+".\Objects\util.obj" 
+TO ".\Objects\alarm_lcd" 
+PRINT(".\Listings\alarm_lcd.m51") RAMSIZE(256) 

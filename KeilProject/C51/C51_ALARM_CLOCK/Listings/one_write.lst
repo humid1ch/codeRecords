@@ -1,0 +1,136 @@
+C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/12/2024 15:40:13 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ONE_WRITE
+OBJECT MODULE PLACED IN .\Objects\one_write.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\one_write.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG O
+                    -BJECTEXTEND PRINT(.\Listings\one_write.lst) OBJECT(.\Objects\one_write.obj)
+
+line level    source
+
+   1          #include "one_write.h"
+   2          #include "reg52.h"
+   3          #include "intrins.h"
+   4          
+   5          #define ONEWRITE_RES_TIMEOUT 25
+   6          
+   7          sbit DS18B20_DQ = P3 ^ 7; //定义单总线设备IO
+   8          
+   9          static u8 _readBit();
+  10          
+  11          // one-write初始化
+  12          void ONE_WRITE_Init() {}
+  13          
+  14          // one-write写一个字节数据
+  15          void ONE_WRITE_WriteByte(u8 u8data) {
+  16   1          u8 i = 0;
+  17   1          u8 u8temp = 0;
+  18   1      
+  19   1          for (i = 0; i < 8; i++) {
+  20   2              u8temp = u8data & 0x01;
+  21   2              u8data >>= 1;
+  22   2      
+  23   2              if (u8temp) {
+  24   3                  DS18B20_DQ = 0;
+  25   3                  _nop_();
+  26   3                  _nop_();
+  27   3                  DS18B20_DQ = 1;
+  28   3      
+  29   3                  delayN10Us(6);
+  30   3              }
+  31   2              else {
+  32   3                  DS18B20_DQ = 0;
+  33   3                  delayN10Us(6);
+  34   3                  DS18B20_DQ = 1;
+  35   3                  _nop_();
+  36   3                  _nop_();
+  37   3              }
+  38   2          }
+  39   1      }
+  40          
+  41          // one-write读一个字节数据
+  42          u8 ONE_WRITE_ReadByte(void) {
+  43   1          u8 i = 0, u8temp = 0, u8data = 0;
+  44   1          for (i = 0; i < 8; i++) {
+  45   2              u8temp = _readBit(); //每次读取一个bit,先读的是低位LSB
+  46   2              u8data |= (u8temp << 7);
+  47   2              if (i < 7)
+  48   2                  u8data >>= 1;
+  49   2          }
+  50   1      
+  51   1          return u8data;
+  52   1      }
+  53          
+  54          //one-write设备复位
+C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/12/2024 15:40:13 PAGE 2   
+
+  55          u8 ONE_WRITE_Reset(void) {
+  56   1          u8 u8timeout = 0;
+  57   1      
+  58   1          //主机拉低复位
+  59   1          DS18B20_DQ = 0;
+  60   1          delayN10Us(50); //主机发送复位脉冲500us
+  61   1      
+  62   1          DS18B20_DQ = 1; //主机释放DQ线，等待从机回应
+  63   1          delayN10Us(2);  //主机发送复位脉冲500us
+  64   1      
+  65   1          //主机判断DQ是否被从机拉低，250us超时
+  66   1          while (DS18B20_DQ) {
+  67   2              u8timeout++;
+  68   2      
+  69   2              if (u8timeout > ONEWRITE_RES_TIMEOUT)
+  70   2                  return 1; //复位异常
+  71   2      
+  72   2              delay10Us();
+  73   2          }
+  74   1      
+  75   1          //主机判断DQ是否被释放
+  76   1          u8timeout = 0;
+  77   1          while (!DS18B20_DQ) {
+  78   2              u8timeout++;
+  79   2      
+  80   2              if (u8timeout > ONEWRITE_RES_TIMEOUT)
+  81   2                  return 1; //复位异常
+  82   2      
+  83   2              delay10Us();
+  84   2          }
+  85   1      
+  86   1          return 0;
+  87   1      }
+  88          
+  89          static u8 _readBit(void) {
+  90   1          u8 u8temp = 0;
+  91   1      
+  92   1          DS18B20_DQ = 0;
+  93   1          _nop_(); //一个机器周期
+  94   1          _nop_();
+  95   1      
+  96   1          DS18B20_DQ = 1;
+  97   1          _nop_(); //一个机器周期
+  98   1          _nop_();
+  99   1      
+ 100   1          if (DS18B20_DQ)
+ 101   1              u8temp = 1;
+ 102   1          else
+ 103   1              u8temp = 0;
+ 104   1      
+ 105   1          delayN10Us(6);
+ 106   1      
+ 107   1          return u8temp;
+ 108   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    207    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       7
+C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/12/2024 15:40:13 PAGE 3   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

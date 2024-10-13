@@ -1,0 +1,9 @@
+".\Objects\beep.obj",
+".\Objects\ds1302.obj",
+".\Objects\one_write.obj",
+".\Objects\skey.obj",
+".\Objects\smg.obj",
+".\Objects\main.obj",
+".\Objects\util.obj" 
+TO ".\Objects\alarm_clock" 
+PRINT(".\Listings\alarm_clock.m51") RAMSIZE(256) 

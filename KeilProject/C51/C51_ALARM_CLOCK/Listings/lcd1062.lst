@@ -1,0 +1,118 @@
+C51 COMPILER V9.60.7.0   LCD1062                                                           10/12/2024 15:32:29 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD1062
+OBJECT MODULE PLACED IN .\Objects\lcd1062.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\lcd1062.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJ
+                    -ECTEXTEND PRINT(.\Listings\lcd1062.lst) OBJECT(.\Objects\lcd1062.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "lcd1602.h"
+   3          
+   4          sbit RW = P2 ^ 5; // 读写选择 引脚, 高电平读数据, 低电平可向LCD写数据
+   5          sbit RS = P2 ^ 6; // 数据/命令选择 引脚, 低电平 用于传输设置工作方式的命令, 高电
+             -平 用于传输需要显示的字符数据, 8位
+   6          sbit EN = P2 ^ 7; // 使能 引脚, 拉高可将 D0 ~ D7 引脚的数据写入LCD中, 反之 读取出来
+   7          
+   8          static void _LCD1602_WriteData(u8 u8data);
+   9          
+  10          // 清屏
+  11          void LCD1602_Init() {
+  12   1          u8 i = 0;
+  13   1          RW = 0; // 写
+  14   1          EN = 0;
+  15   1      
+  16   1          RS = 0;                        // 写 命令
+  17   1          _LCD1602_WriteData(CLEAR_CMD); // 清屏
+  18   1          delayMs();
+  19   1          _LCD1602_WriteData(ADDR_SET | 0x00);
+  20   1          delayMs();
+  21   1      
+  22   1          // 模式设置 写入数据时 光标左移 显示器不动
+  23   1          _LCD1602_WriteData(MODE_SET | CURSOR_R | DISPLAY_STOP);
+  24   1          delayMs();
+  25   1      
+  26   1          // 开关设置 显示器开 光标关 闪烁关
+  27   1          _LCD1602_WriteData(SWITCH_SET | DISPLAY_ON | CURSOR_OFF | BLINK_OFF);
+  28   1          delayMs();
+  29   1      
+  30   1          // 功能设置 数据总线宽度8 显示2行 高分辨率
+  31   1          _LCD1602_WriteData(FUNC_SET | DATA_LINE_8BIT | TWO_LINE | CHAR_HIGH);
+  32   1          delayMs();
+  33   1      }
+  34          
+  35          void LCD1602_Dispaly(u8 u8addr, u8 u8data) {
+  36   1          RW = 0; // 写
+  37   1          EN = 0;
+  38   1      
+  39   1          RS = 0; // 写指令, 选址
+  40   1          _LCD1602_WriteData(ADDR_SET | u8addr);
+  41   1          delayMs();
+  42   1      
+  43   1          RS = 1;
+  44   1          _LCD1602_WriteData(u8data);
+  45   1          delayMs();
+  46   1      }
+  47          
+  48          void LCD1602_FirstLine(const char* str) {
+  49   1          char* cur = str;
+  50   1          RW = 0; // 写
+  51   1          EN = 0;
+  52   1      
+  53   1          // 光标复位到第一行第一位
+C51 COMPILER V9.60.7.0   LCD1062                                                           10/12/2024 15:32:29 PAGE 2   
+
+  54   1          RS = 0;
+  55   1          _LCD1602_WriteData(ADDR_SET | 0x00);
+  56   1          delayMs();
+  57   1      
+  58   1          RS = 1;
+  59   1          while (*cur != 0) {
+  60   2              _LCD1602_WriteData(*cur);
+  61   2              delayMs();
+  62   2              cur++;
+  63   2          }
+  64   1      }
+  65          
+  66          void LCD1602_SecondLine(const char* str) {
+  67   1          char* cur = str;
+  68   1          RW = 0; // 写
+  69   1          EN = 0;
+  70   1      
+  71   1          // 光标复位到第二行第一位
+  72   1          RS = 0;
+  73   1          _LCD1602_WriteData(ADDR_SET | 0x40);
+  74   1          delayMs();
+  75   1      
+  76   1          RS = 1;
+  77   1          while (*cur != 0) {
+  78   2              _LCD1602_WriteData(*cur);
+  79   2              delayMs();
+  80   2              cur++;
+  81   2          }
+  82   1      }
+  83          
+  84          static void _LCD1602_WriteData(u8 u8data) {
+  85   1          LCD_DATA = u8data;
+  86   1      
+  87   1          EN = 1;
+  88   1          delay10Us();
+  89   1          EN = 0;
+  90   1          delay10Us();
+  91   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    197    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

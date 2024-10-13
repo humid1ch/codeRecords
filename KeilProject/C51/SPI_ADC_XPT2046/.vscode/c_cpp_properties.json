@@ -3,11 +3,11 @@
         {
             "name": "Target 1",
             "includePath": [
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_ADC_XPT2046\\Utils",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_ADC_XPT2046\\Apps",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_DAC_PWM_LED_BREATH\\Utils",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_DAC_PWM_LED_BREATH\\Apps",
                 "C:\\Keil_v5\\C51\\INC",
                 "C:\\Keil_v5\\C51\\INC\\Microchip",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_ADC_XPT2046\\Users",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_DAC_PWM_LED_BREATH\\Users",
                 "${default}",
                 "${workspaceFolder}/**"
             ],

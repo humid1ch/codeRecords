@@ -1,0 +1,126 @@
+C51 COMPILER V9.60.7.0   LCD1062                                                           10/13/2024 17:29:21 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD1062
+OBJECT MODULE PLACED IN .\Objects\lcd1062.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\lcd1062.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJ
+                    -ECTEXTEND PRINT(.\Listings\lcd1062.lst) OBJECT(.\Objects\lcd1062.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "lcd1602.h"
+   3          
+   4          sbit RW = P2 ^ 5; // 读写选择 引脚, 高电平读数据, 低电平可向LCD写数据
+   5          sbit RS = P2 ^ 6; // 数据/命令选择 引脚, 低电平 用于传输设置工作方式的命令, 高电
+             -平 用于传输需要显示的字符数据, 8位
+   6          sbit EN = P2 ^ 7; // 使能 引脚, 拉高可将 D0 ~ D7 引脚的数据写入LCD中, 反之 读取出来
+   7          
+   8          static void _LCD1602_WriteData(u8 u8data);
+   9          
+  10          // 清屏
+  11          void LCD1602_Init() {
+  12   1          u8 i = 0;
+  13   1          RW = 0; // 写
+  14   1          EN = 0;
+  15   1      
+  16   1          RS = 0;                        // 写 命令
+  17   1          _LCD1602_WriteData(CLEAR_CMD); // 清屏
+  18   1          delayMs();
+  19   1          _LCD1602_WriteData(ADDR_SET | 0x00);
+  20   1          delayMs();
+  21   1      
+  22   1          // 模式设置 写入数据时 光标左移 显示器不动
+  23   1          _LCD1602_WriteData(MODE_SET | CURSOR_R | DISPLAY_STOP);
+  24   1          delayMs();
+  25   1      
+  26   1          // 开关设置 显示器开 光标关 闪烁关
+  27   1          _LCD1602_WriteData(SWITCH_SET | DISPLAY_ON | CURSOR_ON | BLINK_OFF);
+  28   1          delayMs();
+  29   1      
+  30   1          // 功能设置 数据总线宽度8 显示2行 高分辨率
+  31   1          _LCD1602_WriteData(FUNC_SET | DATA_LINE_8BIT | TWO_LINE | CHAR_HIGH);
+  32   1          delayMs();
+  33   1      }
+  34          
+  35          void LCD1602_Clear() {
+  36   1          RW = 0; // 写
+  37   1          EN = 0;
+  38   1          RS = 0;                        // 写 命令
+  39   1          _LCD1602_WriteData(CLEAR_CMD); // 清屏
+  40   1          delayMs();
+  41   1      }
+  42          
+  43          void LCD1602_Dispaly(u8 u8addr, u8 u8data) {
+  44   1          RW = 0; // 写
+  45   1          EN = 0;
+  46   1      
+  47   1          RS = 0; // 写指令, 选址
+  48   1          _LCD1602_WriteData(ADDR_SET | u8addr);
+  49   1          delayMs();
+  50   1      
+  51   1          RS = 1;
+  52   1          _LCD1602_WriteData(u8data);
+  53   1          delayMs();
+C51 COMPILER V9.60.7.0   LCD1062                                                           10/13/2024 17:29:21 PAGE 2   
+
+  54   1      }
+  55          
+  56          void LCD1602_FirstLine(const char* str) {
+  57   1          char* cur = str;
+  58   1          RW = 0; // 写
+  59   1          EN = 0;
+  60   1      
+  61   1          // 光标复位到第一行第一位
+  62   1          RS = 0;
+  63   1          _LCD1602_WriteData(ADDR_SET | 0x00);
+  64   1          delayMs();
+  65   1      
+  66   1          RS = 1;
+  67   1          while (*cur != 0) {
+  68   2              _LCD1602_WriteData(*cur);
+  69   2              delayMs();
+  70   2              cur++;
+  71   2          }
+  72   1      }
+  73          
+  74          void LCD1602_SecondLine(const char* str) {
+  75   1          char* cur = str;
+  76   1          RW = 0; // 写
+  77   1          EN = 0;
+  78   1      
+  79   1          // 光标复位到第二行第一位
+  80   1          RS = 0;
+  81   1          _LCD1602_WriteData(ADDR_SET | 0x40);
+  82   1          delayMs();
+  83   1      
+  84   1          RS = 1;
+  85   1          while (*cur != 0) {
+  86   2              _LCD1602_WriteData(*cur);
+  87   2              delayMs();
+  88   2              cur++;
+  89   2          }
+  90   1      }
+  91          
+  92          static void _LCD1602_WriteData(u8 u8data) {
+  93   1          LCD_DATA = u8data;
+  94   1      
+  95   1          EN = 1;
+  96   1          delay10Us();
+  97   1          EN = 0;
+  98   1          delay10Us();
+  99   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    203    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
