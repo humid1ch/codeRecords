@@ -13,7 +13,7 @@ sbit DS1302_IO = P3 ^ 4;  // SPI数据
 
 // 存储 DS1302 时间. BCD格式, 即4位bit表示10进制
 // 秒 分 时 日 月 周 年
-u8 gDS1302_Time[7] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+u8 gDS1302_Time[7] = {0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x20};
 
 // 秒分时日月周年的 控制寄存器写的指令
 static const u8 ds1302_rtc_cmd[7] = {SECONDS_CTRL, MINITES_CTRL, HOURS_CTRL, DAYS_CTRL, MONTHES_CTRL, WEEKS_CTRL, YEARS_CTRL};
@@ -40,7 +40,7 @@ void DS1302_GetTime() {
     u8 i;
 
     // 按顺序从 秒0 分1 时2 日3 月4 周5 年6 寄存器 读取 基于初始时间的变化后的时间
-    // 设置完初始时间之后, 会自动按 秒 变化 
+    // 设置完初始时间之后, 会自动按 秒 变化
     for (i = 0; i < 7; i++) {
         gDS1302_Time[i] = _ds1302_ReadByte(ds1302_rtc_cmd[i] | REG_R_CTRL);
     }

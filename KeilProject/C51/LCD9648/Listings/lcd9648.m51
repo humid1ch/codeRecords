@@ -1,0 +1,139 @@
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                    10/14/2024  19:27:40  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22.4.0, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\lcd9648.obj, .\Objects\main.obj, .\Objects\util.obj TO .\Objects\lcd9648 PRINT (.\
+>> Listings\lcd9648.m51) RAMSIZE (256)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\lcd9648.obj (LCD9648)
+  .\Objects\main.obj (MAIN)
+  .\Objects\util.obj (UTIL)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+
+
+LINK MAP OF MODULE:  .\Objects\lcd9648 (LCD9648)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            IDATA   0008H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0013H     UNIT         ?PR?_DELAYNMS?UTIL
+            CODE    0016H     0010H     UNIT         ?PR?_DELAYN10US?UTIL
+            CODE    0026H     000CH     UNIT         ?C_C51STARTUP
+            CODE    0032H     000AH     UNIT         ?PR?DELAYMS?UTIL
+            CODE    003CH     0001H     UNIT         ?PR?MAIN?MAIN
+            CODE    003DH     0001H     UNIT         ?PR?DELAY10US?UTIL
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\lcd9648 (LCD9648)
+
+
+SEGMENT
+  +--> CALLED SEGMENT
+---------------------
+?C_C51STARTUP
+  +--> ?PR?MAIN?MAIN
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\lcd9648 (LCD9648)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        LCD9648
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0080H         PUBLIC        P0
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/14/2024  19:27:40  PAGE 2
+
+
+  D:00B8H         PUBLIC        IP
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         ENDMOD        LCD9648
+
+  -------         MODULE        MAIN
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00B0H         PUBLIC        P3
+  D:00A8H         PUBLIC        IE
+  D:00B8H         PUBLIC        IP
+  C:003CH         PUBLIC        main
+  D:0098H         PUBLIC        SCON
+  D:0088H         PUBLIC        TCON
+  D:00C8H         PUBLIC        T2CON
+  D:00D0H         PUBLIC        PSW
+  -------         PROC          MAIN
+  C:003CH         LINE#         5
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        MAIN
+
+  -------         MODULE        UTIL
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  C:0016H         PUBLIC        _delayN10Us
+  C:0003H         PUBLIC        _delayNMs
+  C:003DH         PUBLIC        delay10Us
+  C:0032H         PUBLIC        delayMs
+  -------         PROC          DELAY10US
+  C:003DH         LINE#         4
+  C:003DH         LINE#         5
+  C:003DH         LINE#         7
+  -------         ENDPROC       DELAY10US
+  -------         PROC          _DELAYN10US
+  D:0006H         SYMBOL        n
+  C:0016H         LINE#         9
+  C:0016H         LINE#         10
+  C:0020H         LINE#         11
+  C:0025H         LINE#         12
+  -------         ENDPROC       _DELAYN10US
+  -------         PROC          DELAYMS
+  -------         DO            
+  D:0007H         SYMBOL        i
+  D:0006H         SYMBOL        j
+  -------         ENDDO         
+  C:0032H         LINE#         14
+  C:0032H         LINE#         17
+  C:0033H         LINE#         18
+  C:0035H         LINE#         19
+  C:0037H         LINE#         20
+  C:0037H         LINE#         21
+  C:0039H         LINE#         23
+  C:003BH         LINE#         24
+  -------         ENDPROC       DELAYMS
+  -------         PROC          _DELAYNMS
+  D:0004H         SYMBOL        n
+BL51 BANKED LINKER/LOCATER V6.22.4.0                                                  10/14/2024  19:27:40  PAGE 3
+
+
+  C:0003H         LINE#         26
+  C:0007H         LINE#         27
+  C:0010H         LINE#         28
+  C:0015H         LINE#         29
+  -------         ENDPROC       _DELAYNMS
+  -------         ENDMOD        UTIL
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAYN10US?UTIL
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAYNMS?UTIL
+
+Program Size: data=9.0 xdata=0 code=62
+LINK/LOCATE RUN COMPLETE.  2 WARNING(S),  0 ERROR(S)

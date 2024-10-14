@@ -23,6 +23,6 @@ void SMG7();
 void SMG8();
 
 void SMG_Init();
-void SMG_Display(const u8* smgCode);
+void SMG_Display(const u8* smgCode, const u8* end);
 
 #endif

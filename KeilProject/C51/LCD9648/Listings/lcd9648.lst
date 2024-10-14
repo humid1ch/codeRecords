@@ -1,0 +1,52 @@
+C51 COMPILER V9.60.7.0   LCD9648                                                           10/14/2024 19:27:40 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD9648
+OBJECT MODULE PLACED IN .\Objects\lcd9648.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\lcd9648.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Utils;.\Apps) DEBUG OBJ
+                    -ECTEXTEND PRINT(.\Listings\lcd9648.lst) OBJECT(.\Objects\lcd9648.obj)
+
+line level    source
+
+   1          #include "reg52.h"
+   2          #include "lcd9648.h"
+   3          
+   4          //管脚定义
+   5          sbit CS0 = P0 ^ 3; //片选
+   6          sbit RST = P0 ^ 2; //复位
+   7          sbit RS = P0 ^ 4;  //数据命令选择端
+   8          sbit SCL = P0 ^ 6; //SPI时钟端
+   9          sbit SDA = P0 ^ 5; //SPI数据端
+  10          
+  11          // 初始化
+  12          void LCD9648_Init();
+  13          // 清屏
+  14          void LCD9648_Clear();
+  15          // 向LCD9648写入数据
+  16          void LCD9648_WriteData(u8 u8data);
+  17          // 向LCD9648发命令
+  18          void LCD9648_WriteCmd(u8 u8cmd);
+  19          // 显示一个字符
+  20          void LCD_SHOW_Char(u8 x, u8 y, u8 num);
+  21          //  显示字符串
+  22          void LCD_SHOW_String(u8 x, u8 y, u8 Num, u8* p);
+  23          //
+  24          void LCD_SHOW_16HZ(u8 x, u8 y, u8* cn);
+  25          // 显示数字
+  26          void LCD_SHOW_Num(u8 x, u8 y, u32 num, u8 len, u8 mode);
+  27          // 显示图片
+  28          void LCD_SHOW_Image(u8* p);
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

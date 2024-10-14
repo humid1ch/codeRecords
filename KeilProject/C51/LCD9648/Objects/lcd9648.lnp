@@ -1,0 +1,5 @@
+".\Objects\lcd9648.obj",
+".\Objects\main.obj",
+".\Objects\util.obj" 
+TO ".\Objects\lcd9648" 
+PRINT(".\Listings\lcd9648.m51") RAMSIZE(256) 

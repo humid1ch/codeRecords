@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/13/2024 17:29:21 PAGE 1   
+C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/14/2024 16:17:31 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ONE_WRITE
@@ -62,7 +62,7 @@ line level    source
   52   1      }
   53          
   54          //one-write设备复位
-C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/13/2024 17:29:21 PAGE 2   
+C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/14/2024 16:17:31 PAGE 2   
 
   55          u8 ONE_WRITE_Reset(void) {
   56   1          u8 u8timeout = 0;
@@ -126,7 +126,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----       7
-C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/13/2024 17:29:21 PAGE 3   
+C51 COMPILER V9.60.7.0   ONE_WRITE                                                         10/14/2024 16:17:31 PAGE 3   
 
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----

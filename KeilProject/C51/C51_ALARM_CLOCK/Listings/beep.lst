@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   BEEP                                                              10/12/2024 15:40:13 PAGE 1   
+C51 COMPILER V9.60.7.0   BEEP                                                              10/14/2024 16:07:49 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE BEEP
@@ -19,25 +19,24 @@ line level    source
    9          
   10          // 蜂鸣器响多少秒
   11          void BEEP_On(u8 u8seconds) {
-  12   1              u16 cnt = FEQUENCY_S * u8seconds; // 脉冲一定秒数 需要脉冲的次数
+  12   1          u16 cnt = FEQUENCY_S * u8seconds / 1.8; // 脉冲一定秒数 需要脉冲的次数
   13   1      
-  14   1          while(cnt--)
+  14   1          while (cnt--)
   15   1              _BEEP_Pulse500();
   16   1      }
   17          
   18          // 设置蜂鸣器 500us为一次脉冲, 占空比50%, 即 高250us, 低250us
   19          // 约 2000次脉冲/s
   20          static void _BEEP_Pulse500() {
-  21   1              BEEP = 0;
-  22   1              delayN10Us(25);
-  23   1              BEEP = 1;
-  24   1              delayN10Us(25);
+  21   1          BEEP = 0;
+  22   1          delayN10Us(25);
+  23   1          BEEP = 1;
+  24   1          delayN10Us(25);
   25   1      }
-  26          
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     51    ----
+   CODE SIZE        =     73    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

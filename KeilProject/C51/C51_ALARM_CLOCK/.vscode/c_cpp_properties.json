@@ -3,11 +3,9 @@
         {
             "name": "Target 1",
             "includePath": [
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\C51_ALARM_LCD\\Utils",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\C51_ALARM_LCD\\Apps",
                 "C:\\Keil_v5\\C51\\INC",
                 "C:\\Keil_v5\\C51\\INC\\Microchip",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\C51_ALARM_LCD\\Users",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\LCD9648\\Users",
                 "${default}",
                 "${workspaceFolder}/**"
             ],

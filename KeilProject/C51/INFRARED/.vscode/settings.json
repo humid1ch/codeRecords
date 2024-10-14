@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "smg.h": "c",
+        "util.h": "c"
+    }
+}

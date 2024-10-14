@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   DS1302                                                            10/12/2024 15:40:13 PAGE 1   
+C51 COMPILER V9.60.7.0   DS1302                                                            10/14/2024 16:07:49 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE DS1302
@@ -23,7 +23,7 @@ line level    source
   13          
   14          // 存储 DS1302 时间. BCD格式, 即4位bit表示10进制
   15          // 秒 分 时 日 月 周 年
-  16          u8 gDS1302_Time[7] = {0x00, 0x30, 0x15, 0x12, 0x10, 0x04, 0x24};
+  16          u8 gDS1302_Time[7] = {0x00, 0x00, 0x00, 0x01, 0x01, 0x01, 0x20};
   17          
   18          // 秒分时日月周年的 控制寄存器写的指令
   19          static const u8 ds1302_rtc_cmd[7] = {SECONDS_CTRL, MINITES_CTRL, HOURS_CTRL, DAYS_CTRL, MONTHES_CTRL, WEEK
@@ -54,7 +54,7 @@ line level    source
   41   1      
   42   1          // 按顺序从 秒0 分1 时2 日3 月4 周5 年6 寄存器 读取 基于初始时间的变化后的�
              -��间
-  43   1          // 设置完初始时间之后, 会自动按 秒 变化 
+  43   1          // 设置完初始时间之后, 会自动按 秒 变化
   44   1          for (i = 0; i < 7; i++) {
   45   2              gDS1302_Time[i] = _ds1302_ReadByte(ds1302_rtc_cmd[i] | REG_R_CTRL);
   46   2          }
@@ -62,7 +62,7 @@ line level    source
   48          
   49          static void _ds1302_WriteByte(u8 u8cmd, u8 u8data) {
   50   1          u8 i;
-C51 COMPILER V9.60.7.0   DS1302                                                            10/12/2024 15:40:13 PAGE 2   
+C51 COMPILER V9.60.7.0   DS1302                                                            10/14/2024 16:07:49 PAGE 2   
 
   51   1      
   52   1          //SPI片选或复位
@@ -126,7 +126,7 @@ line level    source
  110   2      
  111   2              if (i < 7) {
  112   3                  DS1302_CLK = 0;
-C51 COMPILER V9.60.7.0   DS1302                                                            10/12/2024 15:40:13 PAGE 3   
+C51 COMPILER V9.60.7.0   DS1302                                                            10/14/2024 16:07:49 PAGE 3   
 
  113   3                  _nop_();
  114   3              }

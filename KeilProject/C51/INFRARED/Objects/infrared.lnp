@@ -1,3 +1,6 @@
-".\Objects\main.obj" 
+".\Objects\infrared.obj",
+".\Objects\smg.obj",
+".\Objects\main.obj",
+".\Objects\util.obj" 
 TO ".\Objects\infrared" 
 PRINT(".\Listings\infrared.m51") RAMSIZE(256) 

@@ -3,6 +3,7 @@
 ".\Objects\one_write.obj",
 ".\Objects\skey.obj",
 ".\Objects\smg.obj",
+".\Objects\ds18b20.obj",
 ".\Objects\main.obj",
 ".\Objects\util.obj" 
 TO ".\Objects\alarm_clock" 
