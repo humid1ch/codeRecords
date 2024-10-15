@@ -3,11 +3,11 @@
         {
             "name": "Target 1",
             "includePath": [
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\INFRARED\\Utils",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\INFRARED\\Apps",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\LCD1602_PARALLEL\\Utils",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\LCD1602_PARALLEL\\Apps",
                 "C:\\Keil_v5\\C51\\INC",
                 "C:\\Keil_v5\\C51\\INC\\Microchip",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\INFRARED\\Users",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\LCD1602_PARALLEL\\Users",
                 "${default}",
                 "${workspaceFolder}/**"
             ],
