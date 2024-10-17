@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   LCD9648                                                           10/15/2024 10:36:59 PAGE 1   
+C51 COMPILER V9.60.7.0   LCD9648                                                           10/17/2024 20:26:44 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LCD9648
@@ -10,159 +10,215 @@ line level    source
 
    1          #include "reg52.h"
    2          #include "lcd9648.h"
-   3          
-   4          //管脚定义
-   5          sbit CS0 = P0 ^ 3; // 片选
-   6          sbit RST = P0 ^ 2; // 复位
-   7          sbit RS = P0 ^ 4;  // 数据命令选择端
-   8          sbit SCL = P0 ^ 6; // SPI时钟端
-   9          sbit SDA = P0 ^ 5; // SPI数据端
-  10          
-  11          void LCD9648_Init() {
-  12   1          // 硬件复位
-  13   1          RST = 1;
-  14   1          delayNMs(10);
-  15   1          RST = 0; // 复位拉低
-  16   1          delayNMs(10);
-  17   1          RST = 1; // 复位拉高
-  18   1          delayNMs(10);
-  19   1      
-  20   1          CS0 = 1; // 片选(使能)拉高, 空闲
-  21   1          SCL = 0; // SPI时钟端拉低, 空闲
-  22   1      
-  23   1          LCD9648_WriteCmd(0xE2); // 软件复位
-  24   1          LCD9648_WriteCmd(0xC8); // 扫描方向, 0xC8从右到左, 0xC0从左到右
-  25   1          LCD9648_WriteCmd(0xA0); // 段选方向?(决定了内存数据在, 显示器像素点的映射) 0xA0�
-             -�常方向, 0xA1反方向
-  26   1          LCD9648_WriteCmd(0x2F); // 0x2F命令, 启动 LCD9648, 不一定显示内容
+   3          #include "font.h"
+   4          #include "util.h"
+   5          
+   6          //管脚定义
+   7          sbit CS0 = P0 ^ 3; // 片选
+   8          sbit RST = P0 ^ 2; // 复位
+   9          sbit RS = P0 ^ 4;  // 数据命令选择端
+  10          sbit SCL = P0 ^ 6; // SPI时钟端
+  11          sbit SDA = P0 ^ 5; // SPI数据端
+  12          
+  13          static void _LCD9648_writeData(u8 u8data);
+  14          static void _LCD9648_writeCmd(u8 u8cmd);
+  15          
+  16          void LCD9648_init() {
+  17   1          // 硬件复位
+  18   1          RST = 1;
+  19   1          delayNMs(10);
+  20   1          RST = 0; // 复位拉低
+  21   1          delayNMs(10);
+  22   1          RST = 1; // 复位拉高
+  23   1          delayNMs(10);
+  24   1      
+  25   1          CS0 = 1; // 片选(使能)拉高, 空闲
+  26   1          SCL = 0; // SPI时钟端拉低, 空闲
   27   1      
-  28   1          LCD9648_WriteCmd(0x26); // 发送0x26 开始对比度控制
-  29   1          LCD9648_WriteCmd(0x81); // 发送0x81 开启设置对比度值设置
-  30   1          LCD9648_WriteCmd(0x10); // 设置具体对比度 0x10
-  31   1      
-  32   1          LCD9648_WriteCmd(0xAF); // 发送0xAF 显示屏开启显示内容
-  33   1      }
-  34          
-  35          void LCD9648_Clear() {
-  36   1          u8 i = 0;
-  37   1          u8 j = 0;
-  38   1          CS0 = 1; // 空闲
-  39   1          SCL = 0; // 空闲
-  40   1      
-  41   1          // 滚动方向
-  42   1          for (i = 0; i < 9; i++) {
-  43   2              LCD9648_WriteCmd(0x40);
-  44   2              // 页选
-  45   2              LCD9648_WriteCmd(0xB0 + i); // 0xB0 应该是首页地址
-  46   2      
-  47   2              // 列地址设置
-  48   2              LCD9648_WriteCmd(0x10); // 列地址, 高位0001
-  49   2              LCD9648_WriteCmd(0x00); // 列地址, 低位0000
-  50   2      
-  51   2              // 写入数据时, 下一个写入地址会自增
-  52   2              for (j = 0; j < LCD_WIDTH; j++)
-  53   2                  LCD9648_WriteData(0x00);
-C51 COMPILER V9.60.7.0   LCD9648                                                           10/15/2024 10:36:59 PAGE 2   
+  28   1          _LCD9648_writeCmd(0xE2); // 软件复位
+  29   1          _LCD9648_writeCmd(0xC8); // 扫描方向, 0xC8从右到左, 0xC0从左到右
+  30   1          _LCD9648_writeCmd(0xA0); // 段选方向?(决定了内存数据在, 显示器像素点的映射) 0xA0�
+             -��常方向, 0xA1反方向
+  31   1          _LCD9648_writeCmd(0x2F); // 0x2F命令, 启动 LCD9648, 不一定显示内容
+  32   1      
+  33   1          _LCD9648_writeCmd(0x26); // 发送0x26 开始对比度控制
+  34   1          _LCD9648_writeCmd(0x81); // 发送0x81 开启设置对比度值设置
+  35   1          _LCD9648_writeCmd(0x10); // 设置具体对比度 0x10
+  36   1      
+  37   1          _LCD9648_writeCmd(0xAF); // 发送0xAF 显示屏开启显示内容
+  38   1      }
+  39          
+  40          void LCD9648_clear() {
+  41   1          u8 i = 0;
+  42   1          u8 j = 0;
+  43   1          CS0 = 1; // 空闲
+  44   1          SCL = 0; // 空闲
+  45   1      
+  46   1          // 滚动方向
+  47   1          for (i = 0; i < 9; i++) {
+  48   2              _LCD9648_writeCmd(0x40);
+  49   2              // 页选
+  50   2              _LCD9648_writeCmd(0xB0 + i); // 0xB0 应该是首页地址
+  51   2      
+  52   2              // 列地址设置
+  53   2              _LCD9648_writeCmd(0x10); // 列地址, 高位0001
+C51 COMPILER V9.60.7.0   LCD9648                                                           10/17/2024 20:26:44 PAGE 2   
 
-  54   2          }
-  55   1      }
-  56          
-  57          // 暂时不了解 LCD9648的 极性 和 相性
-  58          static void LCD9648_WriteData(u8 u8data) {
-  59   1          u8 i = 0;
-  60   1      
-  61   1          SCL = 0; // 时钟拉低, 空闲
-  62   1          delay10Us();
-  63   1      
-  64   1          CS0 = 0; // 片选拉低
-  65   1          delay10Us();
-  66   1          RS = 1; // 写数据
-  67   1          // MSB 先发高位
-  68   1          for (i = 0; i < 8; i++) {
-  69   2              SDA = (u8data & 0x80) ? 1 : 0; // 取高位
-  70   2              u8data <<= 1;                  // 去高位
-  71   2      
-  72   2              SCL = 1; // 时钟拉高, 发送
-  73   2              delay10Us();
-  74   2              SCL = 0; // 时钟拉低, 空闲
-  75   2              delay10Us();
-  76   2          }
-  77   1      
-  78   1          SCL = 1; // 时钟拉高, 发送
-  79   1          delay10Us();
-  80   1          SCL = 0; // 时钟拉低, 空闲
-  81   1          delay10Us();
-  82   1          CS0 = 1; // 片选拉高
-  83   1      }
-  84          
-  85          static void LCD9648_WriteCmd(u8 u8cmd) {
-  86   1          u8 i = 0;
-  87   1      
-  88   1          SCL = 0; // 时钟拉低, 空闲
-  89   1          delay10Us();
-  90   1          CS0 = 0; // 片选拉低
-  91   1          delay10Us();
-  92   1          RS = 0; // 写命令
-  93   1      
-  94   1          // MSB 先发高位
-  95   1          for (i = 0; i < 8; i++) {
-  96   2              SDA = (u8cmd & 0x80) ? 1 : 0; // 取高位
-  97   2              u8cmd <<= 1;                  // 去高位
-  98   2      
-  99   2              SCL = 1; // 时钟拉高, 发送
- 100   2              delay10Us();
- 101   2              SCL = 0; // 时钟拉低, 空闲
- 102   2              delay10Us();
- 103   2          }
- 104   1      
- 105   1          SCL = 1; // 时钟拉高, 发送
- 106   1          delay10Us();
- 107   1          SCL = 0; // 时钟拉低, 空闲
- 108   1          delay10Us();
- 109   1          CS0 = 1; // 片选拉高
- 110   1      }
- 111          
- 112          void LCD_SHOW_Char(u8 x, u8 y, char c) {}
-*** WARNING C280 IN LINE 112 OF Apps\lcd9648.c: 'x': unreferenced local variable
-*** WARNING C280 IN LINE 112 OF Apps\lcd9648.c: 'y': unreferenced local variable
-*** WARNING C280 IN LINE 112 OF Apps\lcd9648.c: 'c': unreferenced local variable
-C51 COMPILER V9.60.7.0   LCD9648                                                           10/15/2024 10:36:59 PAGE 3   
+  54   2              _LCD9648_writeCmd(0x00); // 列地址, 低位0000
+  55   2      
+  56   2              // 写入数据时, 下一个写入地址会自增
+  57   2              for (j = 0; j < LCD_WIDTH; j++)
+  58   2                  _LCD9648_writeData(0x00);
+  59   2          }
+  60   1      }
+  61          
+  62          // size: 表示汉字占用的像素大小, 范围16, 24
+  63          void LCD9648_showChinese(u8 x, u8 y, u8 font_wh, const char* str) {
+  64   1          u8 u8size = font_wh * font_wh / 8; // 汉字编码的字节数
+  65   1          u8 i = 0;                          // 汉字编码遍历索引
+  66   1          u8 j = 0;                          // 要显示的汉字在CnChar数组中的索引
+  67   1          u8 x1 = 0;                         // 横索引的低4位
+  68   1          u8 x2 = 0;                         // 横索引的高4位
+  69   1      
+  70   1          char* cur = str;
+  71   1          // 记录font中汉字显示编码数组中元素个数, 用于汉字编码对比
+  72   1          u8 num = (font_wh == 16) ? (sizeof(CnChar16x16) / sizeof(CnChar16x16[0])) : (sizeof(CnChar24x24) / siz
+             -eof(CnChar24x24[0]));
+  73   1          // 记录要从哪个汉字编码数组中找
+  74   1          struct CnCharTypeDef* CnChar = (font_wh == 16) ? CnChar16x16 : CnChar24x24;
+  75   1      
+  76   1          // 校验参数, x,y,str
+  77   1          if (x > 95 || y > 47 || !cur)
+  78   1              return;
+  79   1      
+  80   1          // 遍历字符串, UTF-8编码每3个字节表示一个汉字
+  81   1          while (*cur != '\0') {
+  82   2              if ((x > (LCD_WIDTH - font_wh)) || (y > (LCD_HEIGHT - 1 - 1)))
+  83   2                  break;
+  84   2      
+  85   2              x1 = x & 0x0F;        //低4位
+  86   2              x2 = (x >> 4) & 0x0F; //高4位
+  87   2      
+  88   2              // 查询要显示的汉字是不是在font的数组中
+  89   2              for (j = 0; j < num; j++) {
+  90   3                  // 在font汉字数组中, 找到要显示的汉字
+  91   3                  if ((CnChar[j].Index[0] == *cur) && (CnChar[j].Index[1] == *(cur + 1)) && (CnChar[j].Index[2] 
+             -== *(cur + 2))) {
+  92   4                      // 遍历汉字编码数组
+  93   4                      y = 0; // 开始写入汉字时, 页清零
+  94   4                      for (i = 0; i < u8size; i++) {
+  95   5                          // 当前字的当前页的写完了, 换下一个页
+  96   5                          if (i % font_wh == 0) {
+  97   6                              _LCD9648_writeCmd(0xB0 | (y++)); // 页地址指令
+  98   6                              _LCD9648_writeCmd(0x10 | x2);    // x索引高4位指令
+  99   6                              _LCD9648_writeCmd(0x00 | x1);    // x索引低4位指令
+ 100   6                          }
+ 101   5                          _LCD9648_writeData(CnChar[j].Msk[i]);
+ 102   5                      }
+ 103   4      
+ 104   4                      x += font_wh; // 每显示一个汉字横索往向移动font_wh个字节
+ 105   4                      break;
+ 106   4                  }
+ 107   3              }
+ 108   2      
+ 109   2              cur += 3; // 下一个汉字
+ 110   2          }
+ 111   1      }
+ 112          
+ 113          void LCD9648_ShowChar(u8 x, u8 y, char c);
+C51 COMPILER V9.60.7.0   LCD9648                                                           10/17/2024 20:26:44 PAGE 3   
 
- 113          void LCD_SHOW_String(u8 x, u8 y, u8 len, const char* str);
- 114          void LCD_SHOW_16HZ(u8 x, u8 y, const u8* cnMap);
- 115          void LCD_SHOW_Num(u8 x, u8 y, u32 num, u8 len, u8 mode);
- 116          void LCD_SHOW_Image(u8* imageMap) {
- 117   1          u8 i = 0;
- 118   1          u8 j = 0;
- 119   1      
- 120   1          // 滚动方向
- 121   1          for (i = 0; i < 6; i++) {
- 122   2              LCD9648_WriteCmd(0x40);
- 123   2              // 页选
- 124   2              LCD9648_WriteCmd(0xB0 + i); // 0xB0 应该是首页地址
- 125   2      
- 126   2              // 列地址设置
- 127   2              LCD9648_WriteCmd(0x10); // 列地址, 高位0001
- 128   2              LCD9648_WriteCmd(0x00); // 列地址, 低位0000
- 129   2      
- 130   2              // 写入数据时, 下一个写入地址会自增
- 131   2              for (j = 0; j < LCD_WIDTH; j++) {
- 132   3                  LCD9648_WriteData((*imageMap));
- 133   3                  imageMap++;
- 134   3              }
- 135   2          }
- 136   1      }
+ 114          void LCD9648_showString(u8 x, u8 y, u8 len, const char* str);
+ 115          void LCD9648_show16HZ(u8 x, u8 y, const u8* cnMap);
+ 116          void LCD9648_showNum(u8 x, u8 y, u32 num, u8 len, u8 mode);
+ 117          void LCD9648_showImage(u8* imageMap) {
+ 118   1          u8 i = 0;
+ 119   1          u8 j = 0;
+ 120   1      
+ 121   1          // 滚动方向
+ 122   1          for (i = 0; i < 6; i++) {
+ 123   2              _LCD9648_writeCmd(0x40);
+ 124   2              // 页选
+ 125   2              _LCD9648_writeCmd(0xB0 + i); // 0xB0 应该是首页地址
+ 126   2      
+ 127   2              // 列地址设置
+ 128   2              _LCD9648_writeCmd(0x10); // 列地址, 高位0001
+ 129   2              _LCD9648_writeCmd(0x00); // 列地址, 低位0000
+ 130   2      
+ 131   2              // 写入数据时, 下一个写入地址会自增
+ 132   2              for (j = 0; j < LCD_WIDTH; j++) {
+ 133   3                  _LCD9648_writeData((*imageMap));
+ 134   3                  imageMap++;
+ 135   3              }
+ 136   2          }
+ 137   1      }
+ 138          
+ 139          static void _LCD9648_writeData(u8 u8data) {
+ 140   1          u8 i = 0;
+ 141   1      
+ 142   1          SCL = 0; // 时钟拉低, 空闲
+ 143   1          delay10Us();
+ 144   1      
+ 145   1          CS0 = 0; // 片选拉低
+ 146   1          delay10Us();
+ 147   1          RS = 1; // 写数据
+ 148   1          // MSB 先发高位
+ 149   1          for (i = 0; i < 8; i++) {
+ 150   2              SDA = (u8data & 0x80) ? 1 : 0; // 取高位
+ 151   2              u8data <<= 1;                  // 去高位
+ 152   2      
+ 153   2              SCL = 1; // 时钟拉高, 发送
+ 154   2              delay10Us();
+ 155   2              SCL = 0; // 时钟拉低, 空闲
+ 156   2              delay10Us();
+ 157   2          }
+ 158   1      
+ 159   1          SCL = 1; // 时钟拉高, 发送
+ 160   1          delay10Us();
+ 161   1          SCL = 0; // 时钟拉低, 空闲
+ 162   1          delay10Us();
+ 163   1          CS0 = 1; // 片选拉高
+ 164   1      }
+ 165          
+ 166          static void _LCD9648_writeCmd(u8 u8cmd) {
+ 167   1          u8 i = 0;
+ 168   1      
+ 169   1          SCL = 0; // 时钟拉低, 空闲
+ 170   1          delay10Us();
+ 171   1          CS0 = 0; // 片选拉低
+ 172   1          delay10Us();
+ 173   1          RS = 0; // 写命令
+ 174   1      
+ 175   1          // MSB 先发高位
+C51 COMPILER V9.60.7.0   LCD9648                                                           10/17/2024 20:26:44 PAGE 4   
+
+ 176   1          for (i = 0; i < 8; i++) {
+ 177   2              SDA = (u8cmd & 0x80) ? 1 : 0; // 取高位
+ 178   2              u8cmd <<= 1;                  // 去高位
+ 179   2      
+ 180   2              SCL = 1; // 时钟拉高, 发送
+ 181   2              delay10Us();
+ 182   2              SCL = 0; // 时钟拉低, 空闲
+ 183   2              delay10Us();
+ 184   2          }
+ 185   1      
+ 186   1          SCL = 1; // 时钟拉高, 发送
+ 187   1          delay10Us();
+ 188   1          SCL = 0; // 时钟拉低, 空闲
+ 189   1          delay10Us();
+ 190   1          CS0 = 1; // 片选拉高
+ 191   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    359    ----
-   CONSTANT SIZE    =   ----    ----
+   CODE SIZE        =    744    ----
+   CONSTANT SIZE    =   2120    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =   ----      14
+   DATA SIZE        =   ----      29
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  3 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

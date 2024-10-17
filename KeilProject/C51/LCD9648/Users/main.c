@@ -4,15 +4,19 @@
 #include "pic.h"
 
 void main() {
-    LCD9648_Init();
+    LCD9648_init();
+    delayNMs(200);
 
-    delayNMs(2000);
     //清屏
-    LCD9648_Clear();
-    delayNMs(2000);
+    LCD9648_clear();
+    delayNMs(200);
 
-    //显示图片
-    LCD_SHOW_Image(gImage_pic);
+    // 显示图片
+    // LCD9648_showImage(gImage_pic);
+    // 显示24x24字符串
+    LCD9648_showChinese(0, 0, 24, "天王老子");
+    // 显示16x16字符串
+    // LCD9648_showChinese(0, 0, 16, "天王老子");
 
     delayNMs(2000);
     while (1)
