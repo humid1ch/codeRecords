@@ -55,10 +55,11 @@ __heap_limit    ; 堆 结束地址
 
 ; Vector Table Mapped to Address 0 at Reset
                 AREA    RESET, DATA, READONLY   ; 定义 数据段, 只读, 命名RESET
-                EXPORT  __Vectors               ; 声明向量表的 起始地址 结束地址 大小
+                EXPORT  __Vectors               ; 声明向量表的 起始地址 结束地址 大小 (全局)
                 EXPORT  __Vectors_End
                 EXPORT  __Vectors_Size
 
+    ; DCD 以字节为单位分配内存, 4字节对齐
 __Vectors       DCD     __initial_sp               ; Top of Stack
                 DCD     Reset_Handler              ; Reset Handler
                 DCD     NMI_Handler                ; NMI Handler

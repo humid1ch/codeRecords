@@ -1,0 +1,111 @@
+C51 COMPILER V9.60.7.0   SSD1306                                                           10/18/2024 19:36:42 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SSD1306
+OBJECT MODULE PLACED IN .\Objects\ssd1306.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\ssd1306.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Apps;.\Utils) DEBUG OBJ
+                    -ECTEXTEND PRINT(.\Listings\ssd1306.lst) OBJECT(.\Objects\ssd1306.obj)
+
+line level    source
+
+   1          #include "ssd1306.h"
+   2          #include "iic.h"
+   3          
+   4          void SSD1306_init() {}
+   5          
+   6          u8 SSD1306_writeCmd(u8 u8cmd) {
+   7   1          // 开始
+   8   1          IIC_start();
+   9   1          // 发送 从机地址 和 读写方向
+  10   1          IIC_writeByte(SSD1306_ADDR | WRITE_MODE);
+  11   1          // 等待从机响应
+  12   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  13   1              return 1;
+  14   1      
+  15   1          IIC_writeByte(WRITE_CMD_CMD);
+  16   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  17   1              return 1;
+  18   1      
+  19   1          // 发送 数据
+  20   1          IIC_writeByte(u8cmd);
+  21   1          // 等待从机应答
+  22   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  23   1              return 1;
+  24   1      
+  25   1          // 停止?
+  26   1          IIC_stop();
+  27   1      
+  28   1          return 0;
+  29   1      }
+  30          
+  31          // 通信建立
+  32          u8 SSD1306_writeDataBegin() {
+  33   1          // 开始
+  34   1          IIC_start();
+  35   1          // 发送 从机地址 和 读写方向
+  36   1          IIC_writeByte(SSD1306_ADDR | WRITE_MODE);
+  37   1          // 等待从机响应
+  38   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  39   1              return 1;
+  40   1      
+  41   1          return 0;
+  42   1      }
+  43          // 通信结束
+  44          void SSD1306_writeDataOver() {
+  45   1          IIC_stop();
+  46   1      }
+  47          // 结合 Begin 和 Over 两个函数, 实现发送完数据之后 再断开通信
+  48          u8 SSD1306_writeData(u8 u8data) {
+  49   1          IIC_writeByte(WRITE_DATA_CMD);
+  50   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  51   1              return 1;
+  52   1      
+  53   1          // 发送 数据
+  54   1          IIC_writeByte(u8data);
+C51 COMPILER V9.60.7.0   SSD1306                                                           10/18/2024 19:36:42 PAGE 2   
+
+  55   1          // 等待从机应答
+  56   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  57   1              return 1;
+  58   1      
+  59   1          return 0;
+  60   1      }
+  61          
+  62          // 每次都断开通信
+  63          u8 SSD1306_writeData_ECC(u8 u8data) {
+  64   1          // 开始
+  65   1          IIC_start();
+  66   1          // 发送 从机地址 和 读写方向
+  67   1          IIC_writeByte(SSD1306_ADDR | WRITE_MODE);
+  68   1          // 等待从机响应
+  69   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  70   1              return 1;
+  71   1      
+  72   1          IIC_writeByte(WRITE_DATA_CMD);
+  73   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  74   1              return 1;
+  75   1      
+  76   1          // 发送 数据
+  77   1          IIC_writeByte(u8data);
+  78   1          // 等待从机应答
+  79   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
+  80   1              return 1;
+  81   1      
+  82   1          IIC_stop();
+  83   1      
+  84   1          return 0;
+  85   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    163    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       3
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,251 @@
+C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE OLED
+OBJECT MODULE PLACED IN .\Objects\oled.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Apps\oled.c OPTIMIZE(8,SPEED) BROWSE INCDIR(.\Apps;.\Utils) DEBUG OBJECT
+                    -EXTEND PRINT(.\Listings\oled.lst) OBJECT(.\Objects\oled.obj)
+
+line level    source
+
+   1          #include "oled.h"
+   2          #include "ssd1306.h"
+   3          #include "font.h"
+   4          
+   5          // 写命令
+   6          static void _OLED_writeCmd(u8 u8cmd);
+   7          // 写数据
+   8          static void _OLED_writeData(u8 u8data);
+   9          // 通信建立
+  10          static void _OLED_writeDataBegin();
+  11          // 通信关闭
+  12          static void _OLED_writeDataOver();
+  13          // 频繁建立 关闭通信的写数据函数
+  14          static void _OLED_writeData_ECC(u8 u8data);
+  15          static void _OLED_showChar(u8 x, u8 y, char c);
+  16          
+  17          // OLED 初始化
+  18          void OLED_init() {
+  19   1          _OLED_writeCmd(0xAE); // 关闭显示
+  20   1          _OLED_writeCmd(0xD5); // 设置时钟分频因子,震荡频率
+  21   1          _OLED_writeCmd(0x80); // [3:0],分频因子;[7:4],震荡频率
+  22   1          _OLED_writeCmd(0xA8); // 设置驱动路数
+  23   1          _OLED_writeCmd(0X3F); // 默认0X3F(1/64)
+  24   1          _OLED_writeCmd(0xD3); // 设置显示偏移
+  25   1          _OLED_writeCmd(0X00); // 默认为0
+  26   1      
+  27   1          _OLED_writeCmd(0x40); // 设置显示开始行 [5:0],行数.
+  28   1      
+  29   1          _OLED_writeCmd(0x8D); // 电荷泵设置
+  30   1          _OLED_writeCmd(0x14); // bit2，开启/关闭
+  31   1          _OLED_writeCmd(0x20); // 设置内存地址模式
+  32   1          _OLED_writeCmd(0x02); // [1:0],00，列地址模式;01，行地址模式;10,页地址模式;默认10;
+  33   1          _OLED_writeCmd(0xA1); // 段重定义设置,bit0:0,0->0;1,0->127;
+  34   1          _OLED_writeCmd(0xC8); // 设置COM扫描方向;bit3:0,普通模式;1,重定义模式 COM[N-1]->COM0;N:
+             -驱动路数
+  35   1          _OLED_writeCmd(0xDA); // 设置COM硬件引脚配置
+  36   1          _OLED_writeCmd(0x12); // [5:4]配置
+  37   1      
+  38   1          _OLED_writeCmd(0x81); // 对比度设置
+  39   1          _OLED_writeCmd(0xEF); // 1~255;默认0X7F (亮度设置,越大越亮)
+  40   1          _OLED_writeCmd(0xD9); // 设置预充电周期
+  41   1          _OLED_writeCmd(0xf1); // [3:0],PHASE 1;[7:4],PHASE 2;
+  42   1          _OLED_writeCmd(0xDB); // 设置VCOMH 电压倍率
+  43   1          _OLED_writeCmd(0x30); // [6:4] 000,0.65*vcc;001,0.77*vcc;011,0.83*vcc;
+  44   1      
+  45   1          _OLED_writeCmd(0xA4); // 全局显示开启;bit0:1,开启;0,关闭;(白屏/黑屏)
+  46   1          _OLED_writeCmd(0xA6); // 设置显示方式;bit0:1,反相显示;0,正常显示
+  47   1          _OLED_writeCmd(0xAF); // 开启显示
+  48   1      }
+  49          
+  50          void OLED_clear() {
+  51   1          u8 i = 0;
+  52   1          u8 j = 0;
+  53   1      
+C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 2   
+
+  54   1          for (i = 0; i < 8; i++) {
+  55   2              // 页选
+  56   2              _OLED_writeCmd(0xB0 + i); // 0xB0 应该是首页地址
+  57   2      
+  58   2              // 列地址设置
+  59   2              _OLED_writeCmd(0x10); // 列地址, 高位0001
+  60   2              _OLED_writeCmd(0x00); // 列地址, 低位0000
+  61   2      
+  62   2              _OLED_writeDataBegin();
+  63   2              // 写入数据时, 下一个写入地址会自增
+  64   2              for (j = 0; j < 128; j++)
+  65   2                  _OLED_writeData(0x00);
+  66   2              _OLED_writeDataOver();
+  67   2          }
+  68   1      }
+  69          
+  70          // 显示图片
+  71          void OLED_showImage(const u8* imageMap) {
+  72   1          u8 i = 0;
+  73   1          u8 j = 0;
+  74   1      
+  75   1          for (i = 0; i < 8; i++) {
+  76   2              // 页选
+  77   2              _OLED_writeCmd(0xB0 + i); // 0xB0 首页地址
+  78   2      
+  79   2              // 列地址设置
+  80   2              _OLED_writeCmd(0x10); // 列地址, 高位0001
+  81   2              _OLED_writeCmd(0x00); // 列地址, 低位0000
+  82   2      
+  83   2              _OLED_writeDataBegin();
+  84   2              // 写入数据时, 下一个写入地址会自增
+  85   2              for (j = 0; j < 128; j++) {
+  86   3                  _OLED_writeData((*imageMap));
+  87   3                  imageMap++;
+  88   3              }
+  89   2              _OLED_writeDataOver();
+  90   2          }
+  91   1      }
+  92          // 显示中文字符串
+  93          void OLED_showChinese(u8 x, u8 y, u8 font_w, const char* str) {
+  94   1          u8 u8size = font_w * font_w / 8; // 汉字编码的字节数
+  95   1          u8 tempY = y;
+  96   1          u8 i = 0;                        // 汉字编码遍历索引
+  97   1          u8 j = 0;                        // 要显示的汉字在CnChar数组中的索引
+  98   1          u8 x1 = 0;                       // 横索引的低4位
+  99   1          u8 x2 = 0;                       // 横索引的高4位
+ 100   1      
+ 101   1          char* cur = str;
+ 102   1          // 记录font中汉字显示编码数组中元素个数, 用于汉字编码对比
+ 103   1          u8 num = (font_w == 16) ? (sizeof(CnChar16x16) / sizeof(CnChar16x16[0])) : (sizeof(CnChar24x24) / size
+             -of(CnChar24x24[0]));
+ 104   1          // 记录要从哪个汉字编码数组中找
+ 105   1          struct CnCharTypeDef* CnChar = (font_w == 16) ? CnChar16x16 : CnChar24x24;
+ 106   1      
+ 107   1          // 校验参数, x,y,str
+ 108   1          if (x > 128 || y > 8 || !cur)
+ 109   1              return;
+ 110   1      
+ 111   1          // 遍历字符串, UTF-8编码每3个字节表示一个汉字
+ 112   1          while (*cur != '\0') {
+ 113   2              if ((x > (OLED_WIDTH - font_w)) || (y > (OLED_HEIGHT - 1 - 1)))
+ 114   2                  break;
+C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 3   
+
+ 115   2      
+ 116   2              x1 = x & 0x0F;        //低4位
+ 117   2              x2 = (x >> 4) & 0x0F; //高4位
+ 118   2      
+ 119   2              // 查询要显示的汉字是不是在font的数组中
+ 120   2              for (j = 0; j < num; j++) {
+ 121   3                  // 在font汉字数组中, 找到要显示的汉字
+ 122   3                  if ((CnChar[j].Index[0] == *cur) && (CnChar[j].Index[1] == *(cur + 1)) && (CnChar[j].Index[2] 
+             -== *(cur + 2))) {
+ 123   4                      // 遍历汉字编码数组
+ 124   4                      y = tempY; // 开始写入汉字时, 页偏移量清零, 都从头开始嘛
+ 125   4                      for (i = 0; i < u8size; i++) {
+ 126   5                          // 当前字的当前页的写完了, 换下一个页
+ 127   5                          // 不能单纯的判断 i == 点阵宽度, 因为 一个汉字点阵宽度不同, 占
+             -用的页就不同
+ 128   5                          if (i % font_w == 0) {
+ 129   6                              _OLED_writeCmd(0xB0 | (y++)); // 页地址指令
+ 130   6                              _OLED_writeCmd(0x10 | x2);    // x索引高4位指令
+ 131   6                              _OLED_writeCmd(0x00 | x1);    // x索引低4位指令
+ 132   6                          }
+ 133   5                          _OLED_writeData_ECC(CnChar[j].Msk[i]);
+ 134   5                      }
+ 135   4      
+ 136   4                      x += font_w; // 每显示一个汉字横索往向移动font_wh个字节
+ 137   4                      break;
+ 138   4                  }
+ 139   3              }
+ 140   2      
+ 141   2              cur += 3; // 下一个汉字, 这里自增的大小 要根据不同编码中 汉字字节数来决
+             -定, utf-8中 汉字就占用3字节
+ 142   2          }
+ 143   1      }
+ 144          // 显示英文字符串
+ 145          void OLED_showString(u8 x, u8 y, const char* str) {
+ 146   1          char* cur = str;
+ 147   1      
+ 148   1          if (x > OLED_WIDTH || y > OLED_HEIGHT / 8 || !cur)
+ 149   1              return;
+ 150   1      
+ 151   1          while (*cur != '\0') {
+ 152   2              if (x > OLED_WIDTH)
+ 153   2                  break;
+ 154   2              _OLED_showChar(x, y, *cur);
+ 155   2              x += 8;
+ 156   2              cur++;
+ 157   2          }
+ 158   1      }
+ 159          
+ 160          static void _OLED_showChar(u8 x, u8 y, char c) {
+ 161   1          u8 u8size = 16; // 一个字符的取模编码长度是16字节
+ 162   1          u8 i = 0;
+ 163   1          u8 x1 = 0;          // 高四位
+ 164   1          u8 x2 = 0;          // 低四位
+ 165   1          u8 index = c - ' '; // 字符编码表的顺序, 是按照ASCII码表 排列的, 第0个取模编码�
+             -�组是' ', 后续是按照ASCII码表排序的
+ 166   1                              // 所以 字符 - ' ', 起始就是 字符在取模表中的下标位置
+ 167   1      
+ 168   1          x1 = x & 0x0F;        //低4位
+ 169   1          x2 = (x >> 4) & 0x0F; //高4位
+ 170   1      
+ 171   1          _OLED_writeCmd(0xB0 | y);  //页地址指令
+ 172   1          _OLED_writeCmd(0x10 | x2); //x索引高4位指令
+C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 4   
+
+ 173   1          _OLED_writeCmd(0x00 | x1); //x索引低4位指令
+ 174   1      
+ 175   1          _OLED_writeDataBegin();
+ 176   1          for (i = 0; i < u8size / 2; i++) {
+ 177   2              _OLED_writeData(ascii_1608[index][i * 2]);
+ 178   2          }
+ 179   1          _OLED_writeDataOver();
+ 180   1      
+ 181   1          _OLED_writeCmd(0xB0 | (y + 1)); //页地址指令
+ 182   1          _OLED_writeCmd(0x10 | x2);      //x索引高4位指令
+ 183   1          _OLED_writeCmd(0x00 | x1);      //x索引低4位指令
+ 184   1      
+ 185   1          _OLED_writeDataBegin();
+ 186   1          for (i = 0; i < u8size / 2; i++) {
+ 187   2              _OLED_writeData(ascii_1608[index][i * 2 + 1]);
+ 188   2          }
+ 189   1          _OLED_writeDataOver();
+ 190   1      }
+ 191          
+ 192          // 写命令
+ 193          static void _OLED_writeCmd(u8 u8cmd) {
+ 194   1          SSD1306_writeCmd(u8cmd);
+ 195   1      }
+ 196          
+ 197          // 通信建立
+ 198          static void _OLED_writeDataBegin() {
+ 199   1          SSD1306_writeDataBegin();
+ 200   1      }
+ 201          
+ 202          // 通信结束
+ 203          static void _OLED_writeDataOver() {
+ 204   1          SSD1306_writeDataOver();
+ 205   1      }
+ 206          
+ 207          // 不进行通信的建立和关闭, 只负责发数据
+ 208          static void _OLED_writeData(u8 u8data) {
+ 209   1          SSD1306_writeData(u8data);
+ 210   1      }
+ 211          
+ 212          // 每次发送数据均 重新建立 和 结束通信
+ 213          static void _OLED_writeData_ECC(u8 u8data) {
+ 214   1          SSD1306_writeData_ECC(u8data);
+ 215   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    912    ----
+   CONSTANT SIZE    =   2120    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      37
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
