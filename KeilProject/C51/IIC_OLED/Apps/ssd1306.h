@@ -7,8 +7,8 @@
 #define SSD1306_ADDR 0x78
 #define WRITE_MODE 0X00
 
-#define WRITE_CMD_CMD 0x80
-#define WRITE_DATA_CMD 0xC0
+#define WRITE_CMD_CMD 0x00
+#define WRITE_DATA_CMD 0x40
 
 void SSD1306_init();
 // 写命令

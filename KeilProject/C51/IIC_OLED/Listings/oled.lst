@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 1   
+C51 COMPILER V9.60.7.0   OLED                                                              10/21/2024 14:42:59 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE OLED
@@ -62,7 +62,7 @@ line level    source
   51   1          u8 i = 0;
   52   1          u8 j = 0;
   53   1      
-C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 2   
+C51 COMPILER V9.60.7.0   OLED                                                              10/21/2024 14:42:59 PAGE 2   
 
   54   1          for (i = 0; i < 8; i++) {
   55   2              // 页选
@@ -72,11 +72,11 @@ line level    source
   59   2              _OLED_writeCmd(0x10); // 列地址, 高位0001
   60   2              _OLED_writeCmd(0x00); // 列地址, 低位0000
   61   2      
-  62   2              _OLED_writeDataBegin();
+  62   2              //_OLED_writeDataBegin();
   63   2              // 写入数据时, 下一个写入地址会自增
   64   2              for (j = 0; j < 128; j++)
-  65   2                  _OLED_writeData(0x00);
-  66   2              _OLED_writeDataOver();
+  65   2                  _OLED_writeData_ECC(0x00);
+  66   2              //_OLED_writeDataOver();
   67   2          }
   68   1      }
   69          
@@ -93,13 +93,13 @@ line level    source
   80   2              _OLED_writeCmd(0x10); // 列地址, 高位0001
   81   2              _OLED_writeCmd(0x00); // 列地址, 低位0000
   82   2      
-  83   2              _OLED_writeDataBegin();
+  83   2              //_OLED_writeDataBegin();
   84   2              // 写入数据时, 下一个写入地址会自增
   85   2              for (j = 0; j < 128; j++) {
-  86   3                  _OLED_writeData((*imageMap));
+  86   3                  _OLED_writeData_ECC((*imageMap));
   87   3                  imageMap++;
   88   3              }
-  89   2              _OLED_writeDataOver();
+  89   2              //_OLED_writeDataOver();
   90   2          }
   91   1      }
   92          // 显示中文字符串
@@ -126,7 +126,7 @@ line level    source
  112   1          while (*cur != '\0') {
  113   2              if ((x > (OLED_WIDTH - font_w)) || (y > (OLED_HEIGHT - 1 - 1)))
  114   2                  break;
-C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 3   
+C51 COMPILER V9.60.7.0   OLED                                                              10/21/2024 14:42:59 PAGE 3   
 
  115   2      
  116   2              x1 = x & 0x0F;        //低4位
@@ -190,25 +190,25 @@ line level    source
  170   1      
  171   1          _OLED_writeCmd(0xB0 | y);  //页地址指令
  172   1          _OLED_writeCmd(0x10 | x2); //x索引高4位指令
-C51 COMPILER V9.60.7.0   OLED                                                              10/18/2024 19:36:42 PAGE 4   
+C51 COMPILER V9.60.7.0   OLED                                                              10/21/2024 14:42:59 PAGE 4   
 
  173   1          _OLED_writeCmd(0x00 | x1); //x索引低4位指令
  174   1      
- 175   1          _OLED_writeDataBegin();
+ 175   1          //_OLED_writeDataBegin();
  176   1          for (i = 0; i < u8size / 2; i++) {
- 177   2              _OLED_writeData(ascii_1608[index][i * 2]);
+ 177   2              _OLED_writeData_ECC(ascii_1608[index][i * 2]);
  178   2          }
- 179   1          _OLED_writeDataOver();
+ 179   1          //_OLED_writeDataOver();
  180   1      
  181   1          _OLED_writeCmd(0xB0 | (y + 1)); //页地址指令
  182   1          _OLED_writeCmd(0x10 | x2);      //x索引高4位指令
  183   1          _OLED_writeCmd(0x00 | x1);      //x索引低4位指令
  184   1      
- 185   1          _OLED_writeDataBegin();
+ 185   1          //_OLED_writeDataBegin();
  186   1          for (i = 0; i < u8size / 2; i++) {
- 187   2              _OLED_writeData(ascii_1608[index][i * 2 + 1]);
+ 187   2              _OLED_writeData_ECC(ascii_1608[index][i * 2 + 1]);
  188   2          }
- 189   1          _OLED_writeDataOver();
+ 189   1          //_OLED_writeDataOver();
  190   1      }
  191          
  192          // 写命令
@@ -238,7 +238,7 @@ line level    source
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    912    ----
+   CODE SIZE        =    889    ----
    CONSTANT SIZE    =   2120    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

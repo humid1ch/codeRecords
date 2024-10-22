@@ -59,11 +59,11 @@ void OLED_clear() {
         _OLED_writeCmd(0x10); // 列地址, 高位0001
         _OLED_writeCmd(0x00); // 列地址, 低位0000
 
-        _OLED_writeDataBegin();
+        //_OLED_writeDataBegin();
         // 写入数据时, 下一个写入地址会自增
         for (j = 0; j < 128; j++)
-            _OLED_writeData(0x00);
-        _OLED_writeDataOver();
+            _OLED_writeData_ECC(0x00);
+        //_OLED_writeDataOver();
     }
 }
 
@@ -80,13 +80,13 @@ void OLED_showImage(const u8* imageMap) {
         _OLED_writeCmd(0x10); // 列地址, 高位0001
         _OLED_writeCmd(0x00); // 列地址, 低位0000
 
-        _OLED_writeDataBegin();
+        //_OLED_writeDataBegin();
         // 写入数据时, 下一个写入地址会自增
         for (j = 0; j < 128; j++) {
-            _OLED_writeData((*imageMap));
+            _OLED_writeData_ECC((*imageMap));
             imageMap++;
         }
-        _OLED_writeDataOver();
+        //_OLED_writeDataOver();
     }
 }
 // 显示中文字符串
@@ -172,21 +172,21 @@ static void _OLED_showChar(u8 x, u8 y, char c) {
     _OLED_writeCmd(0x10 | x2); //x索引高4位指令
     _OLED_writeCmd(0x00 | x1); //x索引低4位指令
 
-    _OLED_writeDataBegin();
+    //_OLED_writeDataBegin();
     for (i = 0; i < u8size / 2; i++) {
-        _OLED_writeData(ascii_1608[index][i * 2]);
+        _OLED_writeData_ECC(ascii_1608[index][i * 2]);
     }
-    _OLED_writeDataOver();
+    //_OLED_writeDataOver();
 
     _OLED_writeCmd(0xB0 | (y + 1)); //页地址指令
     _OLED_writeCmd(0x10 | x2);      //x索引高4位指令
     _OLED_writeCmd(0x00 | x1);      //x索引低4位指令
 
-    _OLED_writeDataBegin();
+    //_OLED_writeDataBegin();
     for (i = 0; i < u8size / 2; i++) {
-        _OLED_writeData(ascii_1608[index][i * 2 + 1]);
+        _OLED_writeData_ECC(ascii_1608[index][i * 2 + 1]);
     }
-    _OLED_writeDataOver();
+    //_OLED_writeDataOver();
 }
 
 // 写命令

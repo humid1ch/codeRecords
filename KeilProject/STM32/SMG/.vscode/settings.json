@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "led.h": "c",
+        "stm32f10x.h": "c",
+        "smg.h": "c",
+        "stm32f10x_it.h": "c",
+        "utils.h": "c"
+    }
+}

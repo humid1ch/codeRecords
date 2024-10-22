@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   SSD1306                                                           10/18/2024 19:36:42 PAGE 1   
+C51 COMPILER V9.60.7.0   SSD1306                                                           10/21/2024 14:42:59 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE SSD1306
@@ -62,7 +62,7 @@ line level    source
   52   1      
   53   1          // 发送 数据
   54   1          IIC_writeByte(u8data);
-C51 COMPILER V9.60.7.0   SSD1306                                                           10/18/2024 19:36:42 PAGE 2   
+C51 COMPILER V9.60.7.0   SSD1306                                                           10/21/2024 14:42:59 PAGE 2   
 
   55   1          // 等待从机应答
   56   1          if (IIC_waitAck()) // 返回值为 0, 则表示通信结束
