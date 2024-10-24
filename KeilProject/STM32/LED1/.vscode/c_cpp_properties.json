@@ -3,16 +3,16 @@
         {
             "name": "Target 1",
             "includePath": [
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\LED1\\Apps",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\LED1\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\LED1\\Utils",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\LED1\\Libraries\\CMSIS",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\LED1\\Users",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\STEP_MOTOR\\Apps",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\STEP_MOTOR\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\STEP_MOTOR\\Utils",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\STEP_MOTOR\\Libraries\\CMSIS",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\STEP_MOTOR\\Users",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\arm_linux",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\arm_linux_compat",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\rw",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\LED1\\Libraries\\STM32F10x_StdPeriph_Driver\\src",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\STEP_MOTOR\\Libraries\\STM32F10x_StdPeriph_Driver\\src",
                 "${default}",
                 "${workspaceFolder}/**"
             ],
