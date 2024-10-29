@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "led.h": "c",
+        "stm32f10x.h": "c",
+        "cstdio": "cpp",
+        "utils.h": "c"
+    }
+}
