@@ -3,16 +3,16 @@
         {
             "name": "Target 1",
             "includePath": [
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\USART\\Apps",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\USART\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\USART\\Utils",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\USART\\Libraries\\CMSIS",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\USART\\Users",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\ESP8266\\Apps",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\ESP8266\\Libraries\\STM32F10x_StdPeriph_Driver\\inc",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\ESP8266\\Utils",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\ESP8266\\Libraries\\CMSIS",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\ESP8266\\Users",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\arm_linux",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\arm_linux_compat",
                 "C:\\Keil_v5\\ARM\\ARMCC\\include\\rw",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\USART\\Libraries\\STM32F10x_StdPeriph_Driver\\src",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\STM32\\ESP8266\\Libraries\\STM32F10x_StdPeriph_Driver\\src",
                 "${default}",
                 "${workspaceFolder}/**"
             ],

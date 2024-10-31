@@ -3,6 +3,9 @@
         "led.h": "c",
         "stm32f10x.h": "c",
         "cstdio": "cpp",
-        "utils.h": "c"
+        "utils.h": "c",
+        "ds18b20.h": "c",
+        "one_write.h": "c",
+        "esp8266.h": "c"
     }
 }

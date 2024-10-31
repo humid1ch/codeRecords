@@ -1,0 +1,13 @@
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling pic.c...
+"no source": Error:  #5: cannot open source input file "Apps\pic.c": No such file or directory
+Apps\pic.c: 0 warnings, 1 error
+compiling font.c...
+"no source": Error:  #5: cannot open source input file "Apps\font.c": No such file or directory
+Apps\font.c: 0 warnings, 1 error
+compiling main.c...
+compiling oled.c...
+".\Objects\iic_oled.axf" - 2 Error(s), 0 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:00

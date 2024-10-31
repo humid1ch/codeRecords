@@ -3,11 +3,11 @@
         {
             "name": "Target 1",
             "includePath": [
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\IIC_OLED\\Apps",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\IIC_OLED\\Utils",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_LCD9648\\Utils",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_LCD9648\\Apps",
                 "C:\\Keil_v5\\C51\\INC",
                 "C:\\Keil_v5\\C51\\INC\\Microchip",
-                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\IIC_OLED\\Users",
+                "c:\\Users\\Humid1ch\\gitCode\\codeRecords\\KeilProject\\C51\\SPI_LCD9648\\Users",
                 "${default}",
                 "${workspaceFolder}/**"
             ],

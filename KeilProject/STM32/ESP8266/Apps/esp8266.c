@@ -23,6 +23,7 @@ void ESP8266_init(void) {
     ESP_RST = 1;
     ESP_CH_PD = 1;
 }
+
 void ESP8266_sendATCmd(const char* cmd) {
     // ESP8266 用串口3 的RX 和 TX引脚
     USART3_USE();

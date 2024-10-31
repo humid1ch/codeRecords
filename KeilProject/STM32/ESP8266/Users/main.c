@@ -4,6 +4,7 @@
 #include "usart.h"
 #include "esp8266.h"
 #include "led.h"
+#include "ds18b20.h"
 
 #define USART_REC_LEN 128 // 最大串口缓冲区
 
@@ -13,6 +14,13 @@ u16 USART3_RX_STA = 0;                   // 串口3接收状态标记+接收个�
 char USART1_RX_BUF[USART_REC_LEN] = {0}; // 串口1的接收缓冲
 u16 USART1_RX_STA = 0;                   // 串口1接收状态标记+接收个数
 
+#define WIFI_SSID "ESP_humid1ch"
+#define WIFI_PASSWD "dxyt200209."
+#define WIFI_CHANNEL 13 // 信道: 0~13
+#define WIFI_PSSWD_MODE 4
+#define ESP_LOCAL_IP "192.168.9.148"
+#define ESP_SERVER_PORT 8088
+
 void ESP8266_serverConfig(void);
 
 int main() {
@@ -20,14 +28,43 @@ int main() {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2); // 2级 优先级
 
     LED_init();
+    DS18B20_init();
     USART1_init(115200);
     USART3_init(115200);
     ESP8266_init();
     delayMs(1000);
     ESP8266_serverConfig();
 
+    u32 i = 0;
     while (1) {
-        u16 dataLen = 0;
+        u16 u16data = 0;
+        u8 negFlag = 0;
+        DS18B20_readTemperature(&u16data);
+        // 温度负数修正
+        if (u16data & 0xF800) {
+            u16data = (~u16data) + 1;
+            negFlag = 1;
+        }
+
+        float temperature = u16data * 0.0625;
+        if (negFlag)
+            temperature = 0 - temperature;
+
+        char cmd[32] = {0};
+        if (i % 100 == 0) {
+            sprintf(cmd, "temp: %.2f C", temperature);
+            sprintf(cmd, "AT+CIPSEND=0,%u\r\n", strlen(cmd));
+            ESP8266_sendATCmd(cmd);
+            delayMs(100);
+
+            sprintf(cmd, "temp: %.2f C", temperature);
+            ESP8266_sendATCmd(cmd);
+            delayMs(100);
+        }
+
+        i++;
+        delayMs(10);
+        /*  u16 dataLen = 0;
         if (USART1_RX_STA & 0x8000) {
             USART1_USE();
             printf("USART1 send: %s\r\n", USART1_RX_BUF);
@@ -54,27 +91,27 @@ int main() {
 
             USART3_RX_STA = 0;
 
-            /* USART1_USE();
-            printf("USART3 rcv: %s\r\n", USART3_RX_BUF);
+            // USART1_USE();
+            // printf("USART3 rcv: %s\r\n", USART3_RX_BUF);
 
             // 数据清零
-            dataLen = USART3_RX_STA & 0x3FFF;
-            for (u16 i = 0; i < dataLen; i++) {
-                USART_SendData(USART1, USART3_RX_BUF[i]);
-                while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) != SET)
-                    ;
+            // dataLen = USART3_RX_STA & 0x3FFF;
+            // for (u16 i = 0; i < dataLen; i++) {
+            // USART_SendData(USART1, USART3_RX_BUF[i]);
+            // while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) != SET)
+            // ;
+            //
+            // USART3_RX_BUF[i] = 0;
+            // }
 
-                USART3_RX_BUF[i] = 0;
-            }
-
-            USART_SendData(USART1, '\r');
-            while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) != SET)
-                ;
-            USART_SendData(USART1, '\n');
-            while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) != SET)
-                ;
-            USART3_RX_STA = 0; */
-        }
+            // USART_SendData(USART1, '\r');
+            // while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) != SET)
+            // ;
+            // USART_SendData(USART1, '\n');
+            // while (USART_GetFlagStatus(USART1, USART_FLAG_TXE) != SET)
+            // ;
+            // USART3_RX_STA = 0;
+        } */
     }
 }
 
@@ -82,23 +119,23 @@ void ESP8266_serverConfig(void) {
     char cmdStr[128] = {0}; // 用于存储格式化命令
 
     sprintf(cmdStr, "AT+CWMODE=2\r\n");
-    _Send_AT_Cmd(cmdStr);
+    ESP8266_sendATCmd(cmdStr);
     delayMs(1000);
 
     sprintf(cmdStr, "AT+CWSAP_DEF=\"%s\",\"%s\",%d,%d\r\n", WIFI_SSID, WIFI_PASSWD, WIFI_CHANNEL, WIFI_PSSWD_MODE);
-    _Send_AT_Cmd(cmdStr);
+    ESP8266_sendATCmd(cmdStr);
     delayMs(1000);
 
     sprintf(cmdStr, "AT+CIPAP_DEF=\"%s\"\r\n", ESP_LOCAL_IP);
-    _Send_AT_Cmd(cmdStr);
+    ESP8266_sendATCmd(cmdStr);
     delayMs(1000);
 
     sprintf(cmdStr, "AT+CIPMUX=1\r\n");
-    _Send_AT_Cmd(cmdStr);
+    ESP8266_sendATCmd(cmdStr);
     delayMs(1000);
 
     sprintf(cmdStr, "AT+CIPSERVER=1,%d\r\n", ESP_SERVER_PORT);
-    _Send_AT_Cmd(cmdStr);
+    ESP8266_sendATCmd(cmdStr);
     delayMs(1000);
 }
 

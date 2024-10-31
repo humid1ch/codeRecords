@@ -2,6 +2,8 @@
 ".\objects\usart.o"
 ".\objects\esp8266.o"
 ".\objects\led.o"
+".\objects\ds18b20.o"
+".\objects\one_write.o"
 ".\objects\main.o"
 ".\objects\stm32f10x_it.o"
 ".\objects\utils.o"
