@@ -1,0 +1,14 @@
+.\objects\heap_4.o: FreeRTOS\Portable\heap_4.c
+.\objects\heap_4.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\heap_4.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\heap_4.o: .\FreeRTOS\Include\FreeRTOS.h
+.\objects\heap_4.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\heap_4.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\heap_4.o: .\Users\FreeRTOSConfig.h
+.\objects\heap_4.o: .\FreeRTOS\Include\projdefs.h
+.\objects\heap_4.o: .\FreeRTOS\Include\portable.h
+.\objects\heap_4.o: .\FreeRTOS\Include\deprecated_definitions.h
+.\objects\heap_4.o: .\FreeRTOS\Portable\ARM_CM3\portmacro.h
+.\objects\heap_4.o: .\FreeRTOS\Include\mpu_wrappers.h
+.\objects\heap_4.o: .\FreeRTOS\Include\task.h
+.\objects\heap_4.o: .\FreeRTOS\Include\list.h

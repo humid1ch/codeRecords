@@ -1,0 +1,26 @@
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Build target 'Target 1'
+compiling main.c...
+Users\main.c(33): warning:  #191-D: type qualifier is meaningless on cast type
+      xTaskCreate((TaskFunction_t)LED1_task, (const char*)"LED1_BLINK", (const uint16_t)LED_TASK_STK_DEPTH, (void* const)NULL, (UBaseType_t)LED_TASK_PRIO, (TaskHandle_t*)&LED1_TASK_Handler);
+Users\main.c(33): warning:  #191-D: type qualifier is meaningless on cast type
+      xTaskCreate((TaskFunction_t)LED1_task, (const char*)"LED1_BLINK", (const uint16_t)LED_TASK_STK_DEPTH, (void* const)NULL, (UBaseType_t)LED_TASK_PRIO, (TaskHandle_t*)&LED1_TASK_Handler);
+Users\main.c(34): warning:  #191-D: type qualifier is meaningless on cast type
+      xTaskCreate((TaskFunction_t)LED2_task, (const char*)"LED2_BLINK", (const uint16_t)LED_TASK_STK_DEPTH, (void* const)NULL, (UBaseType_t)LED_TASK_PRIO, (TaskHandle_t*)&LED2_TASK_Handler);
+Users\main.c(34): warning:  #191-D: type qualifier is meaningless on cast type
+      xTaskCreate((TaskFunction_t)LED2_task, (const char*)"LED2_BLINK", (const uint16_t)LED_TASK_STK_DEPTH, (void* const)NULL, (UBaseType_t)LED_TASK_PRIO, (TaskHandle_t*)&LED2_TASK_Handler);
+Users\main.c(35): warning:  #191-D: type qualifier is meaningless on cast type
+      xTaskCreate((TaskFunction_t)LED3_task, (const char*)"LED3_BLINK", (const uint16_t)LED_TASK_STK_DEPTH, (void* const)&second, (UBaseType_t)LED_TASK_PRIO, (TaskHandle_t*)&LED3_TASK_Handler);
+Users\main.c(35): warning:  #191-D: type qualifier is meaningless on cast type
+      xTaskCreate((TaskFunction_t)LED3_task, (const char*)"LED3_BLINK", (const uint16_t)LED_TASK_STK_DEPTH, (void* const)&second, (UBaseType_t)LED_TASK_PRIO, (TaskHandle_t*)&LED3_TASK_Handler);
+Users\main.c(55): warning:  #191-D: type qualifier is meaningless on cast type
+          delayMs(1000 * (*(u16* const)pvParameters));
+Users\main.c: 7 warnings, 0 errors
+linking...
+.\Objects\freertos.axf: Error: L6218E: Undefined symbol LED_init (referred from main.o).
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning and 1 error messages.
+".\Objects\freertos.axf" - 1 Error(s), 7 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:01

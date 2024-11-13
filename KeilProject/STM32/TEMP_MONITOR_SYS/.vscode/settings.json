@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "led.h": "c",
+        "stm32f10x.h": "c",
+        "rtc.h": "c",
+        "utils.h": "c",
+        "beep.h": "c",
+        "skey.h": "c",
+        "matrix_key.h": "c",
+        "smg.h": "c",
+        "iic.h": "c",
+        "ssd1306.h": "c"
+    }
+}

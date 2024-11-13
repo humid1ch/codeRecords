@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "led.h": "c",
+        "stm32f10x.h": "c",
+        "stm32f10x_it.h": "c",
+        "freertos.h": "c",
+        "utils.h": "c",
+        "task.h": "c",
+        "ds18b20.h": "c",
+        "smg.h": "c"
+    }
+}
