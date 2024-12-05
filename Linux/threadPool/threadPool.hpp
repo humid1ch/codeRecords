@@ -1,13 +1,13 @@
 #pragma once
 
+#include "lock.hpp"
+#include <cassert>
 #include <cstddef>
 #include <iostream>
 #include <ostream>
-#include <queue>
-#include <cassert>
 #include <pthread.h>
+#include <queue>
 #include <unistd.h>
-#include "lock.hpp"
 
 #define THREADNUM 5
 
@@ -26,6 +26,7 @@ public:
 
 		return _instance;
 	}
+
 	// 线程回调函数
 	// static 修饰, 是因为需要让函数参数 取消this指针, 只留一个void*
 	// 但是由于 需要访问类内成员, 所以 传参需要传入this指针
@@ -69,9 +70,8 @@ public:
 
 		for (int i = 0; i < _threadNum; i++) {
 			pthread_t temp;
-			pthread_create(
-				&temp, nullptr, threadRoutine,
-				this); // 回调函数的参数传入this指针, 用于类访问内成员
+			pthread_create(&temp, nullptr, threadRoutine,
+						   this); // 回调函数的参数传入this指针, 用于类访问内成员
 		}
 		// 开启线程池之后, 要把 _isStart 属性设置为 true
 		_isStart = true;
@@ -142,8 +142,8 @@ private:
 	size_t _threadNum;		  // 线程池内线程数量
 	bool _isStart;			  // 判断线程池是否已经开启
 	std::queue<T> _taskQueue; // 任务队列
-	pthread_mutex_t _mutex; // 锁 给临界资源使用 即任务队列 保证线程调度互斥
-	pthread_cond_t _cond; // 条件变量 保证线程调度同步
+	pthread_mutex_t _mutex;	  // 锁 给临界资源使用 即任务队列 保证线程调度互斥
+	pthread_cond_t _cond;	  // 条件变量 保证线程调度同步
 
 	static threadPool<T>* _instance;
 };

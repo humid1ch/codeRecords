@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <pthread.h>
+#include <vector>
 
 class Mutex {
 public:
@@ -27,15 +28,14 @@ public:
 	LockGuard(Mutex* mutex)
 		: _mutex(mutex) {
 		_mutex->lock();
-		//std::cout << "加锁成功..." << std::endl;
+		// std::cout << "加锁成功..." << std::endl;
 	}
 
 	~LockGuard() {
 		_mutex->unlock();
-		//std::cout << "解锁成功...." << std::endl;
+		// std::cout << "解锁成功...." << std::endl;
 	}
 
 private:
 	Mutex* _mutex;
 };
-
