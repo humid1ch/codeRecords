@@ -1,4 +1,4 @@
-all: noBlock selectd
+all: noBlock selectd epolld
 noBlock: noBlock.cc
 	g++ $^ -o $@
 selectd: selectSvr.cc

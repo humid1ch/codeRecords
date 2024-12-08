@@ -1,10 +1,7 @@
-#include "selectSvr.hpp"
-
 #include <bits/types/struct_timeval.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <unistd.h>
-
 #include <cstdint>
 #include <cstring>
 #include <iostream>
@@ -12,8 +9,9 @@
 #include <unordered_map>
 #include <utility>
 #include <vector>
+#include "sock.hpp"
 
-static void usage(const std::string &process) {
+static void usage(const std::string& process) {
 	std::cerr << "\nUsage: " << process << " port" << std::endl;
 }
 
@@ -22,13 +20,10 @@ static void usage(const std::string &process) {
 std::vector<int> fdsArray(sizeof(fd_set) * 8, DFL);
 // 大小为 sizeof(fd_set) * 8, 每个单元内容为DFL的vector
 
-static void handlerEvent(int listenSock,
-						 fd_set &readFds,
-						 std::unordered_map<int, std::pair<std::string, uint16_t>> &clientsMap,
-						 std::string *clientIP = nullptr,
-						 uint16_t *clientPort = nullptr) {
+static void handlerEvent(int listenSock, fd_set& readFds, std::unordered_map<int, std::pair<std::string, uint16_t>>& clientsMap,
+						 std::string* clientIP = nullptr, uint16_t* clientPort = nullptr) {
 	if (FD_ISSET(listenSock, &readFds)) {
-		int sock = SelectSock::sockAccept(listenSock, clientIP, clientPort);
+		int sock = Sock::sockAccept(listenSock, clientIP, clientPort);
 		if (sock == -1) {
 			// 连接建立失败
 			return;
@@ -65,12 +60,12 @@ static void handlerEvent(int listenSock,
 
 		if (FD_ISSET(fdsArray[i], &readFds)) {
 			// 某个连接的文件描述符读取就绪了
-            // 处理
+			// 处理
 		}
 	}
 }
 
-int main(int argc, char *argv[]) {
+int main(int argc, char* argv[]) {
 	if (argc != 2) {
 		usage(argv[0]);
 
@@ -80,12 +75,12 @@ int main(int argc, char *argv[]) {
 	Log log;
 	log.enable();
 
-	int listenSock = SelectSock::getListenSock();
-	SelectSock::sockBind(listenSock, atoi(argv[1]));
-	SelectSock::sockListen(listenSock);
+	int listenSock = Sock::getListenSock();
+	Sock::sockBind(listenSock, atoi(argv[1]));
+	Sock::sockListen(listenSock);
 	fdsArray[0] = listenSock;
 
-	std::unordered_map<int, std::pair<std::string, uint16_t>> clientsMap;  // 存储已连接的客户端socket, ip, port
+	std::unordered_map<int, std::pair<std::string, uint16_t>> clientsMap; // 存储已连接的客户端socket, ip, port
 
 	while (true) {
 		std::string clientIP;
@@ -99,13 +94,13 @@ int main(int argc, char *argv[]) {
 			if (fdsArray[i] == DFL)
 				continue;
 
-			maxFd < fdsArray[i] ? maxFd = fdsArray[i] : maxFd;	// 找fd最大值
+			maxFd < fdsArray[i] ? maxFd = fdsArray[i] : maxFd; // 找fd最大值
 			// 文件描述符集 设置所有已连接的socket
 			FD_SET(fdsArray[i], &readFds);
 		}
 		// 设置监听套接字
 		FD_SET(listenSock, &readFds);
-		struct timeval selecTimeout = { 1, 0 };	 // 用于设置超时时间 s, ms, 空指针永久阻塞
+		struct timeval selecTimeout = { 1, 0 }; // 用于设置超时时间 s, ms, 空指针永久阻塞
 		int ret = select(maxFd + 1, &readFds, nullptr, nullptr, &selecTimeout);
 
 		switch (ret) {

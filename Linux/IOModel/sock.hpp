@@ -23,7 +23,7 @@
 
 #include "logMessage.hpp"
 
-class SelectSock {
+class Sock {
 public:
 	static const int gBackLog = 20;
 

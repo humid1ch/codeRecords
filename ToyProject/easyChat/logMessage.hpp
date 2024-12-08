@@ -89,10 +89,10 @@ void logMessage(int level, const char* file, int line, const char* format, ...) 
 	if (nC) {
 		*nC = '\0';
 	}
-	//	fprintf(out, "%s | %s | %s | %s | %s:%d\n", log_level[level],
-	//localTmStr, name == nullptr ? "unknow" : name, logInfo, file, 			line);
+	fprintf(out, "%s | %s | %s | %s | %s:%d\n", log_level[level], localTmStr, name == nullptr ? "unknow" : name, logInfo, file,
+			line);
 
-	fprintf(out, "%s | %s | %s | %s\n", log_level[level], localTmStr, name == nullptr ? "unknow" : name, logInfo);
+	// fprintf(out, "%s | %s | %s | %s\n", log_level[level], localTmStr, name == nullptr ? "unknow" : name, logInfo);
 
 	// 将C缓冲区的内容 刷入系统
 	fflush(out);
