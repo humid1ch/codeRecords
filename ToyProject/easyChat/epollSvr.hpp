@@ -271,7 +271,7 @@ private:
 						}
 						std::cout << "fileAskSize: " << fileAskSize << std::endl;
 					}
-					LOG(DEBUG, "END circle %d times, sock: %d", cnt, sock);
+					LOG(DEBUG, "END circle %d times, sock: %d, dataSize: %d", cnt, sock, fileDataStr.size());
 
 					// 此时 fileDataStr 是完整的一个属性+chunk
 					Json::Value fileData;
@@ -280,7 +280,6 @@ private:
 
 						return;
 					}
-					LOG(DEBUG, "END circle %d times, sock: %d", cnt, sock);
 
 					std::string filePath(fileData["filePath"].asString());
 					size_t startOffset = fileData["startOffset"].asUInt();

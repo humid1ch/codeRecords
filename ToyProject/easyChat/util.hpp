@@ -40,6 +40,8 @@ public:
 		// 处理输入字符串，去除可能存在的填充字符 '='
 		std::string cleanedInput = input;
 		boost::algorithm::trim_right_if(cleanedInput, boost::is_any_of("="));
+		std::cout << "Cleaned Input: " << cleanedInput << std::endl;
+		std::cout << "Cleaned Input Length: " << cleanedInput.length() << std::endl;
 		try {
 			return std::string(Base64DecodeIterator(cleanedInput.begin()), Base64DecodeIterator(cleanedInput.end()));
 		}

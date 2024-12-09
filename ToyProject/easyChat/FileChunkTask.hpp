@@ -68,17 +68,29 @@ public:
 			Json::Value fileAskSize;
 			fileAskSize["size"] = fileAskStr.size();
 			jsonUtil::serialize(fileAskSize, &fileAskSizeStr);
-			std::cout << "fileAskSize: " << fileAskStr.size() << std::endl;
 
 			// 发送大小
-			int res = send(_socketFd, fileAskSizeStr.c_str(), fileAskSizeStr.size(), 0);
+			std::cout << "send askSize" << send(_socketFd, fileAskSizeStr.c_str(), fileAskSizeStr.size(), 0) << std::endl;
 
 			// 发送数据
 			int sendSize = 0;
+			char* sendDatas_C = new char[fileAskStr.size() + 1];
+			memset(sendDatas_C, 0, fileAskStr.size() + 1);
+			memcpy(sendDatas_C, fileAskStr.c_str(), fileAskStr.size());
+			int res = 0;
+			int cnt = 0;
 			while (sendSize < fileAskStr.size()) {
-				res = send(_socketFd, (char*)fileAskStr.c_str() + sendSize, _chunkSize, 0);
+				cnt++;
+				res = send(_socketFd, sendDatas_C + sendSize, fileAskStr.size(), 0);
+				// 返回值异常大, errno 错误参数, 不知道哪错了,
+				// 描述符(对面能收到数据), 数据地址(char*),
+				// 本次发送最大大小, flag
+				// res = send(_socketFd, ten, _chunkSize, 0); // 返回值异常大
 
-				std::cout << "sock: " << _socketFd << ", send data addr" << static_cast<const void*>((char*)fileAskStr.c_str() + sendSize) << ", send data size: " << res << std::endl;
+				std::cout << "sock: " << _socketFd << ", send data addr" << static_cast<const void*>(sendDatas_C + sendSize)
+						  << ", send data size: " << res << ", cnt: " << cnt << std::endl;
+				std::cout << sendDatas_C << std::endl;
+
 				sendSize += res;
 			}
 

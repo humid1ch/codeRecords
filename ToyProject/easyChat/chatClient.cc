@@ -318,7 +318,7 @@ void* fileUploadThread(void* args) {
 	}
 	// 文件大小
 	size_t targetSize = lseek(targetFd, 0, SEEK_END);
-	int unitChunk = 64 * 1024;
+	int unitChunk = 32 * 1024;
 	int lastChunk = targetSize % unitChunk; // 最后一块大小
 	int num = targetSize / unitChunk;
 	lastChunk > 0 ? num++ : num; // 计算块数
@@ -359,7 +359,6 @@ void mainMenu(int sock, std::unique_ptr<threadPool<FileChunkTask>>& tP) {
 		std::cout << "|           2. 选择用户私聊                 |" << std::endl;
 		std::cout << "|           3. 广播聊天                     |" << std::endl;
 		std::cout << "|           4. 选择用户发送文件             |" << std::endl;
-		std::cout << "|           5. 确认接收文件                 |" << std::endl;
 		std::cout << "|           0. 退出登录                     |" << std::endl;
 		std::cout << "=============================================" << std::endl;
 
