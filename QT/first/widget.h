@@ -14,7 +14,6 @@ QT_BEGIN_NAMESPACE -> namespace QT_NAMESAPCE {
 QT_BEGIN_NAMESAPCE -> }
 */
 
-
 // Widget 继承自 QWidget
 // Widget这个类名, 是在创建项目时指定的, 可以自定义
 class Widget : public QWidget {
