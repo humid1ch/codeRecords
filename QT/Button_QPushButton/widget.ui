@@ -64,6 +64,12 @@
    <property name="text">
     <string/>
    </property>
+   <property name="default">
+    <bool>false</bool>
+   </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="pushBtn_ICON">
    <property name="geometry">

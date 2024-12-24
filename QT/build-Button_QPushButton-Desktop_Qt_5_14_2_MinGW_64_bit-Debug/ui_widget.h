@@ -42,11 +42,15 @@ public:
         pushBtn_up = new QPushButton(Widget);
         pushBtn_up->setObjectName(QString::fromUtf8("pushBtn_up"));
         pushBtn_up->setGeometry(QRect(356, 400, 88, 88));
+        pushBtn_up->setFlat(false);
         pushBtn_ICON = new QPushButton(Widget);
         pushBtn_ICON->setObjectName(QString::fromUtf8("pushBtn_ICON"));
         pushBtn_ICON->setGeometry(QRect(336, 100, 128, 128));
 
         retranslateUi(Widget);
+
+        pushBtn_up->setDefault(false);
+
 
         QMetaObject::connectSlotsByName(Widget);
     } // setupUi
